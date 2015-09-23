@@ -20,14 +20,65 @@ tokens = ['TkCreate','TkExecute',
           'TkDisyuncion','TkNegacion','TkMenor','TkMenorIgual',
           'TkMayor','TkMayorIgual','TkIgual']
 
-# Palabras Clave
+##################### Estructura de un Programa ################################
 
-t_TkComa = r'create'
+t_TkCreate = r'create'
+t_TkExecute = r'execute'
+t_TkEnd = r'end'
+
+##################### Instrucciones de Controlador #############################
+
+t_TkActivate = r'activate'
+t_TkDeactivate = r'deactivate'
+t_TkStore = r'store'
+t_TkRecieve = r'recieve'
+t_TkAdvance = r'advance'
+
+##################### Instrucciones de Robot ###################################
+
+t_TkStore = r'store'
+t_TkCollect = r'collect'
+t_TkDrop = r'drop'
+
+# Movimiento
+
+t_TkLeft = r'left'
+t_TkRight = r'right'
+t_TkUp = r'up'
+t_TkDown = r'down'
+
+t_TkOn = r'on'
+
+# Condicionales y Ciclos
+
+t_TkIf = r'if'
+t_TkElse = r'else'
+t_TkWhile = r'while'
+
+# Entrada y Salida
+
+t_TkRead = r'read'
+t_TkSend = r'send'
+
+t_TkActivation = r'activation'
+t_TkDeactivation = r'deactivation'
+#t_TkCustomCondition = r'end'
+t_TkDefault = r'default'
+
+# Literales
+
 t_TkIdent = '[a-zA-Z][a-zA-Z0-9_]*'
 t_TkNum = '[0-9]+'
+t_TkCaracter = '"."'
 t_TkFalse = r'false'
 t_TkTrue = r'true'
-t_TkCaracter = '.'
+
+# Tipos de datos
+
+t_TkInt = r'int'
+t_TkBool = r'bool'
+t_TkChar = r'char'
+
 
 # Separadores
 
