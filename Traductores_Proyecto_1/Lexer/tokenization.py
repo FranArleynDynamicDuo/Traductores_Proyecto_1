@@ -16,7 +16,7 @@ def tokenization(word):
     #===========================================================================
     #  Cada una de las palabras claves utilizadas en la sintaxis de BOT, i.e. 
     # create, while, bool, if,etc. En este caso, los tokens deberán llamarse 
-    # TkhPalabra Clavei, donde hPalabra Clavei es
+    # TkTkhPalabra Clavei, donde hPalabra Clavei es
     # la palabra clave a la que representa el token, con su primera letra en 
     # mayúscula. Por ejemplo, para la palabra clave create, su token 
     # sería TkCreate.
