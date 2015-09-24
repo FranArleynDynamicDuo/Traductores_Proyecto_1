@@ -18,3 +18,19 @@ class Token(object):
         self.value = value
         self.line_Number = line_Number
         self.column_Number = column_Number
+        
+class Token_One_Atribute(Token):
+    '''
+    SubClase de token, que corresponde a los tokens que tienen 1 datos adicional
+    asociado como en el caso de los identificadores o los TkNum(x)
+    '''
+    def __init__(self ,name,value,line_Number,column_Number,extra_Atribute):
+        '''
+        Constructor
+        '''
+        self.name = name
+        self.value = value
+        self.line_Number = line_Number
+        self.column_Number = column_Number
+        self.extra_Atribute = extra_Atribute
+        
