@@ -7,7 +7,7 @@ Created on 22 de sept. de 2015
 
 import sys
 
-# import ply.lex as lex
+import ply.lex as lex
 
 tokens = ['TkCreate','TkExecute',
           'TkRecieve','TkActivate','TkAdvance',
@@ -120,36 +120,28 @@ def t_COMMENT(t):
     '\$-*([^\-]|((\-)+[^ \$]))*(\-)(\$)'
     pass
     # No return value. Token discarded
+ 
+# Regla para calcular el numero de linea en el que se encuentra el token
 
+def t_newline(t):
+    r'\n+'
+    t.lexer.lineno += len(t.value) 
+
+# Calculo de columna en la que se encuentra el numero de columna
+def find_column(data,token):
+    last_cr = data.rfind('\n',0,token.lexpos)
+    if last_cr < 0:
+        last_cr = 0
+    column = (token.lexpos - last_cr) + 1
+    return column
+   
+# Regla para manejar los caracteres invalidos
 def t_error(t):
-    print("Illegal character '%s'" % t.value[0])
+    print('Error: Caracter inesperado "%s" en la fila %s' % (t.value[0],t.lineno))
     t.lexer.skip(1)
     sys.exit()
 
 
+
 # Build the lexer
-# lexer = lex.lex()
-
-'''
-# Test it out
-data = '''
-
-'''
-3 + 4 * 10
-  
-  + -20 *2
-      -
-          cosa
-'''
-'''
-
-# Give the lexer some input
-lexer.input(data)
-
-# Tokenize
-while True:
-    tok = lexer.token()
-    if not tok: 
-        break      # No more input
-    print(tok)
-'''
+lexer = lex.lex()

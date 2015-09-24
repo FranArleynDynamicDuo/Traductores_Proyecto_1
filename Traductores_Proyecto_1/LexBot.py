@@ -7,31 +7,68 @@ Created on 23 de sept. de 2015
 if __name__ == '__main__':
     pass
 
+##################### Imports ##################################################
+
 import sys
-import ply.lex as lex
-import Lexer.Lexer
+from Lexer.Token import Token
+from Lexer.Lexer import lexer
 
-lexer = lex.lex()
-inFile = sys.argv[1]
+##################### Funciones ################################################
 
-# Test it out
-data = '''
+# Calculo de columna en la que se encuentra el numero de columna
+def find_column(data,token):
+    last_cr = data.rfind('\n',0,token.lexpos)
+    if last_cr < 0:
+        last_cr = 0
+    column = (token.lexpos - last_cr) + 1
+    return column
 
-3 + 4 * 10
-  
-  + -20 *2
-      -
-          cosa
-'''
+##################### Codigo Principal #########################################
+
+# Abrimos el archivo y lo leemos
+bot_Script = open(sys.argv[1],'r')
+
+data = bot_Script.read()
 
 
-
-# Give the lexer some input
+# Pasamos nuestra informacion al lexer
 lexer.input(data)
 
-# Tokenize
+# Creamos una lista para almacenar los tokens
+token_List = []
+
+# Inicializamos nuestro iterador
+i = 0
+
+# Print por detalles esteticos
+print(" ")
+
+# Creamos los objetos token necesarios
 while True:
+    
+    # Tomamos el siguiente token
     tok = lexer.token()
+    
+    # Verificamos que no llegamos el final del conjunto de tokens
     if not tok: 
-        break      # No more input
-    print(tok)
+        break
+    
+    # Agregamos a la lista un token nuevo
+    token_List.append(Token(tok.type,tok.value,
+                            tok.lineno,find_column(data,tok)))
+    
+    # Si el token requiere mostrar un dato adicional utilizamos un formato
+    if tok.type == 'TkNum' or tok.type == 'TkIdent':
+    
+        print ('%s("%s") %s %s' % (token_List[i].name,token_List[i].value,
+               token_List[i].line_Number,token_List[i].column_Number),end=" ")
+        
+    # En caso de no necesitarlo, usamos un formato con 3 parametros
+    else:
+    
+        print ('%s %s %s' % (token_List[i].name,token_List[i].line_Number,
+               token_List[i].column_Number),end=" ")
+    
+    # Aumentamos el iterador
+    i += 1
+    
