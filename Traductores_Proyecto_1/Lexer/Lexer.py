@@ -5,9 +5,9 @@ Created on 22 de sept. de 2015
 @author: francisco
 '''
 
-import sys
-
 import ply.lex as lex
+
+# Lista de tipos de tokens
 
 tokens = ['TkCreate','TkExecute',
           'TkRecieve','TkActivate','TkAdvance',
@@ -111,7 +111,7 @@ t_TkIgual = r'='
 
 # Caracteres Ignorados
 
-t_ignore_spaces = '\s+'
+t_ignore_spaces = '\s+' # Se ignoran los espacios en blanco de cualquier tipo
 
 # Comentarios a ser ignorados por el lexer
 
@@ -119,24 +119,14 @@ def t_COMMENT(t):
     
     '\$-*([^\-]|((\-)+[^ \$]))*(\-)(\$)'
     pass
-    # No return value. Token discarded
+    # No se hace nada con el contenido de los comentarios
  
 # Regla para calcular el numero de linea en el que se encuentra el token
 
 def t_newline(t):
     r'\n+'
     t.lexer.lineno += len(t.value)
-    t.lexer.current = t.lexer.lexpos - 1      # Added new
-
-'''
-# Calculo de columna en la que se encuentra el numero de columna
-def find_column(input,token):
-    last_cr = str(input).rfind('\n',0,token.lexpos)
-    if last_cr < 0:
-        last_cr = 0
-    column = (token.lexpos - last_cr) + 1
-    return column
-'''
+    t.lexer.current = t.lexer.lexpos - 1
    
 # Regla para manejar los caracteres invalidos
 def t_error(t):
@@ -145,7 +135,5 @@ def t_error(t):
     t.lexer.skip(1)
     t.lexer.error_Found = True
 
-
-
-# Build the lexer
+# Creamos el lexer
 lexer = lex.lex()
