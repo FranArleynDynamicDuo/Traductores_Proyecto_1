@@ -66,15 +66,15 @@ if lexer.error_Found == False:
     while i < len(token_List):
         
         # Si el token requiere mostrar un dato adicional utilizamos un formato
-        if token_List[i].name == 'TkNum' or token_List[i].name == 'TkIdent':
+        if token_List[i].type == 'TkNum' or token_List[i].type == 'TkIdent':
         
-            print ('%s("%s") %s %s' % (token_List[i].name,token_List[i].value,
+            print ('%s("%s") %s %s' % (token_List[i].type,token_List[i].value,
                    token_List[i].line_Number,token_List[i].column_Number),end=" ")
             
         # En caso de no necesitarlo, usamos un formato con 3 parametros
         else:
         
-            print ('%s %s %s' % (token_List[i].name,token_List[i].line_Number,
+            print ('%s %s %s' % (token_List[i].type,token_List[i].line_Number,
                    token_List[i].column_Number),end=" ")
         
         # Aumentamos el iterador
