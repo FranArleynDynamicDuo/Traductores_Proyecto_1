@@ -111,7 +111,7 @@ t_TkIgual = r'='
 
 # Caracteres Ignorados
 
-t_ignore_spaces = '\s'
+t_ignore_spaces = '\s+'
 
 # Comentarios a ser ignorados por el lexer
 
@@ -125,21 +125,25 @@ def t_COMMENT(t):
 
 def t_newline(t):
     r'\n+'
-    t.lexer.lineno += len(t.value) 
+    t.lexer.lineno += len(t.value)
+    t.lexer.current = t.lexer.lexpos - 1      # Added new
 
+'''
 # Calculo de columna en la que se encuentra el numero de columna
-def find_column(data,token):
-    last_cr = data.rfind('\n',0,token.lexpos)
+def find_column(input,token):
+    last_cr = str(input).rfind('\n',0,token.lexpos)
     if last_cr < 0:
         last_cr = 0
     column = (token.lexpos - last_cr) + 1
     return column
+'''
    
 # Regla para manejar los caracteres invalidos
 def t_error(t):
-    print('Error: Caracter inesperado "%s" en la fila %s' % (t.value[0],t.lineno))
+    print('Error: Caracter inesperado "%s" en la fila %s columa %s' % 
+          (t.value[0],t.lineno,t.lexer.lexpos - t.lexer.current))
     t.lexer.skip(1)
-    sys.exit()
+    t.lexer.error_Found = True
 
 
 

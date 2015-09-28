@@ -56,19 +56,26 @@ while True:
     # Agregamos a la lista un token nuevo
     token_List.append(Token(tok.type,tok.value,
                             tok.lineno,find_column(data,tok)))
-    
-    # Si el token requiere mostrar un dato adicional utilizamos un formato
-    if tok.type == 'TkNum' or tok.type == 'TkIdent':
-    
-        print ('%s("%s") %s %s' % (token_List[i].name,token_List[i].value,
-               token_List[i].line_Number,token_List[i].column_Number),end=" ")
+
+# Reiniciamos el iterador
+i = 0
+
+if lexer.error_Found == False:
+
+    # 2DO CICLO: Si no se encuentran errores, se imprimen las tokens correctas
+    while i < len(token_List):
         
-    # En caso de no necesitarlo, usamos un formato con 3 parametros
-    else:
-    
-        print ('%s %s %s' % (token_List[i].name,token_List[i].line_Number,
-               token_List[i].column_Number),end=" ")
-    
-    # Aumentamos el iterador
-    i += 1
-    
+        # Si el token requiere mostrar un dato adicional utilizamos un formato
+        if tok.type == 'TkNum' or tok.type == 'TkIdent':
+        
+            print ('%s("%s") %s %s' % (token_List[i].name,token_List[i].value,
+                   token_List[i].line_Number,token_List[i].column_Number),end=" ")
+            
+        # En caso de no necesitarlo, usamos un formato con 3 parametros
+        else:
+        
+            print ('%s %s %s' % (token_List[i].name,token_List[i].line_Number,
+                   token_List[i].column_Number),end=" ")
+        
+        # Aumentamos el iterador
+        i += 1
