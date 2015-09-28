@@ -66,7 +66,7 @@ if lexer.error_Found == False:
     while i < len(token_List):
         
         # Si el token requiere mostrar un dato adicional utilizamos un formato
-        if tok.type == 'TkNum' or tok.type == 'TkIdent':
+        if token_List[i].name == 'TkNum' or token_List[i].name == 'TkIdent':
         
             print ('%s("%s") %s %s' % (token_List[i].name,token_List[i].value,
                    token_List[i].line_Number,token_List[i].column_Number),end=" ")
