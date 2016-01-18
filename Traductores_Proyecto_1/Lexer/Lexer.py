@@ -117,7 +117,7 @@ t_ignore_spaces = '\s+' # Se ignoran los espacios en blanco de cualquier tipo
 
 def t_COMMENT(t):
     
-    '\$-*([^\-]|((\-)+[^ \$]))*(\-)(\$)'
+    '\$-([^\-]|((\-)+[^\$]))*(\-)(\$)'
     pass
     # No se hace nada con el contenido de los comentarios
  
