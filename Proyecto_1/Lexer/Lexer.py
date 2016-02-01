@@ -7,8 +7,8 @@ Created on 22 de sept. de 2015
 
 import ply.lex as lex
 
-# Lista de tipos de tokens
 
+# Lista de tipos de tokens
 tokens = ['TkCreate','TkExecute',
           'TkRecieve','TkActivate','TkAdvance',
           'TkOn','TkDeactivate',
