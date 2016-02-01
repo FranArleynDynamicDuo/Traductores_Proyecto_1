@@ -10,11 +10,12 @@ if __name__ == '__main__':
 ##################### Imports ##################################################
 
 import sys
-from Lexer.Token import Token
-from Lexer.Lexer import lexer
+
+from Proyecto_1.Lexer.Lexer import lexer
+from Proyecto_1.Lexer.Token import Token
+
 
 ##################### Funciones ################################################
-
 # Calculo de columna en la que se encuentra el numero de columna
 def find_column(data,token):
     last_cr = data.rfind('\n',0,token.lexpos)
@@ -67,9 +68,9 @@ if lexer.error_Found == False:
         
         # Si el token requiere mostrar un dato adicional utilizamos un formato
         if token_List[i].type == 'TkNum' or token_List[i].type == 'TkIdent':
-        
+            
             print ('%s("%s") %s %s' % (token_List[i].type,token_List[i].value,
-                   token_List[i].line_Number,token_List[i].column_Number),end=" ")
+                                       token_List[i].line_Number,token_List[i].column_Number),end=" ")
             
         # En caso de no necesitarlo, usamos un formato con 3 parametros
         else:
