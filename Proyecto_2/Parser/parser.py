@@ -30,10 +30,14 @@ tokens = ['TkCreate','TkExecute',
           'TkMayor','TkMayorIgual','TkIgual']
 '''
 
-# def p_expression_plus(p):
+def p_empty(p):
+    'empty :'
+    pass
+
+# def p_expression_suma(p):
 #     'expression : expression PLUS term'
 #     p[0] = p[1] + p[3]
-# 
+ 
 # def p_expression_minus(p):
 #     'expression : expression MINUS term'
 #     p[0] = p[1] - p[3]
