@@ -47,7 +47,7 @@ t_TkWhile = r'while'
 # Basicas
 
 t_TkStore = r'store'
-t_TkCollect = r'collect'
+t_TkCollect = r'collect as|collect'
 t_TkDrop = r'drop'
 
 # Movimiento

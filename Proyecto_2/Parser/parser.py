@@ -60,9 +60,75 @@ def p_declaracion(p):
                     |    TkOn TkDefault TkDosPuntos instruccion'''
     pass
 
-def p_program2(p):
-    ''''program : bloque '''
+def p_instruccion(p):
+    '''instruccion :    TkStore TkNum TkPunto instruccion
+                   |    TkStore TkCaracter TkPunto instruccion
+                   |    TkCollect TkPunto                 // FALTA ALGO "as"
+                   |    TkRecieve TkPunto instruccion
+                   |    Tkdrop TkNum TkPunto instruccion
+                   |    Tkdrop TkCaracter TkPunto instruccion
+                   |    TkSend TkPunto instruccion     
+                   |    TkRead TkPunto instruccion     // FALTA ALGO "as"
+                   |    TkLeft TkPunto instruccion
+                   |    TkRight TkPunto instruccion
+                   |    TkUp TkPunto instruccion
+                   |    TkDown TkPunto instruccion    
+                   |    end'''
     pass
+
+def p_end(p):
+    '''end :     TkEnd end
+           |     declaracion
+           |     create
+           |     bloque'''
+    pass
+
+''' -----------------------> INSTRUCCIONES <-------------------------- '''
+
+def p_execute(p):
+    '''execute :    TkActivate identList
+               |    TkDeactivate identLits'''
+    pass   
+
+
+def p_identList(p):
+    '''identList   :    TkIdent TkPunto cont
+                   |    TkIdent TkComa identList'''
+    pass  
+
+def p_cont(p):
+    '''cont    :    TkAdvance identList
+               |    TkDeactivate identList
+               |    TkIf cond
+               |    TkWhile cond
+               |    TkElse cond
+               |    TkEnd cont
+               |    TkEnd'''
+    pass  
+
+def p_cond(p):
+    '''cond     :    cond TkSuma cond 
+                | cond TkResta cond 
+                | cond TkMult cond 
+                | cond TkDiv cond
+                | cond TkMod cond 
+                | TkParAbre cond TkParCierra 
+                | cond TkMenor cond 
+                | cond TkMenorIgual cond 
+                | cond TkMayor cond 
+                | cond TkMayorIgual cond 
+                | cond TkIgual cond 
+                | TkNegacion cond
+                | cond TkDisyuncion cond 
+                | cond TkConjuncion cond 
+                | TkTrue
+                | TkFalse
+                | TkIdent
+                | TkNum
+                | TkCaracter
+                | TkDosPuntos cont
+                | cont'''
+    pass  
 
 # def p_expression_suma(p):
 #     'expression : expression PLUS term'
