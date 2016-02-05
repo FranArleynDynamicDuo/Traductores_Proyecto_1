@@ -147,8 +147,8 @@ def p_cont(p):
     '''cont    :    TkAdvance identList
                |    TkDeactivate identList
                |    TkIf cond TkDosPuntos
+               |    TkElse boolExpr TkDosPuntos               
                |    TkWhile boolExpr TkDosPuntos
-               |    TkElse boolExpr TkDosPuntos
                |    TkEnd cont
                |    TkEnd'''
     pass  
