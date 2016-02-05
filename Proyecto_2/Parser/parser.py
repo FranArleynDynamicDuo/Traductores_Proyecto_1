@@ -34,6 +34,36 @@ def p_empty(p):
     'empty :'
     pass
 
+'''-----------------------> BLOQUE INICIAL <------------------------'''
+
+def p_program(p):
+    'program : bloque '
+    pass
+
+def p_bloque(p):
+    '''bloque : TkCreate create
+              | TkExecute execute'''
+    pass
+
+'''---------------------------> CREATE <----------------------------'''
+    
+def p_create(p):
+    '''create :    TkInt  TkBot TkIdent declaracion 
+              |    TkBool TkBot TkIdent declaracion
+              |    TkChar TkBot TkIdent declaracion'''
+    pass
+
+def p_declaracion(p):
+    '''declaracion  :    TkOn TkActivation TkDosPuntos instruccion 
+                    |    TkOn TkDeactivation TkDosPuntos instruccion
+                    |    TkOn TkCustomCondition TkDosPuntos instruccion
+                    |    TkOn TkDefault TkDosPuntos instruccion'''
+    pass
+
+def p_program2(p):
+    ''''program : bloque '''
+    pass
+
 # def p_expression_suma(p):
 #     'expression : expression PLUS term'
 #     p[0] = p[1] + p[3]

@@ -1,0 +1,82 @@
+                    GRAMATICA BOT (PRIMER INTENTO)
+
+
+NOTA: Revisar el "me" y "as"
+
+-----------------------> BLOQUE INICIAL <------------------------ 
+program -> bloque
+
+bloque -> TkCreate create
+	| TkExecute execute
+
+---------------------------> CREATE <---------------------------- 
+
+create ->   TkInt  TkBot TkIdent declaracion 
+	  | TkBool TkBot TkIdent declaracion
+	  | TkChar TkBot TkIdent declaracion
+
+declaracion -> TkOn TkActivation TkDosPuntos instruccion 
+	     | TkOn TkDeactivation TkDosPuntos instruccion
+ 	     | TkOn TkCustomCondition TkDosPuntos instruccion
+	     | TkOn TkDefault TkDosPuntos instruccion
+
+
+// CADA INSTRUCCION DEBE TERMINAR EN PUNTO TENEMOS QUE IMPLEMENTAR EL "TkPunto"??
+
+instruccion -> TkStore TkNum TkPunto instruccion
+             | TkStore TkCaracter TkPunto instruccion
+	     | TkCollect TkPunto                 // FALTA ALGO "as"
+	     | TkRecieve TkPunto instruccion
+             | Tkdrop TkNum TkPunto instruccion
+             | Tkdrop TkCaracter TkPunto instruccion
+ 	     | TkSend TkPunto instruccion	 
+             | TkRead TkPunto instruccion	 // FALTA ALGO "as"
+	     | TkLeft TkPunto instruccion
+             | TkRight TkPunto instruccion
+	     | TkUp TkPunto instruccion
+	     | TkDown TkPunto instruccion    
+	     | end
+
+end -> TkEnd end
+     | declaracion
+     | create
+     | bloque
+
+-----------------------> INSTRUCCIONES <-------------------------- 
+	
+execute ->   TkActivate identList
+	   | TkDeactivate identLits
+
+
+identList -> TkIdent TkPunto cont
+           | TkIdent TkComa identList
+
+cont -> TkAdvance identList
+      | TkDeactivate identList
+      | TkIf cond
+      | TkWhile cond
+      | TkElse cond
+      | TkEnd cont
+      | TkEnd
+
+cond -> cond TkSuma cond 
+      | cond TkResta cond 
+      | cond TkMult cond 
+      | cond TkDiv cond
+      | cond TkMod cond 
+      | TkParAbre cond TkParCierra 
+      | cond TkMenor cond 
+      | cond TkMenorIgual cond 
+      | cond TkMayor cond 
+      | cond TkMayorIgual cond 
+      | cond TkIgual cond 
+      | TkNegacion cond
+      | cond TkDisyuncion cond 
+      | cond TkConjuncion cond 
+      | TkTrue
+      | TkFalse
+      | TkIdent
+      | TkNum
+      | TkCaracter
+      | TkDosPuntos cont
+      | cont
