@@ -38,53 +38,53 @@ def p_empty(p):
 '''----------------------->   EXPRESIONES  <------------------------'''
 
 def p_aritExpr(p):
-    'aritExpr : TkParAbre aritExpr TkParCierra'
-    'aritExpr : aritExpr TkSuma aritExpr'
-    'aritExpr : aritExpr TkResta aritExpr'
-    'aritExpr : aritExpr TkMult aritExpr'
-    'aritExpr : aritExpr TkDiv aritExpr'
-    'aritExpr : aritExpr TkMod aritExpr'
-    'aritExpr : TkNum '
-    'aritExpr : tkIdent '
+    '''aritExpr : TkParAbre aritExpr TkParCierra
+                | aritExpr TkSuma aritExpr
+                | aritExpr TkResta aritExpr
+                | aritExpr TkMult aritExpr
+                | aritExpr TkDiv aritExpr
+                | aritExpr TkMod aritExpr
+                | TkNum
+                | tkIdent '''
     if len(p) == 4:
-        p[0] = Expression.ArithmethicOperation(p[1],p[2],p[3])
+        p[0] = Expression.ArithmethicExpression(p[1],p[2],p[3])
     elif len(p) == 2:                    
-        p[0] = Expression.ArithmethicOperation(p[1])
+        p[0] = Expression.ArithmethicExpression(p[1])
 
 def p_boolExpr(p):
     'boolExpr : TkParAbre boolExpr TkParCierra'
-    'boolExpr : boolExpr TkConjuncion boolExpr'
-    'boolExpr : boolExpr TkDisyuncion boolExpr'
-    'boolExpr : TkNegacion boolExpr'
-    'boolExpr : relExpr'
-    'boolExpr : TkFalse'
-    'boolExpr : TkTrue'
-    'boolExpr : tkIdent'
+    '         | boolExpr TkConjuncion boolExpr'
+    '         | boolExpr TkDisyuncion boolExpr'
+    '         | TkNegacion boolExpr'
+    '         | relExpr'
+    '         | TkFalse'
+    '         | TkTrue'
+    '         | tkIdent'
     if len(p) == 4:
-        p[0] = Expression.BooleanOperation(p[1],p[2],p[3])
+        p[0] = Expression.BooleanExpression(p[1],p[2],p[3])
     elif len(p) == 3:                    
-        p[0] = Expression.BooleanOperation(p[1],p[2])        
+        p[0] = Expression.BooleanExpression(p[1],p[2])        
     elif len(p) == 2:                    
-        p[0] = Expression.BooleanOperation(p[1])
+        p[0] = Expression.BooleanExpression(p[1])
 
 def p_relExpr(p):
-    'relExpr : TkParAbre relExpr TkParCierra'
-    'relExpr : relExpr TkMenor relExpr'
-    'relExpr : relExpr TkMenorIgual relExpr'
-    'relExpr : relExpr TkMayor relExpr'
-    'relExpr : relExpr TkMayorIgual relExpr'
-    'relExpr : relExpr TkIgual relExpr'            
-    'relExpr : aritExpr'
-    'relExpr : tkIdent'
+    '''relExpr : TkParAbre relExpr TkParCierra
+               | relExpr TkMenor relExpr
+               | relExpr TkMenorIgual relExpr
+               | relExpr TkMayor relExpr
+               | relExpr TkMayorIgual relExpr
+               | relExpr TkIgual relExpr         
+               | aritExpr
+               | tkIdent'''
     if len(p) == 4:
-        p[0] = Expression.RelationalOperation(p[1],p[2],p[3])
+        p[0] = Expression.RelationalExpresion(p[1],p[2],p[3])
     elif len(p) == 2:                    
-        p[0] = Expression.RelationalOperation(p[1])
+        p[0] = Expression.RelationalExpresion(p[1])
 
 '''-----------------------> BLOQUE INICIAL <------------------------'''
 
 def p_program(p):
-    'program : bloque '
+    'program : bloque'
     pass
 
 def p_bloque(p):
@@ -146,36 +146,11 @@ def p_identList(p):
 def p_cont(p):
     '''cont    :    TkAdvance identList
                |    TkDeactivate identList
-               |    TkIf cond
-               |    TkWhile boolExpr
-               |    TkElse boolExpr
+               |    TkIf cond TkDosPuntos
+               |    TkWhile boolExpr TkDosPuntos
+               |    TkElse boolExpr TkDosPuntos
                |    TkEnd cont
                |    TkEnd'''
-    pass  
-
-# Creo que queda obsoleto
-def p_cond(p):
-    '''cond     : cond TkSuma cond 
-                | cond TkResta cond 
-                | cond TkMult cond 
-                | cond TkDiv cond
-                | cond TkMod cond 
-                | TkParAbre cond TkParCierra 
-                | cond TkMenor cond 
-                | cond TkMenorIgual cond 
-                | cond TkMayor cond 
-                | cond TkMayorIgual cond 
-                | cond TkIgual cond 
-                | TkNegacion cond
-                | cond TkDisyuncion cond 
-                | cond TkConjuncion cond 
-                | TkTrue
-                | TkFalse
-                | TkIdent
-                | TkNum
-                | TkCaracter
-                | TkDosPuntos cont
-                | cont'''
     pass  
 
 

@@ -12,7 +12,7 @@ class Expresion(metaclass=ABCMeta):
     classdocs
     '''
 
-class ArithmethicOperation(Expresion):
+class ArithmethicExpression(Expresion):
     '''
     classdocs
     '''
@@ -26,7 +26,7 @@ class ArithmethicOperation(Expresion):
         self.expresion1 = operador
         self.expresion2 = expresion2
         
-class RelationalOperation(Expresion):
+class RelationalExpresion(Expresion):
     '''
     classdocs
     '''
@@ -40,7 +40,7 @@ class RelationalOperation(Expresion):
         self.expresion1 = operador
         self.expresion2 = expresion2
         
-class BooleanOperation(Expresion):
+class BooleanExpression(Expresion):
     '''
     classdocs
     '''
