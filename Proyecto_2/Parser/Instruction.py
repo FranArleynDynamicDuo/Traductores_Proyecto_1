@@ -24,20 +24,39 @@ class ConditionalInstruction(Instruction):
     '''
 
     @abstractmethod
-    def __init__(self, params):
+    def __init__(self, conditionalInstructiontype,condition,instructionSet ):
         '''
         Constructor
  
         '''
+        self.conditionalInstructiontype = conditionalInstructiontype
+        self.condition = condition
+        self.instructionSet = instructionSet
         
-class LoopInstruction(Instruction):
+class whileInstruction(Instruction):
     '''
     classdocs
     '''
 
     @abstractmethod
-    def __init__(self, params):
+    def __init__(self, condition,instructionSet):
         '''
         Constructor
  
         '''
+        self.condition = condition
+        self.instructionSet = instructionSet
+
+class ActivateInstruction(Instruction):
+    '''
+    classdocs
+    '''
+
+    @abstractmethod
+    def __init__(self, condition,instructionSet):
+        '''
+        Constructor
+ 
+        '''
+        self.condition = condition
+        self.instructionSet = instructionSet     

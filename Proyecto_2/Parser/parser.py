@@ -8,6 +8,7 @@ import ply.yacc as yacc;
 
 # Get the token map from the lexer.  This is required.
 from Proyecto_1.Lexer.Lexer import lexer;
+from Proyecto_2.Parser import Expression
 tokens = lexer.tokens;
 
 # ESTOS SON EJEMPLOS DE LAS EXPRESIONES, HAY QUE HACER EXPRESIONES ASI PARA CADA TIPO DE TOKEN DE
@@ -33,6 +34,52 @@ tokens = ['TkCreate','TkExecute',
 def p_empty(p):
     'empty :'
     pass
+
+'''----------------------->   EXPRESIONES  <------------------------'''
+
+def p_aritExpr(p):
+    'aritExpr : TkParAbre aritExpr TkParCierra'
+    'aritExpr : aritExpr TkSuma aritExpr'
+    'aritExpr : aritExpr TkResta aritExpr'
+    'aritExpr : aritExpr TkMult aritExpr'
+    'aritExpr : aritExpr TkDiv aritExpr'
+    'aritExpr : aritExpr TkMod aritExpr'
+    'aritExpr : TkNum '
+    'aritExpr : tkIdent '
+    if len(p) == 4:
+        p[0] = Expression.ArithmethicOperation(p[1],p[2],p[3])
+    elif len(p) == 2:                    
+        p[0] = Expression.ArithmethicOperation(p[1])
+
+def p_boolExpr(p):
+    'boolExpr : TkParAbre boolExpr TkParCierra'
+    'boolExpr : boolExpr TkConjuncion boolExpr'
+    'boolExpr : boolExpr TkDisyuncion boolExpr'
+    'boolExpr : TkNegacion boolExpr'
+    'boolExpr : relExpr'
+    'boolExpr : TkFalse'
+    'boolExpr : TkTrue'
+    'boolExpr : tkIdent'
+    if len(p) == 4:
+        p[0] = Expression.BooleanOperation(p[1],p[2],p[3])
+    elif len(p) == 3:                    
+        p[0] = Expression.BooleanOperation(p[1],p[2])        
+    elif len(p) == 2:                    
+        p[0] = Expression.BooleanOperation(p[1])
+
+def p_relExpr(p):
+    'relExpr : TkParAbre relExpr TkParCierra'
+    'relExpr : relExpr TkMenor relExpr'
+    'relExpr : relExpr TkMenorIgual relExpr'
+    'relExpr : relExpr TkMayor relExpr'
+    'relExpr : relExpr TkMayorIgual relExpr'
+    'relExpr : relExpr TkIgual relExpr'            
+    'relExpr : aritExpr'
+    'relExpr : tkIdent'
+    if len(p) == 4:
+        p[0] = Expression.RelationalOperation(p[1],p[2],p[3])
+    elif len(p) == 2:                    
+        p[0] = Expression.RelationalOperation(p[1])
 
 '''-----------------------> BLOQUE INICIAL <------------------------'''
 
@@ -100,14 +147,15 @@ def p_cont(p):
     '''cont    :    TkAdvance identList
                |    TkDeactivate identList
                |    TkIf cond
-               |    TkWhile cond
-               |    TkElse cond
+               |    TkWhile boolExpr
+               |    TkElse boolExpr
                |    TkEnd cont
                |    TkEnd'''
     pass  
 
+# Creo que queda obsoleto
 def p_cond(p):
-    '''cond     :    cond TkSuma cond 
+    '''cond     : cond TkSuma cond 
                 | cond TkResta cond 
                 | cond TkMult cond 
                 | cond TkDiv cond
@@ -129,42 +177,6 @@ def p_cond(p):
                 | TkDosPuntos cont
                 | cont'''
     pass  
-
-# def p_expression_suma(p):
-#     'expression : expression PLUS term'
-#     p[0] = p[1] + p[3]
- 
-# def p_expression_minus(p):
-#     'expression : expression MINUS term'
-#     p[0] = p[1] - p[3]
-# 
-# def p_expression_term(p):
-#     'expression : term'
-#     p[0] = p[1]
-# 
-# def p_term_times(p):
-#     'term : term TIMES factor'
-#     p[0] = p[1] * p[3]
-# 
-# def p_term_div(p):
-#     'term : term DIVIDE factor'
-#     p[0] = p[1] / p[3]
-# 
-# def p_term_factor(p):
-#     'term : factor'
-#     p[0] = p[1]
-# 
-# def p_factor_num(p):
-#     'factor : NUMBER'
-#     p[0] = p[1]
-# 
-# def p_factor_expr(p):
-#     'factor : LPAREN expression RPAREN'
-#     p[0] = p[2]
-# 
-# # Error rule for syntax errors
-# def p_error(p):
-#     print("Syntax error in input!")
 
 
 # Build the parser
