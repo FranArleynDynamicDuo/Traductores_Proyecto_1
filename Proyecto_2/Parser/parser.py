@@ -144,13 +144,20 @@ def p_identList(p):
     pass  
 
 def p_cont(p):
-    '''cont    :    TkAdvance identList
-               |    TkDeactivate identList
-               |    TkIf cond TkDosPuntos
-               |    TkElse boolExpr TkDosPuntos               
-               |    TkWhile boolExpr TkDosPuntos
-               |    TkEnd cont
+    '''cont    :    TkAdvance identList cont
+               |    TkDeactivate identList cont
+               |    conditional cont
+               |    while cont
                |    TkEnd'''
+    pass
+
+def p_conditional(p):
+    '''conditional  :    TkIf boolExpr TkDosPuntos cont TkElse cont TkEnd
+                    |    TkIf boolExpr TkDosPuntos cont TkEnd'''
+    pass  
+
+def p_while(p):
+    '''while        :    TkWhile boolExpr TkDosPuntos cont TkEnd'''
     pass  
 
 
