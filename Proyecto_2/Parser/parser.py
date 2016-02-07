@@ -85,6 +85,7 @@ def p_relExpr(p):
 
 def p_program(p):
     'program : bloque'
+    p[0] = Expression.Program() # Modificado por Arleyn
     pass
 
 def p_bloque(p):
@@ -135,6 +136,7 @@ def p_end(p):
 def p_execute(p):
     '''execute :    TkActivate identList
                |    TkDeactivate identLits'''
+    p[0] = Expression.Execute(p[1],p[2]) # Agregado por Arleyn
     pass   
 
 
