@@ -3,11 +3,6 @@ Created on Feb 1, 2016
 
 @author: francisco
 '''
-'''
-Created on Feb 1, 2016
-
-@author: francisco
-'''
 
 from abc import ABCMeta, abstractmethod
 
@@ -49,32 +44,47 @@ class Program:
     
     def __init__(self,bloque = None):
         self.bloque = bloque
+        self.imprimir("")
+        
+    def imprimir(self,espacio):
+        print(espacio,"INICIO PROGRAMA")
+        
+# Se Especifica el Bloque        
+class Bloque:
+    
+    def __init__(self,bloque):
+        self.bloque = bloque
         
         # Imprime el programa
         self.imprimir("")
         
     def imprimir(self,espacio):
-        print(espacio,"SECUENCIACION")
+        print(espacio,"SECUENCIACION") #PREGUNTAR SI COLOCAR "EJECUTAR"
+        
+# Clase de Identificadores
+class IdentList:
+    
+    def __init__(self,IdentList):
+        self.identList = identList
+        self.imprimir("")
+        
+    def imprimir(self,espacio):
+        print(espacio,espacio,espacio," - var: ", self.identList)
         
         
         
 # Class Execute
 class Execute:
     
-    def __init__(self,action,identList):
+    def __init__(self,action):
         self.action = action
-        self.identList = identList
-        
-        # Imprime el programa
         self.imprimir("")
         
     def imprimir(self,espacio):
         if (self.action == "activate"):
             print(espacio,espacio,"ACTIVACION")
-            print(espacio,espacio,espacio," - var: ", self.identList)
         elif (self.action == "deactivate"):
             print(espacio,espacio,"DESACTIVACION")
-            print(espacio,espacio,espacio," - var: ", self.identList)
     
 # Expresiones Aritmetica
 class ArithmethicExpression:
@@ -160,52 +170,3 @@ class BooleanExpression:
             print(espacio,espacio,espacio," - variable: ", self.operador)
         elif ( (self.operador == None) and (self.expresion2 == None) ):
             print(espacio,espacio,espacio," - variable: ", self.expresion1)
-
-from abc import ABCMeta, abstractmethod
-    
-class Expresion(metaclass=ABCMeta):
-    '''
-    classdocs
-    '''
-
-class ArithmethicExpression(Expresion):
-    '''
-    classdocs
-    '''
-
-    @abstractmethod
-    def __init__(self, expresion1,operador=None,expresion2=None):
-        '''
-        Constructor
-        '''
-        self.expresion1 = expresion1
-        self.expresion1 = operador
-        self.expresion2 = expresion2
-        
-class RelationalExpresion(Expresion):
-    '''
-    classdocs
-    '''
-
-    @abstractmethod
-    def __init__(self, expresion1,operador=None,expresion2=None):
-        '''
-        Constructor
-        '''
-        self.expresion1 = expresion1
-        self.expresion1 = operador
-        self.expresion2 = expresion2
-        
-class BooleanExpression(Expresion):
-    '''
-    classdocs
-    '''
-
-    @abstractmethod
-    def __init__(self, expresion1,operador=None,expresion2=None):
-        '''
-        Constructor
-        '''
-        self.expresion1 = expresion1
-        self.expresion1 = operador
-        self.expresion2 = expresion2
