@@ -85,12 +85,13 @@ def p_relExpr(p):
 
 def p_program(p):
     'program : bloque'
-    p[0] = Expression.Program() # Modificado por Arleyn
+    p[0] = Expression.Program()
     pass
 
 def p_bloque(p):
     '''bloque : TkCreate create
               | TkExecute execute'''
+    p[0] = Expression.Bloque()
     pass
 
 '''---------------------------> CREATE <----------------------------'''
@@ -136,13 +137,14 @@ def p_end(p):
 def p_execute(p):
     '''execute :    TkActivate identList
                |    TkDeactivate identLits'''
-    p[0] = Expression.Execute(p[1],p[2]) # Agregado por Arleyn
+    p[0] = Expression.Execute(p[1]) # Agregado por Arleyn
     pass   
 
 
 def p_identList(p):
     '''identList   :    TkIdent TkPunto cont
                    |    TkIdent TkComa identList'''
+    p[0] = Expression.IdentList(p[1]) # Agregado por Arleyn
     pass  
 
 def p_cont(p):
