@@ -32,11 +32,11 @@ tokens = ['TkCreate','TkExecute',
           'TkMayor','TkMayorIgual','TkIgual']
 '''
 
+'''----------------------->   EXPRESIONES  <------------------------'''
+
 def p_empty(p):
     'empty :'
     pass
-
-'''----------------------->   EXPRESIONES  <------------------------'''
 
 def p_aritExpr(p):
     '''aritExpr : TkParAbre aritExpr TkParCierra
@@ -157,7 +157,6 @@ def p_execute(p):
     p[0].append(p[1])
     if len(p) == 3:
         p[0] = p[0].extend(p[2])
-    pass   
 
 
 def p_identList(p):
