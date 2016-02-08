@@ -65,7 +65,7 @@ class Bloque:
 class IdentList:
     
     def __init__(self,IdentList):
-        self.identList = identList
+        self.identList = IdentList
         self.imprimir("")
         
     def imprimir(self,espacio):

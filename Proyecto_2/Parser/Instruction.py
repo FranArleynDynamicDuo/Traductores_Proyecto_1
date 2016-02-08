@@ -7,7 +7,7 @@ Created on Feb 1, 2016
 
 from abc import ABCMeta, abstractmethod
     
-class Instruction(metaclass=ABCMeta):
+class InstructionClass(metaclass=ABCMeta):
     '''
     classdocs
     '''
@@ -17,20 +17,21 @@ class Instruction(metaclass=ABCMeta):
         '''
         Constructor
         '''
-class Program(Instruction):
+class Program(InstructionClass):
     '''
     classdocs
     '''
 
     @abstractmethod
-    def __init__(self, instructionSet ):
+    def __init__(self, createSet=None,executeSet ):
         '''
         Constructor
  
         '''
-        self.instructionSet = instructionSet
+        self.createSet = createSet
+        self.executeSet = executeSet
         
-class CodeBlock(Instruction):
+class CodeBlock(InstructionClass):
     '''
     classdocs
     '''
@@ -44,7 +45,7 @@ class CodeBlock(Instruction):
         self.blockType = blockType
         self.instructionSet = instructionSet
         
-class CreateInstruction(Instruction):
+class CreateInstruction(InstructionClass):
     '''
     classdocs
     '''
@@ -59,13 +60,13 @@ class CreateInstruction(Instruction):
         self.identifier = identifier
         self.declarationSet = declarationSet    
 
-class BotDeclaration(Instruction):
+class BotDeclaration(InstructionClass):
     '''
     classdocs
     '''
 
     @abstractmethod
-    def __init__(self, condition,identifier,instructionSet ):
+    def __init__(self, condition,instructionSet ):
         '''
         Constructor
  
@@ -73,7 +74,7 @@ class BotDeclaration(Instruction):
         self.condition = condition
         self.instructionSet = instructionSet
         
-class BotDecInstruction(Instruction):
+class BotDecInstruction(InstructionClass):
     '''
     classdocs
     '''
@@ -88,22 +89,22 @@ class BotDecInstruction(Instruction):
         self.argument = argument
         self.instructionSet = instructionSet
         
-class ConditionalInstruction(Instruction):
+class ConditionalInstruction(InstructionClass):
     '''
     classdocs
     '''
 
     @abstractmethod
-    def __init__(self, conditionalInstructiontype,condition,instructionSet ):
+    def __init__(self,ifCondition=True,ifInstructionSet,elseInstructionSet=None):
         '''
         Constructor
  
         '''
-        self.conditionalInstructiontype = conditionalInstructiontype
-        self.condition = condition
-        self.instructionSet = instructionSet
+        self.ifCondition = ifCondition
+        self.ifInstructionSet = ifInstructionSet
+        self.elseInstructionSet = elseInstructionSet        
         
-class whileInstruction(Instruction):
+class whileInstruction(InstructionClass):
     '''
     classdocs
     '''
@@ -117,32 +118,57 @@ class whileInstruction(Instruction):
         self.condition = condition
         self.instructionSet = instructionSet
 
-class ActivateInstruction(Instruction):
+class ActivateInstruction(InstructionClass):
     '''
     classdocs
     '''
 
     @abstractmethod
-    def __init__(self, condition,instructionSet):
+    def __init__(self, identList):
         '''
         Constructor
  
         '''
-        self.condition = condition
-        self.instructionSet = instructionSet
-        
-class ExecuteInstruction(Instruction):
+        self.identList = identList
+
+class DeactivateInstruction(InstructionClass):
     '''
     classdocs
     '''
 
     @abstractmethod
-    def __init__(self, condition,instructionSet):
+    def __init__(self, identList):
         '''
         Constructor
  
         '''
-        self.condition = condition
-        self.instructionSet = instructionSet  
+        self.identList = identList
+    
+ 
+class AdvanceInstruction(InstructionClass):
+    '''
+    classdocs
+    '''
 
+    @abstractmethod
+    def __init__(self, identList):
+        '''
+        Constructor
+ 
+        '''
+        self.identList = identList
+
+class BotInstruction(InstructionClass):
+    '''
+    classdocs
+    '''
+
+    @abstractmethod
+    def __init__(self, command,argument=None):
+        '''
+        Constructor
+ 
+        '''
+        self.identList = command
+        self.identList = argument
 
