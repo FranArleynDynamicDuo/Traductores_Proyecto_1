@@ -1,4 +1,3 @@
-# -*- encoding: utf-8 -*-
 '''
 Created on 22 de sept. de 2015
 
@@ -9,82 +8,49 @@ import ply.lex as lex
 
 
 # Lista de tipos de tokens
-tokens = ['TkCreate','TkExecute',
-          'TkRecieve','TkActivate','TkAdvance',
-          'TkOn','TkDeactivate',
-          'TkIf','TkElse','TkWhile','TkEnd',
-          'TkStore','TkCollect','TkDrop','TkLeft','TkRight','TkUp','TkDown',
-          'TkRead','TkSend',
-          'TkActivation','TkDeactivation','TkDefault',
-          'TkIdent','TkNum','TkCaracter','TkFalse','TkTrue',
+tokens = ['TkNum','TkCaracter','TkNum',
           'TkInt','TkBool','TkChar','TkBot',
           'TkComa','TkPunto','TkDosPuntos','TkParAbre','TkParCierra',
           'TkSuma','TkResta','TkMult','TkDiv','TkMod','TkConjuncion',
           'TkDisyuncion','TkNegacion','TkMenor','TkMenorIgual',
-          'TkMayor','TkMayorIgual','TkIgual']
+          'TkMayor','TkMayorIgual','TkIgual','TkIdent']
+reserved = {
+    'create' : 'TkCreate',
+    'execute' : 'TkExecute',
+    'end' : 'TkRecieve',
+    'activate' : 'TkActivate',
+    'advance' : 'TkAdvance',
+    'on' : 'TkOn',
+    'deactivate' : 'TkDeactivate',
+    'if' : 'TkIf',
+    'else' : 'TkElse',
+    'while' : 'TkWhile',
+    'end' : 'TkEnd',
+    'store' : 'TkStore',
+    'collect as' : 'TkCollect',
+    'collect' : 'TkCollect',
+    'recieve' : 'TkRecieve',
+    'drop' : 'TkDrop',
+    'left' : 'TkLeft',
+    'right' : 'TkRight',
+    'up' : 'TkUp',
+    'down' : 'TkDown',
+    'read' : 'TkRead',
+    'send' : 'TkSend',
+    'activation' : 'TkActivation',
+    'deactivation' : 'TkDeactivation',
+    'default' : 'TkDefault',
+    'false' : 'TkFalse',
+    'true' : 'TkTrue',
+    'int' : 'TkInt',
+    'bool' : 'TkBool',
+    'char' : 'TkChar',
+    'bot' : 'TkBot',
+}
+tokens += reserved.values()
 
-##################### Estructura de un Programa ################################
-
-t_TkCreate = r'create'
-t_TkExecute = r'execute'
-t_TkEnd = r'end'
-
-##################### Instrucciones de Controlador #############################
-
-t_TkActivate = r'activate'
-t_TkDeactivate = r'deactivate'
-t_TkRecieve = r'recieve'
-t_TkAdvance = r'advance'
-
-# Condicionales y Ciclos
-
-t_TkIf = r'if'
-t_TkElse = r'else'
-t_TkWhile = r'while'
-
-##################### Instrucciones de Robot ###################################
-
-# Basicas
-
-t_TkStore = r'store'
-t_TkCollect = r'collect as|collect'
-t_TkDrop = r'drop'
-
-# Movimiento
-
-t_TkLeft = r'left'
-t_TkRight = r'right'
-t_TkUp = r'up'
-t_TkDown = r'down'
-
-# Entrada y Salida
-
-t_TkRead = r'read'
-t_TkSend = r'send'
-
-##################### Condiciones ##############################################
-
-t_TkOn = r'on'
-t_TkActivation = r'activation'
-t_TkDeactivation = r'deactivation'
-t_TkDefault = r'default'
 
 ##################### Expresiones ##############################################
-
-# Tipos de datos
-
-t_TkInt = r'int'
-t_TkBool = r'bool'
-t_TkChar = r'char'
-t_TkBot = r'bot'
-
-# Literales
-
-t_TkIdent = '[a-zA-Z][a-zA-Z0-9_]*'
-t_TkNum = '[0-9]+'
-t_TkCaracter = "'(.)'"
-t_TkFalse = r'false'
-t_TkTrue = r'true'
 
 # Separadores
 
@@ -109,6 +75,18 @@ t_TkMenorIgual = r'<='
 t_TkMayor = r'>' 
 t_TkMayorIgual = r'>=' 
 t_TkIgual = r'=' 
+
+# Literales
+
+t_TkNum = '[0-9]+'
+t_TkCaracter = "'(.)'"
+
+#t_TkIdent = '[a-zA-Z][a-zA-Z0-9_]*'
+def t_TkIdent(t):
+    r'[a-zA-Z][a-zA-Z0-9_]*'
+    if t.value in reserved:
+        t.type = reserved[ t.value ]
+    return t
 
 # Caracteres Ignorados
 
