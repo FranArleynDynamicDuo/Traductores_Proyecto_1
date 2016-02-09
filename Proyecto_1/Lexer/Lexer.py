@@ -8,12 +8,12 @@ import ply.lex as lex
 
 
 # Lista de tipos de tokens
-tokens = ['TkNum','TkCaracter','TkNum',
-          'TkInt','TkBool','TkChar','TkBot',
+tokens = ['TkNum','TkCaracter','TkCollect',
           'TkComa','TkPunto','TkDosPuntos','TkParAbre','TkParCierra',
           'TkSuma','TkResta','TkMult','TkDiv','TkMod','TkConjuncion',
           'TkDisyuncion','TkNegacion','TkMenor','TkMenorIgual',
           'TkMayor','TkMayorIgual','TkIgual','TkIdent']
+
 reserved = {
     'create' : 'TkCreate',
     'execute' : 'TkExecute',
@@ -27,8 +27,6 @@ reserved = {
     'while' : 'TkWhile',
     'end' : 'TkEnd',
     'store' : 'TkStore',
-    'collect as' : 'TkCollect',
-    'collect' : 'TkCollect',
     'recieve' : 'TkRecieve',
     'drop' : 'TkDrop',
     'left' : 'TkLeft',
@@ -82,11 +80,18 @@ t_TkNum = '[0-9]+'
 t_TkCaracter = "'(.)'"
 
 #t_TkIdent = '[a-zA-Z][a-zA-Z0-9_]*'
+def t_TkCollect(t):
+    r'collect as|collect'
+    return t
+
+#t_TkIdent = '[a-zA-Z][a-zA-Z0-9_]*'
 def t_TkIdent(t):
     r'[a-zA-Z][a-zA-Z0-9_]*'
     if t.value in reserved:
         t.type = reserved[ t.value ]
     return t
+
+
 
 # Caracteres Ignorados
 
