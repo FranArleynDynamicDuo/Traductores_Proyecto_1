@@ -54,44 +54,17 @@ class Bloque:
     
     def __init__(self,bloque):
         self.bloque = bloque
-        
-        # Imprime el programa
         self.imprimir("")
         
     def imprimir(self,espacio):
         print(espacio,"SECUENCIACION") #PREGUNTAR SI COLOCAR "EJECUTAR"
-        
-# Clase de Identificadores
-class IdentList:
-    
-    def __init__(self,IdentList):
-        self.identList = IdentList
-        self.imprimir("")
-        
-    def imprimir(self,espacio):
-        print(espacio,espacio,espacio," - var: ", self.identList)
-        
-        
-        
-# Class Execute
-class Execute:
-    
-    def __init__(self,action):
-        self.action = action
-        self.imprimir("")
-        
-    def imprimir(self,espacio):
-        if (self.action == "activate"):
-            print(espacio,espacio,"ACTIVACION")
-        elif (self.action == "deactivate"):
-            print(espacio,espacio,"DESACTIVACION")
-    
+
+
 # Expresiones Aritmetica
 class ArithmethicExpression:
     '''
     classdocs
     '''
-
     @abstractmethod
     def __init__(self, expresion1,operador=None,expresion2=None):
         '''
@@ -103,7 +76,6 @@ class ArithmethicExpression:
         self.imprimir("")
         
     def imprimir(self,espacio):
-        print(espacio,"CONDICIONAL")
         print(espacio,espacio,"- guardia: ArithmethicExpression")
         
         if (self.operador != None):
@@ -130,7 +102,6 @@ class RelationalExpresion:
         self.imprimir("")
         
     def imprimir(self,espacio):
-        print(espacio,"CONDICIONAL")
         print(espacio,espacio,"- guardia: RelationalExpresion")
         
         if (self.operador != None):
@@ -156,7 +127,6 @@ class BooleanExpression:
         self.imprimir("")
         
     def imprimir(self,espacio):
-        print(espacio,"CONDICIONAL")
         print(espacio,espacio,"- guardia: BooleanExpression")
         
         if ( (self.operador != None) and (self.expresion2 != None) ):
