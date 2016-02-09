@@ -38,6 +38,7 @@ def p_empty(p):
     'empty :'
     pass
 
+# (LISTO)
 def p_aritExpr(p):
     '''aritExpr : TkParAbre aritExpr TkParCierra
                 | aritExpr TkSuma aritExpr
@@ -52,6 +53,8 @@ def p_aritExpr(p):
     elif len(p) == 2:                    
         p[0] = Expression.ArithmethicExpression(p[1])
 
+
+# (LISTO)
 def p_boolExpr(p):
     'boolExpr : TkParAbre boolExpr TkParCierra'
     '         | boolExpr TkConjuncion boolExpr'
@@ -68,6 +71,7 @@ def p_boolExpr(p):
     elif len(p) == 2:                    
         p[0] = Expression.BooleanExpression(p[1])
 
+# (LISTO)
 def p_relExpr(p):
     '''relExpr : TkParAbre relExpr TkParCierra
                | relExpr TkMenor relExpr
@@ -122,7 +126,7 @@ def p_botDeclaracion(p):
                     |       TkOn TkDeactivation TkDosPuntos botInstruccionList TkEnd
                     |       TkOn boolExpr TkDosPuntos botInstruccionList TkEnd
                     |       TkOn TkDefault TkDosPuntos botInstruccionList TkEnd'''
-    p[0] = Instruction.BotDeclaration(p[2],p[3],p[4])
+    p[0] = Instruction.BotDeclaration(p[2],p[4])
 
 def p_botInstruccionList(p):
     '''botInstruccionList  :    botInstruccion botInstruccionList 
