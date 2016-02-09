@@ -117,6 +117,7 @@ def p_botInstruccion(p):
     '''botInstruccion :    TkStore TkNum TkPunto
                    |       TkStore TkCaracter TkPunto
                    |       TkCollect TkPunto
+                   |       TkCollect TkIdent TkPunto                   
                    |       TkRecieve TkPunto
                    |       TkDrop TkNum TkPunto
                    |       TkDrop TkCaracter TkPunto
