@@ -184,6 +184,18 @@ def p_advance(p):
 # Error rule for syntax errors
 def p_error(p):
     print("Syntax error in input!")
+#
+# Lista de precedencia en los operandos
+#
+precedence = (
+    ('left','TkParAbre','TkParCierra'),
+    ('left','TkMult','TkDiv','TkMod'),
+    ('left','TkSuma','TkResta'),
+    ('left','TkMenor','TkMenorIgual','TkMayor','TkMayorIgual','TkIgual'),
+    ('left','TkNegacion'),
+    ('left','TkConjuncion'),
+    ('left','TkDisyuncion'),
+)
 
 # Build the parser
 BotParser = yacc.yacc(start='program')
