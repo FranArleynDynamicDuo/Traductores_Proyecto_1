@@ -65,7 +65,6 @@ class ArithmethicExpression:
     '''
     classdocs
     '''
-    @abstractmethod
     def __init__(self, expresion1,operador=None,expresion2=None):
         '''
         Constructor
@@ -91,7 +90,6 @@ class RelationalExpresion:
     '''
     classdocs
     '''
-    @abstractmethod
     def __init__(self, expresion1,operador=None,expresion2=None):
         '''
         Constructor

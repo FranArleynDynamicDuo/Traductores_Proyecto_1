@@ -83,8 +83,11 @@ def p_botCreateList(p):
                      |    empty''' # Asi cortamos la lista'''
     
     if len(p) == 3:
-        p[0] = p[0].append(p[1])
-        p[0] = p[0].extend(p[2])
+        if p[0] == None:    
+            p[0] = [p[1],p[2]]      
+        else:    
+            p[0] = p[0].append(p[1])
+            p[0] = p[0].extend(p[2])
     
 def p_botCreate(p):
     '''botCreate :       TkInt  TkBot TkIdent botDeclaracionList TkEnd
@@ -96,8 +99,11 @@ def p_botDeclaracionList(p):
     '''botDeclaracionList :    botDeclaracion botDeclaracionList
                           |    empty'''
     if len(p) == 3:
-        p[0] = p[0].append(p[1])
-        p[0] = p[0].extend(p[2])
+        if p[0] == None:
+            p[0] = [p[1],p[2]]  
+        else:          
+            p[0] = p[0].append(p[1])
+            p[0] = p[0].extend(p[2])
 
 def p_botDeclaracion(p):
     '''botDeclaracion  :    TkOn TkActivation TkDosPuntos botInstruccionList TkEnd
@@ -110,8 +116,11 @@ def p_botInstruccionList(p):
     '''botInstruccionList  :    botInstruccion botInstruccionList 
                            |    empty''' # Asi cortamos la lista
     if len(p) == 3:
-        p[0] = p[0].append(p[1])
-        p[0] = p[0].extend(p[2])                           
+        if p[0] == None:
+            p[0] = [p[1],p[2]]
+        else:
+            p[0] = p[0].append(p[1])
+            p[0] = p[0].extend(p[2])                           
 
 def p_botInstruccion(p):
     '''botInstruccion :    TkStore TkNum TkPunto
@@ -137,7 +146,10 @@ def p_botInstruccion(p):
 def p_execute(p):
     '''execute :    execCont execute
                |    TkEnd'''
-    p[0].append(p[1])
+    if p[0] == None:
+        p[0] = [p[1]]
+    else:
+        p[0].append(p[1])
     if len(p) == 3:
         p[0] = p[0].extend(p[2])
 
@@ -145,7 +157,10 @@ def p_execute(p):
 def p_identList(p):
     '''identList   :    TkIdent TkPunto
                    |    TkIdent TkComa identList'''
-    p[0].append(p[1])
+    if p[0] == None:
+        p[0] = [p[1]]
+    else:
+        p[0].append(p[1])
     if len(p) == 4:
         p[0].extend(p[3])
 
@@ -183,8 +198,13 @@ def p_advance(p):
     
 # Error rule for syntax errors
 def p_error(p):
-    print("Syntax error in input!")
-#
+
+    if p is not None:
+        print("Syntax error (%s) at line %s column %s"%(p.value ,p.lineno,p.lexer.lexpos - p.lexer.current))
+    else:
+        print("Syntax error in input!")
+    raise SyntaxError
+        
 # Lista de precedencia en los operandos
 #
 precedence = (

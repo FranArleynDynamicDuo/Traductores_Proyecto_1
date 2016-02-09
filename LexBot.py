@@ -84,11 +84,14 @@ if botLexer.error_Found == False:
 
 
 print("\n")
-
-data = bot_Script.read()
-
 # Pasamos nuestra informacion al lexer
 botLexer.input(data)
+bot_Script.close()
+
+# Abrimos el archivo y lo leemos
+bot_Script = open(sys.argv[1],'r')
+
+data = bot_Script.read()
 
 # Pasamos nuestra informacion al lexer
 result = BotParser.parse(data)

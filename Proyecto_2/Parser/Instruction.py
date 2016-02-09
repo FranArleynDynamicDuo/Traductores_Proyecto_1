@@ -29,7 +29,6 @@ class Program(InstructionClass):
     classdocs
     '''
 
-    @abstractmethod
     def __init__(self, executeSet,createSet=None ):
         '''
         Constructor
@@ -43,14 +42,13 @@ class CodeBlock(InstructionClass):
     classdocs
     '''
 
-    @abstractmethod
     def __init__(self, blockType,instructionSet ):
         self.blockType = blockType
         self.instructionSet = instructionSet
         
 # Clase Crear el LexBot 
 class CreateInstruction(InstructionClass):
-    @abstractmethod
+
     def __init__(self, botType,identifier,declarationSet ):
         self.botType = botType
         self.identifier = identifier
@@ -66,7 +64,6 @@ class CreateInstruction(InstructionClass):
 # Clase Declaracion del bot
 class BotDeclaration(InstructionClass):
     
-    @abstractmethod
     def __init__(self,condition,instructionSet ):
         self.condition = condition
         self.instructionSet = instructionSet
@@ -84,7 +81,6 @@ class BotDeclaration(InstructionClass):
 # Clase Intrucciones del boot
 class BotInstruction(InstructionClass):
 
-    @abstractmethod
     def __init__(self, command,argument=None):
         self.command = command
         self.argument = argument
@@ -124,7 +120,6 @@ class BotInstruction(InstructionClass):
 # Class ConditionalInstruction      
 class ConditionalInstruction(InstructionClass):
 
-    @abstractmethod
     def __init__(self,ifCondition,ifInstructionSet,elseInstructionSet=None):
         self.ifCondition = ifCondition
         self.ifInstructionSet = ifInstructionSet
@@ -138,7 +133,6 @@ class ConditionalInstruction(InstructionClass):
 # Class whileInstruction
 class whileInstruction(InstructionClass):
 
-    @abstractmethod
     def __init__(self, condition,instructionSet):
         self.condition = condition
         self.instructionSet = instructionSet

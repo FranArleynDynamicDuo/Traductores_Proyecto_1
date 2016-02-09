@@ -1,10 +1,11 @@
-bot execute
-	int 35
-		activation: on
-			store contador.
+create
+	int bot contador
+		on activation:
+			store 35.
+		end
 	end
+execute
+	$-  Asignar al contador
+	el valor 35 -$
+	activate contador.
 end
-	$- Asignar al 35
-	el valor contador -$
-	contador end.
-activate create
