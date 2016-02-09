@@ -108,7 +108,7 @@ class RelationalExpresion:
             print(espacio,espacio,espacio," - operador izquierdo: ", self.expresion1)
             print(espacio,espacio,espacio," - operador derecho: ", self.expresion2)
         elif (self.operador == None):
-            print(espacio,espacio,espacio," - variable: ", self.expresion)
+            print(espacio,espacio,espacio," - variable: ", self.expresion1)
         
 # Expresiones Booleanas
 class BooleanExpression:

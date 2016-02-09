@@ -146,12 +146,13 @@ def p_botInstruccion(p):
 def p_execute(p):
     '''execute :    execCont execute
                |    TkEnd'''
-    if p[0] == None:
-        p[0] = [p[1]]
-    else:
-        p[0].append(p[1])
+
     if len(p) == 3:
-        p[0] = p[0].extend(p[2])
+        if p[0] == None:
+            p[0] = [p[1]]
+        else:
+            p[0].append(p[1])
+            p[0] = p[0].extend(p[2])
 
 
 def p_identList(p):
