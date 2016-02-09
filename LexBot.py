@@ -11,8 +11,9 @@ if __name__ == '__main__':
 
 import sys
 
-from Proyecto_1.Lexer.Lexer import lexer
+from Proyecto_1.Lexer.Lexer import botLexer
 from Proyecto_1.Lexer.Token import Token
+from Proyecto_2.Parser.parser import BotParser
 
 
 ##################### Funciones ################################################
@@ -33,7 +34,7 @@ data = bot_Script.read()
 
 
 # Pasamos nuestra informacion al lexer
-lexer.input(data)
+botLexer.input(data)
 
 # Creamos una lista para almacenar los tokens
 token_List = []
@@ -48,7 +49,7 @@ print(" ")
 while True:
     
     # Tomamos el siguiente token
-    tok = lexer.token()
+    tok = botLexer.token()
     
     # Verificamos que no llegamos el final del conjunto de tokens
     if not tok: 
@@ -61,7 +62,7 @@ while True:
 # Reiniciamos el iterador
 i = 0
 
-if lexer.error_Found == False:
+if botLexer.error_Found == False:
 
     # 2DO CICLO: Si no se encuentran errores, se imprimen las tokens correctas
     while i < len(token_List):
@@ -80,3 +81,15 @@ if lexer.error_Found == False:
         
         # Aumentamos el iterador
         i += 1
+
+
+print("\n")
+
+data = bot_Script.read()
+
+# Pasamos nuestra informacion al lexer
+botLexer.input(data)
+
+# Pasamos nuestra informacion al lexer
+result = BotParser.parse(data)
+print(result)

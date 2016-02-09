@@ -15,9 +15,9 @@ tokens = ['TkCreate','TkExecute',
           'TkIf','TkElse','TkWhile','TkEnd',
           'TkStore','TkCollect','TkDrop','TkLeft','TkRight','TkUp','TkDown',
           'TkRead','TkSend',
-          'TkActivation','TkDeactivation','TkCustomCondition','TkDefault',
+          'TkActivation','TkDeactivation','TkDefault',
           'TkIdent','TkNum','TkCaracter','TkFalse','TkTrue',
-          'TkInt','TkBool','TkChar',
+          'TkInt','TkBool','TkChar','TkBot',
           'TkComa','TkPunto','TkDosPuntos','TkParAbre','TkParCierra',
           'TkSuma','TkResta','TkMult','TkDiv','TkMod','TkConjuncion',
           'TkDisyuncion','TkNegacion','TkMenor','TkMenorIgual',
@@ -76,6 +76,7 @@ t_TkDefault = r'default'
 t_TkInt = r'int'
 t_TkBool = r'bool'
 t_TkChar = r'char'
+t_TkBot = r'bot'
 
 # Literales
 
@@ -136,4 +137,4 @@ def t_error(t):
     t.lexer.error_Found = True
 
 # Creamos el lexer
-lexer = lex.lex()
+botLexer = lex.lex()

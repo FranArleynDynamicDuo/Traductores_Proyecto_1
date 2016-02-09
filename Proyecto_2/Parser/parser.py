@@ -1,38 +1,16 @@
-'''
-Created on Feb 1, 2016
-
-@author: francisco
-'''
+#Created on Feb 1, 2016
+#@author: francisco
 
 import ply.yacc as yacc;
 
 # Get the token map from the lexer.  This is required.
-from Proyecto_1.Lexer.Lexer import lexer;
+from Proyecto_1.Lexer.Lexer import tokens as botTokens
 from Proyecto_2.Parser import Expression
 from Proyecto_2.Parser import Instruction
-tokens = lexer.tokens;
 
-# ESTOS SON EJEMPLOS DE LAS EXPRESIONES, HAY QUE HACER EXPRESIONES ASI PARA CADA TIPO DE TOKEN DE
-# ESTA LISTA
+tokens = botTokens;
 
-
-'''
-tokens = ['TkCreate','TkExecute',
-          'TkRecieve','TkActivate','TkAdvance',
-          'TkOn','TkDeactivate',
-          'TkIf','TkElse','TkWhile','TkEnd',
-          'TkStore','TkCollect','TkDrop','TkLeft','TkRight','TkUp','TkDown',
-          'TkRead','TkSend',
-          'TkActivation','TkDeactivation','TkCustomCondition','TkDefault',
-          'TkIdent','TkNum','TkCaracter','TkFalse','TkTrue',
-          'TkInt','TkBool','TkChar',
-          'TkComa','TkPunto','TkDosPuntos','TkParAbre','TkParCierra',
-          'TkSuma','TkResta','TkMult','TkDiv','TkMod','TkConjuncion',
-          'TkDisyuncion','TkNegacion','TkMenor','TkMenorIgual',
-          'TkMayor','TkMayorIgual','TkIgual']
-'''
-
-'''----------------------->   EXPRESIONES  <------------------------'''
+#----------------------->   EXPRESIONES  <------------------------'''
 
 def p_empty(p):
     'empty :'
@@ -47,7 +25,7 @@ def p_aritExpr(p):
                 | aritExpr TkDiv aritExpr
                 | aritExpr TkMod aritExpr
                 | TkNum
-                | tkIdent '''
+                | TkIdent'''
     if len(p) == 4:
         p[0] = Expression.ArithmethicExpression(p[1],p[2],p[3])
     elif len(p) == 2:                    
@@ -56,14 +34,14 @@ def p_aritExpr(p):
 
 # (LISTO)
 def p_boolExpr(p):
-    'boolExpr : TkParAbre boolExpr TkParCierra'
-    '         | boolExpr TkConjuncion boolExpr'
-    '         | boolExpr TkDisyuncion boolExpr'
-    '         | TkNegacion boolExpr'
-    '         | relExpr'
-    '         | TkFalse'
-    '         | TkTrue'
-    '         | tkIdent'
+    '''boolExpr : TkParAbre boolExpr TkParCierra
+                | boolExpr TkConjuncion boolExpr
+                | boolExpr TkDisyuncion boolExpr
+                | TkNegacion boolExpr
+                | relExpr
+                | TkFalse
+                | TkTrue
+                | TkIdent'''
     if len(p) == 4:
         p[0] = Expression.BooleanExpression(p[1],p[2],p[3])
     elif len(p) == 3:                    
@@ -80,13 +58,13 @@ def p_relExpr(p):
                | relExpr TkMayorIgual relExpr
                | relExpr TkIgual relExpr         
                | aritExpr
-               | tkIdent'''
+               | TkIdent'''
     if len(p) == 4:
         p[0] = Expression.RelationalExpresion(p[1],p[2],p[3])
     elif len(p) == 2:                    
         p[0] = Expression.RelationalExpresion(p[1])
 
-'''-----------------------> PROGRAMA GENERAL <------------------------'''
+#-----------------------> PROGRAMA GENERAL <------------------------
 
 def p_program(p):
     # Camino 1: Hay un bloque create y un bloque execute
@@ -98,7 +76,7 @@ def p_program(p):
     if len(p) == 4:
         p[0] = Expression.Program(createSet = None,executeSet = p[2])
  
-'''---------------------------> CREATE <----------------------------'''
+#---------------------------> CREATE <----------------------------
 
 def p_botCreateList(p):
     '''botCreateList :    botCreate botCreateList
@@ -140,8 +118,8 @@ def p_botInstruccion(p):
                    |       TkStore TkCaracter TkPunto
                    |       TkCollect TkPunto
                    |       TkRecieve TkPunto
-                   |       Tkdrop TkNum TkPunto
-                   |       Tkdrop TkCaracter TkPunto
+                   |       TkDrop TkNum TkPunto
+                   |       TkDrop TkCaracter TkPunto
                    |       TkSend TkPunto     
                    |       TkRead TkPunto
                    |       TkLeft TkPunto
@@ -153,7 +131,7 @@ def p_botInstruccion(p):
     if len(p) == 3:
         p[0] = Instruction.BotInstruction(p[1])
 
-''' -----------------------> INSTRUCCIONES <-------------------------- '''
+# -----------------------> INSTRUCCIONES <--------------------------
 
 def p_execute(p):
     '''execute :    execCont execute
@@ -179,15 +157,15 @@ def p_execCont(p):
     p[0] = p[1]
 
 def p_conditional(p):
-    '''conditional  :    TkIf boolExpr TkDosPuntos cont TkElse cont TkEnd
-                    |    TkIf boolExpr TkDosPuntos cont TkEnd'''
+    '''conditional  :    TkIf boolExpr TkDosPuntos execCont TkElse execCont TkEnd
+                    |    TkIf boolExpr TkDosPuntos execCont TkEnd'''
     if len(p) == 7:
         p[0] = Instruction.ConditionalInstruction(p[2],p[4],p[6])
     elif len(p) == 5:
         p[0] = Instruction.ConditionalInstruction(p[2],p[4])
 
 def p_while(p):
-    '''while        :    TkWhile boolExpr TkDosPuntos cont TkEnd'''
+    '''while        :    TkWhile boolExpr TkDosPuntos execCont TkEnd'''
     p[0] = Instruction.whileInstruction(p[2],p[4])
 
 def p_activate(p):
@@ -201,6 +179,10 @@ def p_deactivate(p):
 def p_advance(p):
     '''advance     :    TkAdvance identList'''
     p[0] = Instruction.AdvanceInstruction(p[2])      
+    
+# Error rule for syntax errors
+def p_error(p):
+    print("Syntax error in input!")
 
 # Build the parser
-parser = yacc.yacc()
+BotParser = yacc.yacc(start='program')

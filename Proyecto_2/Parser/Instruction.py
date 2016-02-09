@@ -30,7 +30,7 @@ class Program(InstructionClass):
     '''
 
     @abstractmethod
-    def __init__(self, createSet=None,executeSet ):
+    def __init__(self, executeSet,createSet=None ):
         '''
         Constructor
  
@@ -48,7 +48,7 @@ class CodeBlock(InstructionClass):
         self.blockType = blockType
         self.instructionSet = instructionSet
         
-# Clase Crear el Bot 
+# Clase Crear el LexBot 
 class CreateInstruction(InstructionClass):
     @abstractmethod
     def __init__(self, botType,identifier,declarationSet ):
@@ -73,11 +73,11 @@ class BotDeclaration(InstructionClass):
         self.imprimir("")
         
     def imprimir(self,espacio):
-        if (self.condition == "activation")
+        if (self.condition == "activation"):
             print(espacio,"ACTIVACION")
-        elif (self.condition == "deactivation")
+        elif (self.condition == "deactivation"):
             print(espacio,"DESACTIVACION")
-        elif (self.condition == "default")
+        elif (self.condition == "default"):
             print(espacio,"DEFAULT")
         
         
@@ -92,32 +92,32 @@ class BotInstruction(InstructionClass):
         
     def imprimir(self,espacio):
         
-        if (self.argument == None) 
-            if (self.command == "store")
+        if (self.argument == None):
+            if (self.command == "store"):
                 print(espacio,espacio," - instruccion: almacenamiento")
-            elif (self.command == "collect")
+            elif (self.command == "collect"):
                 print(espacio,espacio," - instruccion: coleccion")
-            elif (self.command == "recieve")
+            elif (self.command == "recieve"):
                 print(espacio,espacio," - instruccion: lectura") 
-            elif (self.command == "drop")
+            elif (self.command == "drop"):
                 print(espacio,espacio," - instruccion: soltado")
                  
             print(espacio,espacio," - valor: ",self.argument)
 
 
-        elif (self.argument == None)
+        elif (self.argument == None):
         
-            if (self.command == "send")
+            if (self.command == "send"):
                 print(espacio,espacio," - instruccion: enviar")
-            elif (self.command == "read")
+            elif (self.command == "read"):
                 print(espacio,espacio," - instruccion: leer")
-            elif (self.command == "left")
+            elif (self.command == "left"):
                 print(espacio,espacio," - instruccion: movimiento hacia la izquierda")
-            elif (self.command == "right")
+            elif (self.command == "right"):
                 print(espacio,espacio," - instruccion: movimiento hacia la derecha")
-            elif (self.command == "up")
+            elif (self.command == "up"):
                 print(espacio,espacio," - instruccion: movimiento hacia arriba")
-            elif (self.command == "down")
+            elif (self.command == "down"):
                 print(espacio,espacio," - instruccion: movimiento hacia abajo")
   
 
@@ -125,7 +125,7 @@ class BotInstruction(InstructionClass):
 class ConditionalInstruction(InstructionClass):
 
     @abstractmethod
-    def __init__(self,ifCondition=True,ifInstructionSet,elseInstructionSet=None):
+    def __init__(self,ifCondition,ifInstructionSet,elseInstructionSet=None):
         self.ifCondition = ifCondition
         self.ifInstructionSet = ifInstructionSet
         self.elseInstructionSet = elseInstructionSet    
@@ -143,7 +143,7 @@ class whileInstruction(InstructionClass):
         self.condition = condition
         self.instructionSet = instructionSet
         
-            self.imprimir("")
+        self.imprimir("")
         
     def imprimir(self,espacio):
         print(espacio,"ITERACION INDETERMINADA")
@@ -178,7 +178,7 @@ class DeactivateInstruction:
     
  
 # Class AdvanceInstruction
-class AdvanceInstruction
+class AdvanceInstruction:
 
     def __init__(self,identList):
         self.identList = identList
@@ -190,7 +190,3 @@ class AdvanceInstruction
         for nameBot in self.identList :
             print(espacio,espacio,espacio," - var: ", nameBot)
         
-        
-
-
-
