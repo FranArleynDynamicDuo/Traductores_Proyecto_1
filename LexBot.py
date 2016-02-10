@@ -12,6 +12,7 @@ if __name__ == '__main__':
 import sys
 
 from Proyecto_1.Lexer.Lexer import botLexer
+from Proyecto_1.Lexer.Lexer import column_token
 from Proyecto_1.Lexer.Token import Token
 from Proyecto_2.Parser.parser import BotParser
 
@@ -57,7 +58,7 @@ while True:
     
     # Agregamos a la lista un token nuevo
     token_List.append(Token(tok.type,tok.value,
-                            tok.lineno,find_column(data,tok)))
+                            tok.lineno,column_token(data,tok)))
 
 # Reiniciamos el iterador
 i = 0
@@ -93,7 +94,13 @@ bot_Script = open(sys.argv[1],'r')
 
 data = bot_Script.read()
 
-# Pasamos nuestra informacion al lexer
-result = BotParser.parse(data)
+# DEBUG
+result = BotParser.parse(data,debug=1)
+
+# # Pasamos nuestra informacion al lexer
+# result = BotParser.parse(data)
+
 # NO estamos claros si hay que usarlo
-# print(result) 
+print(result) 
+
+result.

@@ -111,6 +111,15 @@ def t_newline(t):
     r'\n+'
     t.lexer.lineno += len(t.value)
     t.lexer.current = t.lexer.lexpos - 1
+ 
+def column_token(inputData,token):
+    last = inputData.rfind('\n',0,token.lexpos)
+    if (last < 0):
+        last = 1
+        column = 1
+    else:
+        column = (token.lexpos - last)
+    return column 
    
 # Regla para manejar los caracteres invalidos
 def t_error(t):

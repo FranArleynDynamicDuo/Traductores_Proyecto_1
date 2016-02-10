@@ -35,18 +35,18 @@ def spacing(espacio):
         return espacio
     
 class Expresion(metaclass=ABCMeta):
-    '''
-    classdocs
-    '''
+    @abstractmethod
+    def __init__(self, params):
+        pass
 
 
         
 # Se Especifica el Bloque        
-class Program:
+class ProgramExpression:
     
     def __init__(self,bloque):
         self.bloque = bloque
-        self.imprimir("")
+        #self.imprimir("")
         
     def imprimir(self,espacio):
         print("--------(Bloque)-------")
@@ -65,28 +65,28 @@ class ArithmethicExpression:
         self.expresion1 = expresion1
         self.operador = operador
         self.expresion2 = expresion2
-        self.imprimir("")
+        #self.imprimir("")
         
-    def imprimir(self,espacio):
-        print("--------(ArithmethicExpression)-------")
-        print(espacio,espacio,espacio,espacio,"- guardia: ArithmethicExpression")
-        
-        if( self.expresion1 != "(" ):
-            if (self.operador != None):
-                operador = binary_symbol[self.operador]
-                print(espacio,espacio,espacio,espacio," - operacion: ", "'"+operador+"'")
-                print(espacio,espacio,espacio,espacio," - operador izquierdo: ", self.expresion1)
-                print(espacio,espacio,espacio,espacio," - operador derecho: ", self.expresion2)
-            elif (self.operador == None):
-                print(espacio,espacio,espacio,espacio," - operador izquierdo: ", self.expresion1)
-        
-        elif( self.expresion1 == "(" ):
-            operador = binary_symbol[self.expresion1]
-            print(espacio,espacio,espacio,espacio," - operador: ", "'"+operador+"'")
-            print(espacio,espacio,espacio,espacio," - operador central: ", self.expresion1)
-            operador = binary_symbol[self.expresion2]
-            print(espacio,espacio,espacio,espacio," - operador: ", "'"+operador+"'")
-            
+#     def imprimir(self,espacio):
+#         print("--------(ArithmethicExpression)-------")
+#         print(espacio,espacio,espacio,espacio,"- guardia: ArithmethicExpression")
+#         
+#         if( self.expresion1 != "(" ):
+#             if (self.operador != None):
+#                 operador = binary_symbol[self.operador]
+#                 print(espacio,espacio,espacio,espacio," - operacion: ", "'"+operador+"'")
+#                 print(espacio,espacio,espacio,espacio," - operador izquierdo: ", self.expresion1)
+#                 print(espacio,espacio,espacio,espacio," - operador derecho: ", self.expresion2)
+#             elif (self.operador == None):
+#                 print(espacio,espacio,espacio,espacio," - operador izquierdo: ", self.expresion1)
+#         
+#         elif( self.expresion1 == "(" ):
+#             operador = binary_symbol[self.expresion1]
+#             print(espacio,espacio,espacio,espacio," - operador: ", "'"+operador+"'")
+#             print(espacio,espacio,espacio,espacio," - operador central: ", self.expresion1)
+#             operador = binary_symbol[self.expresion2]
+#             print(espacio,espacio,espacio,espacio," - operador: ", "'"+operador+"'")
+#             
         
 # Expresiones Relacionales
 class RelationalExpresion:
@@ -94,28 +94,28 @@ class RelationalExpresion:
         self.expresion1 = expresion1
         self.operador = operador
         self.expresion2 = expresion2
-        self.imprimir("")
+        #self.imprimir("")
         
-    def imprimir(self,espacio):
-        print("--------(RelationalExpresion)-------")
-        print(espacio,espacio,espacio,espacio,"- guardia: RelationalExpresion")
-        
-        if( self.expresion1 != "(" ):
-            if (self.operador != None):
-                operador = binary_symbol[self.operador]
-                print(espacio,espacio,espacio,espacio," - operacion: ", "'"+operador+"'")
-                print(espacio,espacio,espacio,espacio," - operador izquierdo: ", self.expresion1)
-                print(espacio,espacio,espacio,espacio," - operador derecho: ", self.expresion2)
-            elif (self.operador == None):
-                print(espacio,espacio,espacio,espacio," - variable: ", self.expresion1)
-                
-        elif( self.expresion1 == "(" ):
-            operador = binary_symbol[self.expresion1]
-            print(espacio,espacio,espacio,espacio," - operador: ", "'"+operador+"'")
-            print(espacio,espacio,espacio,espacio," - operador central: ", self.operador)
-            operador = binary_symbol[self.expresion2]
-            print(espacio,espacio,espacio,espacio," - operador: ", "'"+operador+"'")
-            
+#     def imprimir(self,espacio):
+#         print("--------(RelationalExpresion)-------")
+#         print(espacio,espacio,espacio,espacio,"- guardia: RelationalExpresion")
+#         
+#         if( self.expresion1 != "(" ):
+#             if (self.operador != None):
+#                 operador = binary_symbol[self.operador]
+#                 print(espacio,espacio,espacio,espacio," - operacion: ", "'"+operador+"'")
+#                 print(espacio,espacio,espacio,espacio," - operador izquierdo: ", self.expresion1)
+#                 print(espacio,espacio,espacio,espacio," - operador derecho: ", self.expresion2)
+#             elif (self.operador == None):
+#                 print(espacio,espacio,espacio,espacio," - variable: ", self.expresion1)
+#                 
+#         elif( self.expresion1 == "(" ):
+#             operador = binary_symbol[self.expresion1]
+#             print(espacio,espacio,espacio,espacio," - operador: ", "'"+operador+"'")
+#             print(espacio,espacio,espacio,espacio," - operador central: ", self.operador)
+#             operador = binary_symbol[self.expresion2]
+#             print(espacio,espacio,espacio,espacio," - operador: ", "'"+operador+"'")
+#             
         
 # Expresiones Booleanas
 class BooleanExpression:
@@ -123,28 +123,28 @@ class BooleanExpression:
         self.expresion1 = expresion1
         self.operador = operador
         self.expresion2 = expresion2
-        self.imprimir("")
+        #self.imprimir("")
         
-    def imprimir(self,espacio):
-        print("--------(BooleanExpression)-------")
-        print(espacio,espacio,espacio,espacio,"- guardia: BooleanExpression")
-        
-        if( self.expresion1 != "(" ):
-            if ( (self.operador != None) and (self.expresion2 != None) ):
-                operador = binary_symbol[self.operador]
-                print(espacio,espacio,espacio,espacio," - operacion: ", "'"+operador+"'")
-                print(espacio,espacio,espacio,espacio," - operador izquierdo: ", self.expresion1)
-                print(espacio,espacio,espacio,espacio," - operador derecho: ", self.expresion2)
-            elif ( (self.operador != None) and (self.expresion2 == None) ):
-                operador = binary_symbol[self.expresion1]
-                print(espacio,espacio,espacio,espacio," - operador: ", "'"+operador+"'")
-                print(espacio,espacio,espacio,espacio," - variable: ", self.operador)
-            elif ( (self.operador == None) and (self.expresion2 == None) ):
-                print(espacio,espacio,espacio,espacio," - variable: ", self.expresion1)
-                
-        elif( self.expresion1 == "(" ):
-            operador = binary_symbol[self.expresion1]
-            print(espacio,espacio,espacio,espacio," - operador: ", "'"+operador+"'")
-            print(espacio,espacio,espacio,espacio," - operador central: ", self.operador)
-            operador = binary_symbol[self.expresion2]
-            print(espacio,espacio,espacio,espacio," - operador: ", "'"+operador+"'")
+#     def imprimir(self,espacio):
+#         print("--------(BooleanExpression)-------")
+#         print(espacio,espacio,espacio,espacio,"- guardia: BooleanExpression")
+#         
+#         if( self.expresion1 != "(" ):
+#             if ( (self.operador != None) and (self.expresion2 != None) ):
+#                 operador = binary_symbol[self.operador]
+#                 print(espacio,espacio,espacio,espacio," - operacion: ", "'"+operador+"'")
+#                 print(espacio,espacio,espacio,espacio," - operador izquierdo: ", self.expresion1)
+#                 print(espacio,espacio,espacio,espacio," - operador derecho: ", self.expresion2)
+#             elif ( (self.operador != None) and (self.expresion2 == None) ):
+#                 operador = binary_symbol[self.expresion1]
+#                 print(espacio,espacio,espacio,espacio," - operador: ", "'"+operador+"'")
+#                 print(espacio,espacio,espacio,espacio," - variable: ", self.operador)
+#             elif ( (self.operador == None) and (self.expresion2 == None) ):
+#                 print(espacio,espacio,espacio,espacio," - variable: ", self.expresion1)
+#                 
+#         elif( self.expresion1 == "(" ):
+#             operador = binary_symbol[self.expresion1]
+#             print(espacio,espacio,espacio,espacio," - operador: ", "'"+operador+"'")
+#             print(espacio,espacio,espacio,espacio," - operador central: ", self.operador)
+#             operador = binary_symbol[self.expresion2]
+#             print(espacio,espacio,espacio,espacio," - operador: ", "'"+operador+"'")

@@ -10,6 +10,24 @@ from Proyecto_2.Parser import Instruction
 
 tokens = botTokens;
 
+#-----------------------> PROGRAMA GENERAL <------------------------
+
+def p_program(p):
+    # Camino 1: Hay un bloque create y un bloque execute
+    # Camino 2: Hay un bloque execute
+    '''program : TkCreate botCreateList TkExecute execute TkEnd
+               | TkExecute execute TkEnd'''
+    
+    # POR AQUI NO ESTA PASANDO
+    print("PASE POR AQUI")
+    if len(p) == 6:
+        print("PASE POR AQUI")
+        p[0] = Instruction.Program(createSet = p[2],executeSet = p[4])
+    if len(p) == 4:
+        print("PASE POR AQUI")
+        p[0] = Instruction.Program(createSet = None,executeSet = p[2])
+    p.set_lineno(0,p.lineno(1)) 
+
 #----------------------->   EXPRESIONES  <------------------------'''
 
 def p_empty(p):
@@ -45,27 +63,11 @@ def p_expression(p):
         elif ((p[1] == "(") and (p[3] == ")")):
             p[0] = Expression.BooleanExpression(p[1],p[2],p[3])                     
     elif len(p) == 3:                    
-        p[0] = Expression.BooleanExpression(p[1],p[2])        
+        p[0] = Expression.BooleanExpression(p[2],p[1])        
     elif len(p) == 2:                    
-        p[0] = p[1]    
+        p[0] = p[1]   
 
-#-----------------------> PROGRAMA GENERAL <------------------------
 
-def p_program(p):
-    # Camino 1: Hay un bloque create y un bloque execute
-    # Camino 2: Hay un bloque execute
-    '''program : TkCreate botCreateList TkExecute execute TkEnd
-               | TkExecute execute TkEnd'''
-    
-    # POR AQUI NO ESTA PASANDO
-    print("PASE POR AQUI")
-    if len(p) == 6:
-        print("PASE POR AQUI")
-        p[0] = Expression.Program(createSet = p[2],executeSet = p[4])
-    if len(p) == 4:
-        print("PASE POR AQUI")
-        p[0] = Expression.Program(createSet = None,executeSet = p[2])
- 
 #---------------------------> CREATE <----------------------------
 
 def p_botCreateList(p):
@@ -84,6 +86,7 @@ def p_botCreate(p):
                  |       TkBool TkBot TkIdent botDeclaracionList TkEnd
                  |       TkChar TkBot TkIdent botDeclaracionList TkEnd'''
     p[0] = Instruction.CreateInstruction(p[1],p[3],p[4])
+    p.set_lineno(0,p.lineno(1)) 
 
 def p_botDeclaracionList(p):
     '''botDeclaracionList :    botDeclaracion botDeclaracionList
@@ -94,13 +97,15 @@ def p_botDeclaracionList(p):
         else:          
             p[0] = p[0].append(p[1])
             p[0] = p[0].extend(p[2])
-
+            
 def p_botDeclaracion(p):
     '''botDeclaracion  :    TkOn TkActivation TkDosPuntos botInstruccionList TkEnd
                     |       TkOn TkDeactivation TkDosPuntos botInstruccionList TkEnd
                     |       TkOn expression TkDosPuntos botInstruccionList TkEnd
                     |       TkOn TkDefault TkDosPuntos botInstruccionList TkEnd'''
     p[0] = Instruction.BotDeclaration(p[2],p[4])
+    p.set_lineno(0,p.lineno(1)) 
+    
 
 def p_botInstruccionList(p):
     '''botInstruccionList  :    botInstruccion botInstruccionList 
@@ -110,7 +115,7 @@ def p_botInstruccionList(p):
             p[0] = [p[1],p[2]]
         else:
             p[0] = p[0].append(p[1])
-            p[0] = p[0].extend(p[2])                           
+            p[0] = p[0].extend(p[2])
 
 def p_botInstruccion(p):
     '''botInstruccion :    TkStore TkNum TkPunto
@@ -130,12 +135,11 @@ def p_botInstruccion(p):
         p[0] = Instruction.BotInstruction(p[1],p[2])
     if len(p) == 3:
         p[0] = Instruction.BotInstruction(p[1])
-
 # -----------------------> INSTRUCCIONES <--------------------------
 
 def p_execute(p):
     '''execute :    execCont execute
-               |    TkEnd'''
+               |    empty''' # Asi cortamos la lista'''
 
     if len(p) == 3:
         if p[0] == None:
@@ -178,6 +182,7 @@ def p_while(p):
 def p_activate(p):
     '''activate     :    TkActivate identList'''
     p[0] = Instruction.ActivateInstruction(p[2])
+    p.set_lineno(0,p.lineno(1)) 
     
 def p_deactivate(p):
     '''deactivate     :    TkDeactivate identList'''
@@ -189,14 +194,17 @@ def p_advance(p):
     
 # Error rule for syntax errors
 def p_error(p):
-
     if p is not None:
-        print("Syntax error (%s) at line %s column %s"%(p.value ,p.lineno,p.lexer.lexpos - p.lexer.current))
-        raise SyntaxError
-#    else:
-#        print("Syntax error in input!")
-    
-        
+        print("Syntax error (%s) at line %s column %s"%(
+                                                        p.value ,
+                                                        p.lexer.lineno -18,
+                                                        p.lexer.lexpos - p.lexer.current
+                                                        )
+            )
+        exit()
+    else:
+        print("Syntax error at EOF")
+        exit()
 # Lista de precedencia en los operandos
 #
 precedence = (
@@ -211,4 +219,4 @@ precedence = (
 )
 
 # Build the parser
-BotParser = yacc.yacc(start='program')
+BotParser = yacc.yacc(start='program',debugfile="debug.txt")

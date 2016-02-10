@@ -38,7 +38,7 @@ class CreateInstruction(InstructionClass):
         self.botType = botType
         self.identifier = identifier
         self.declarationSet = declarationSet    
-        self.imprimir("")
+        ##self.imprimir("")
         
     def imprimir(self,espacio):
         # print(espacio, "CREAR BOT") 
@@ -53,7 +53,7 @@ class BotDeclaration(InstructionClass):
     def __init__(self,condition,instructionSet ):
         self.condition = condition
         self.instructionSet = instructionSet
-        self.imprimir("")
+        #self.imprimir("")
         
     def imprimir(self,espacio):
         #if (self.condition == "activation"):
@@ -70,7 +70,7 @@ class BotInstruction(InstructionClass):
     def __init__(self, command,argument=None):
         self.command = command
         self.argument = argument
-        self.imprimir("")
+        #self.imprimir("")
         
     def imprimir(self,espacio):
         
@@ -108,7 +108,7 @@ class ConditionalInstruction(InstructionClass):
         self.ifCondition = ifCondition
         self.ifInstructionSet = ifInstructionSet
         self.elseInstructionSet = elseInstructionSet    
-        self.imprimir("")
+        #self.imprimir("")
         
     def imprimir(self,espacio):
         print("--------(ConditionalInstruction)-------")
@@ -122,7 +122,7 @@ class whileInstruction(InstructionClass):
         self.condition = condition
         self.instructionSet = instructionSet
         
-        self.imprimir("")
+        #self.imprimir("")
         
     def imprimir(self,espacio):
         print("--------(whileInstruction)-------")
@@ -134,7 +134,7 @@ class ActivateInstruction:
     
     def __init__(self,identList):
         self.identList = identList
-        self.imprimir("")
+        #self.imprimir("")
         
     def imprimir(self,espacio):
         print("--------(ActivateInstruction)-------")
@@ -149,7 +149,7 @@ class DeactivateInstruction:
     
     def __init__(self,identList):
         self.identList = identList
-        self.imprimir("")
+        #self.imprimir("")
         
     def imprimir(self,espacio):
         print("--------(DeactivateInstruction)-------")
@@ -164,7 +164,7 @@ class AdvanceInstruction:
 
     def __init__(self,identList):
         self.identList = identList
-        self.imprimir("")
+        #self.imprimir("")
         
     def imprimir(self,espacio):
         print("--------(AdvanceInstruction)-------")
