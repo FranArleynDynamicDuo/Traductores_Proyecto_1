@@ -95,4 +95,5 @@ data = bot_Script.read()
 
 # Pasamos nuestra informacion al lexer
 result = BotParser.parse(data)
-print(result)
+# NO estamos claros si hay que usarlo
+# print(result) 

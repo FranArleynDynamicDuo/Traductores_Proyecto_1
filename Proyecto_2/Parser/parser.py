@@ -16,53 +16,38 @@ def p_empty(p):
     'empty :'
     pass
 
-# (LISTO)
-def p_aritExpr(p):
-    '''aritExpr : TkParAbre aritExpr TkParCierra
-                | aritExpr TkSuma aritExpr
-                | aritExpr TkResta aritExpr
-                | aritExpr TkMult aritExpr
-                | aritExpr TkDiv aritExpr
-                | aritExpr TkMod aritExpr
-                | TkNum
-                | TkIdent'''
+def p_expression(p):
+    '''expression : TkParAbre expression TkParCierra
+                  | expression TkSuma expression
+                  | expression TkResta expression
+                  | expression TkMult expression
+                  | expression TkDiv expression
+                  | expression TkMod expression
+                  | expression TkConjuncion expression
+                  | expression TkDisyuncion expression
+                  | expression TkMenor expression
+                  | expression TkMenorIgual expression
+                  | expression TkMayor expression
+                  | expression TkMayorIgual expression
+                  | expression TkIgual expression
+                  | TkNegacion expression                  
+                  | TkNum                    
+                  | TkFalse
+                  | TkTrue                        
+                  | TkIdent'''
     if len(p) == 4:
-        p[0] = Expression.ArithmethicExpression(p[1],p[2],p[3])
-    elif len(p) == 2:                    
-        p[0] = p[1]
-
-
-# (LISTO)
-def p_boolExpr(p):
-    '''boolExpr : TkParAbre boolExpr TkParCierra
-                | boolExpr TkConjuncion boolExpr
-                | boolExpr TkDisyuncion boolExpr
-                | TkNegacion boolExpr
-                | relExpr
-                | TkFalse
-                | TkTrue
-                | TkIdent'''
-    if len(p) == 4:
-        p[0] = Expression.BooleanExpression(p[1],p[2],p[3])
+        if ((p[2] == "+") or (p[2] == "-") or (p[2] == "*") or (p[2] == "/") or (p[2] == "%")):
+            p[0] = Expression.ArithmethicExpression(p[1],p[2],p[3])
+        elif ((p[2] == "/\\") or (p[2] == "\/")):
+            p[0] = Expression.BooleanExpression(p[1],p[2],p[3])
+        elif ((p[2] == "<") or (p[2] == "<=") or (p[2] == ">") or (p[2] == ">=") or (p[2] == "=")):
+            p[0] = Expression.RelationalExpresion(p[1],p[2],p[3])    
+        elif ((p[1] == "(") and (p[3] == ")")):
+            p[0] = Expression.BooleanExpression(p[1],p[2],p[3])                     
     elif len(p) == 3:                    
-        p[0] = Expression.BooleanExpression(p[2],p[1])        
+        p[0] = Expression.BooleanExpression(p[1],p[2])        
     elif len(p) == 2:                    
-        p[0] = p[1]
-
-# (LISTO)
-def p_relExpr(p):
-    '''relExpr : TkParAbre relExpr TkParCierra
-               | relExpr TkMenor relExpr
-               | relExpr TkMenorIgual relExpr
-               | relExpr TkMayor relExpr
-               | relExpr TkMayorIgual relExpr
-               | relExpr TkIgual relExpr         
-               | aritExpr
-               | TkIdent'''
-    if len(p) == 4:
-        p[0] = Expression.RelationalExpresion(p[1],p[2],p[3])
-    elif len(p) == 2:                    
-        p[0] = p[1]
+        p[0] = p[1]    
 
 #-----------------------> PROGRAMA GENERAL <------------------------
 
@@ -71,9 +56,14 @@ def p_program(p):
     # Camino 2: Hay un bloque execute
     '''program : TkCreate botCreateList TkExecute execute TkEnd
                | TkExecute execute TkEnd'''
+    
+    # POR AQUI NO ESTA PASANDO
+    print("PASE POR AQUI")
     if len(p) == 6:
+        print("PASE POR AQUI")
         p[0] = Expression.Program(createSet = p[2],executeSet = p[4])
     if len(p) == 4:
+        print("PASE POR AQUI")
         p[0] = Expression.Program(createSet = None,executeSet = p[2])
  
 #---------------------------> CREATE <----------------------------
@@ -108,7 +98,7 @@ def p_botDeclaracionList(p):
 def p_botDeclaracion(p):
     '''botDeclaracion  :    TkOn TkActivation TkDosPuntos botInstruccionList TkEnd
                     |       TkOn TkDeactivation TkDosPuntos botInstruccionList TkEnd
-                    |       TkOn boolExpr TkDosPuntos botInstruccionList TkEnd
+                    |       TkOn expression TkDosPuntos botInstruccionList TkEnd
                     |       TkOn TkDefault TkDosPuntos botInstruccionList TkEnd'''
     p[0] = Instruction.BotDeclaration(p[2],p[4])
 
@@ -174,15 +164,15 @@ def p_execCont(p):
     p[0] = p[1]
 
 def p_conditional(p):
-    '''conditional  :    TkIf boolExpr TkDosPuntos execCont TkElse execCont TkEnd
-                    |    TkIf boolExpr TkDosPuntos execCont TkEnd'''
-    if len(p) == 7:
+    '''conditional  :    TkIf expression TkDosPuntos execCont TkElse execCont TkEnd
+                    |    TkIf expression TkDosPuntos execCont TkEnd'''
+    if len(p) == 8:
         p[0] = Instruction.ConditionalInstruction(p[2],p[4],p[6])
-    elif len(p) == 5:
+    elif len(p) == 6:
         p[0] = Instruction.ConditionalInstruction(p[2],p[4])
 
 def p_while(p):
-    '''while        :    TkWhile boolExpr TkDosPuntos execCont TkEnd'''
+    '''while        :    TkWhile expression TkDosPuntos execCont TkEnd'''
     p[0] = Instruction.whileInstruction(p[2],p[4])
 
 def p_activate(p):
@@ -202,9 +192,10 @@ def p_error(p):
 
     if p is not None:
         print("Syntax error (%s) at line %s column %s"%(p.value ,p.lineno,p.lexer.lexpos - p.lexer.current))
-    else:
-        print("Syntax error in input!")
-    raise SyntaxError
+        raise SyntaxError
+#    else:
+#        print("Syntax error in input!")
+    
         
 # Lista de precedencia en los operandos
 #

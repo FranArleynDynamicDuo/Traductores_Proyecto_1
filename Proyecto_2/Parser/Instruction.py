@@ -15,32 +15,17 @@ def spacing(espacio):
         return espacio
         
 class InstructionClass(metaclass=ABCMeta):
-    '''
-    classdocs
-    '''
-
     @abstractmethod
     def __init__(self, params):
-        '''
-        Constructor
-        '''
+        pass
+    
 class Program(InstructionClass):
-    '''
-    classdocs
-    '''
-
+    
     def __init__(self, executeSet,createSet=None ):
-        '''
-        Constructor
- 
-        '''
         self.createSet = createSet
         self.executeSet = executeSet
         
 class CodeBlock(InstructionClass):
-    '''
-    classdocs
-    '''
 
     def __init__(self, blockType,instructionSet ):
         self.blockType = blockType
@@ -56,9 +41,10 @@ class CreateInstruction(InstructionClass):
         self.imprimir("")
         
     def imprimir(self,espacio):
-        print(espacio, "CREAR BOT")
-        print(espacio,espacio," - Tipo: ", self.botType)
-        print(espacio,espacio," - Nombre: ", self.identifier)
+        # print(espacio, "CREAR BOT") 
+        # print(espacio,espacio," - Tipo: ", self.botType)
+        # print(espacio,espacio," - Nombre: ", self.identifier)
+        pass
 
 
 # Clase Declaracion del bot
@@ -70,13 +56,13 @@ class BotDeclaration(InstructionClass):
         self.imprimir("")
         
     def imprimir(self,espacio):
-        if (self.condition == "activation"):
-            print(espacio,"ACTIVACION")
-        elif (self.condition == "deactivation"):
-            print(espacio,"DESACTIVACION")
-        elif (self.condition == "default"):
-            print(espacio,"DEFAULT")
-        
+        #if (self.condition == "activation"):
+        #    print(espacio,"ACTIVACION")
+        #elif (self.condition == "deactivation"):
+        #    print(espacio,"DESACTIVACION")
+        #elif (self.condition == "default"):
+        #    print(espacio,"DEFAULT")
+        pass
         
 # Clase Intrucciones del boot
 class BotInstruction(InstructionClass):
@@ -88,34 +74,32 @@ class BotInstruction(InstructionClass):
         
     def imprimir(self,espacio):
         
-        if (self.argument == None):
-            if (self.command == "store"):
-                print(espacio,espacio," - instruccion: almacenamiento")
-            elif (self.command == "collect"):
-                print(espacio,espacio," - instruccion: coleccion")
-            elif (self.command == "recieve"):
-                print(espacio,espacio," - instruccion: lectura") 
-            elif (self.command == "drop"):
-                print(espacio,espacio," - instruccion: soltado")
+        #if (self.argument != None):
+        #    if (self.command == "store"):
+        #        print(espacio,espacio," - instruccion: almacenamiento")
+        #    elif (self.command == "collect"):
+        #        print(espacio,espacio," - instruccion: coleccion")
+        #    elif (self.command == "recieve"):
+        #        print(espacio,espacio," - instruccion: lectura") 
+        #    elif (self.command == "drop"):
+        #        print(espacio,espacio," - instruccion: soltado")
                  
-            print(espacio,espacio," - valor: ",self.argument)
-
-
-        elif (self.argument == None):
-        
-            if (self.command == "send"):
-                print(espacio,espacio," - instruccion: enviar")
-            elif (self.command == "read"):
-                print(espacio,espacio," - instruccion: leer")
-            elif (self.command == "left"):
-                print(espacio,espacio," - instruccion: movimiento hacia la izquierda")
-            elif (self.command == "right"):
-                print(espacio,espacio," - instruccion: movimiento hacia la derecha")
-            elif (self.command == "up"):
-                print(espacio,espacio," - instruccion: movimiento hacia arriba")
-            elif (self.command == "down"):
-                print(espacio,espacio," - instruccion: movimiento hacia abajo")
-  
+        #    print(espacio,espacio," - valor: ",self.argument)
+        #elif (self.argument == None):
+        #
+        #    if (self.command == "send"):
+        #        print(espacio,espacio," - instruccion: enviar")
+        #    elif (self.command == "read"):
+        #        print(espacio,espacio," - instruccion: leer")
+        #    elif (self.command == "left"):
+        #        print(espacio,espacio," - instruccion: movimiento hacia la izquierda")
+        #    elif (self.command == "right"):
+        #        print(espacio,espacio," - instruccion: movimiento hacia la derecha")
+        #    elif (self.command == "up"):
+        #        print(espacio,espacio," - instruccion: movimiento hacia arriba")
+        #    elif (self.command == "down"):
+        #        print(espacio,espacio," - instruccion: movimiento hacia abajo")
+        pass
 
 # Class ConditionalInstruction      
 class ConditionalInstruction(InstructionClass):
@@ -127,8 +111,9 @@ class ConditionalInstruction(InstructionClass):
         self.imprimir("")
         
     def imprimir(self,espacio):
+        print("--------(ConditionalInstruction)-------")
         print(espacio,"CONDICIONAL")
-        
+
         
 # Class whileInstruction
 class whileInstruction(InstructionClass):
@@ -140,6 +125,7 @@ class whileInstruction(InstructionClass):
         self.imprimir("")
         
     def imprimir(self,espacio):
+        print("--------(whileInstruction)-------")
         print(espacio,"ITERACION INDETERMINADA")
         
         
@@ -151,6 +137,7 @@ class ActivateInstruction:
         self.imprimir("")
         
     def imprimir(self,espacio):
+        print("--------(ActivateInstruction)-------")
         print(espacio,espacio,"ACTIVACION")
 
         for nameBot in self.identList :
@@ -165,6 +152,7 @@ class DeactivateInstruction:
         self.imprimir("")
         
     def imprimir(self,espacio):
+        print("--------(DeactivateInstruction)-------")
         print(espacio,espacio,"DESACTIVACION")
 
         for nameBot in self.identList :
@@ -179,6 +167,7 @@ class AdvanceInstruction:
         self.imprimir("")
         
     def imprimir(self,espacio):
+        print("--------(AdvanceInstruction)-------")
         print(espacio,espacio,"AVANCE")
 
         for nameBot in self.identList :
