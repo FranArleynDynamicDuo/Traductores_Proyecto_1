@@ -29,7 +29,7 @@ def p_aritExpr(p):
     if len(p) == 4:
         p[0] = Expression.ArithmethicExpression(p[1],p[2],p[3])
     elif len(p) == 2:                    
-        p[0] = Expression.ArithmethicExpression(p[1])
+        p[0] = p[1]
 
 
 # (LISTO)
@@ -45,9 +45,9 @@ def p_boolExpr(p):
     if len(p) == 4:
         p[0] = Expression.BooleanExpression(p[1],p[2],p[3])
     elif len(p) == 3:                    
-        p[0] = Expression.BooleanExpression(p[1],p[2])        
+        p[0] = Expression.BooleanExpression(p[2],p[1])        
     elif len(p) == 2:                    
-        p[0] = Expression.BooleanExpression(p[1])
+        p[0] = p[1]
 
 # (LISTO)
 def p_relExpr(p):
@@ -62,7 +62,7 @@ def p_relExpr(p):
     if len(p) == 4:
         p[0] = Expression.RelationalExpresion(p[1],p[2],p[3])
     elif len(p) == 2:                    
-        p[0] = Expression.RelationalExpresion(p[1])
+        p[0] = p[1]
 
 #-----------------------> PROGRAMA GENERAL <------------------------
 
