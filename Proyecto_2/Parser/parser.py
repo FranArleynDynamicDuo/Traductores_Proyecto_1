@@ -150,12 +150,16 @@ def p_identList(p):
     '''identList   :    identList TkComa TkIdent
                    |    identList TkPunto
                    |    TkIdent'''
-    if p[0] == None:
-        p[0] = [p[1]]
-    else:
-        p[0].append(p[1])
     if len(p) == 4:
-        p[0].extend(p[3])
+        p[0] = p[1]
+        p[0].append(p[3])
+    elif len(p) == 3:
+        p[0] = p[1]
+        p[0].append(p[2])        
+    elif len(p) == 2:
+        p[0] = []
+        p[0].append(p[1])    
+
 
 def p_execCont(p):
     '''execCont    :    activate
