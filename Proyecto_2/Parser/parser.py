@@ -15,8 +15,8 @@ tokens = botTokens;
 def p_program(p):
     # Camino 1: Hay un bloque create y un bloque execute
     # Camino 2: Hay un bloque execute
-    '''program : TkCreate botCreateList TkExecute execute TkEnd
-               | TkExecute execute TkEnd'''
+    '''program : TkCreate botCreateList TkExecute executeList TkEnd
+               | TkExecute executeList TkEnd'''
     
     # POR AQUI NO ESTA PASANDO
     if len(p) == 6:
@@ -68,16 +68,15 @@ def p_expression(p):
 #---------------------------> CREATE <----------------------------
 
 def p_botCreateList(p):
-    '''botCreateList :    botCreate botCreateList
-                     |    empty''' # Asi cortamos la lista'''
+    '''botCreateList :    botCreateList botCreate 
+                     |    botCreate''' # Asi cortamos la lista'''
     
     if len(p) == 3:
-        if p[0] == None:    
-            p[0] = [p[1]]      
-        else:    
-            p[0] = p[0].append(p[1])
-            if p[2] != None:
-                p[0] = p[0].extend(p[2])
+        p[0] = p[1]
+        p[0].append(p[2])
+    elif len(p) == 2:
+        p[0] = []
+        p[0].append(p[1])
     
 def p_botCreate(p):
     '''botCreate :       TkInt  TkBot TkIdent botDeclaracionList TkEnd
@@ -87,14 +86,14 @@ def p_botCreate(p):
     p.set_lineno(0,p.lineno(1)) 
 
 def p_botDeclaracionList(p):
-    '''botDeclaracionList :    botDeclaracion botDeclaracionList
-                          |    empty'''
+    '''botDeclaracionList :    botDeclaracionList botDeclaracion 
+                          |    botDeclaracion'''
     if len(p) == 3:
-        if p[0] == None:
-            p[0] = [p[1]]  
-        else:          
-            p[0] = p[0].append(p[1])
-            p[0] = p[0].extend(p[2])
+        p[0] = p[1]
+        p[0].append(p[2])
+    elif len(p) == 2:
+        p[0] = []
+        p[0].append(p[1])
             
 def p_botDeclaracion(p):
     '''botDeclaracion  :    TkOn TkActivation TkDosPuntos botInstruccionList TkEnd
@@ -106,14 +105,14 @@ def p_botDeclaracion(p):
     
 
 def p_botInstruccionList(p):
-    '''botInstruccionList  :    botInstruccion botInstruccionList 
-                           |    empty''' # Asi cortamos la lista
+    '''botInstruccionList  :    botInstruccionList botInstruccion  
+                           |    botInstruccion''' # Asi cortamos la lista
     if len(p) == 3:
-        if p[0] == None:
-            p[0] = [p[1]]
-        else:
-            p[0] = p[0].append(p[1])
-            p[0] = p[0].extend(p[2])
+        p[0] = p[1]
+        p[0].append(p[2])
+    elif len(p) == 2:
+        p[0] = []
+        p[0].append(p[1])
 
 def p_botInstruccion(p):
     '''botInstruccion :    TkStore TkNum TkPunto
@@ -136,20 +135,21 @@ def p_botInstruccion(p):
 # -----------------------> INSTRUCCIONES <--------------------------
 
 def p_execute(p):
-    '''execute :    execCont execute
-               |    empty''' # Asi cortamos la lista'''
+    '''executeList :    executeList execCont 
+                   |    execCont''' # Asi cortamos la lista'''
 
     if len(p) == 3:
-        if p[0] == None:
-            p[0] = [p[1]]
-        else:
-            p[0].append(p[1])
-            p[0] = p[0].extend(p[2])
+        p[0] = p[1]
+        p[0].append(p[2])
+    elif len(p) == 2:
+        p[0] = []
+        p[0].append(p[1])
 
 
 def p_identList(p):
-    '''identList   :    TkIdent TkPunto
-                   |    TkIdent TkComa identList'''
+    '''identList   :    identList TkComa TkIdent
+                   |    identList TkPunto
+                   |    TkIdent'''
     if p[0] == None:
         p[0] = [p[1]]
     else:
@@ -166,8 +166,8 @@ def p_execCont(p):
     p[0] = p[1]
 
 def p_conditional(p):
-    '''conditional  :    TkIf expression TkDosPuntos execCont TkElse execCont TkEnd
-                    |    TkIf expression TkDosPuntos execCont TkEnd'''
+    '''conditional  :    TkIf expression TkDosPuntos executeList TkElse executeList TkEnd
+                    |    TkIf expression TkDosPuntos executeList TkEnd'''
     if len(p) == 8:
         p[0] = Instruction.ConditionalInstruction(p[2],p[4],p[6])
     elif len(p) == 6:
