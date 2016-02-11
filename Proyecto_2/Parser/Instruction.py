@@ -40,6 +40,7 @@ class Program(InstructionClass):
         retorno += "\n"
         for execute in self.executeSet :
             retorno += str(execute)
+        retorno += "\n"
         return retorno
         
         
@@ -62,7 +63,8 @@ class CreateInstruction(InstructionClass):
         retorno += "\n"
         for declarion in self.declarationSet:
             if declarion != None:
-                retorno += espacio + espacio + espacio + espacio +  str(declarion);
+                retorno += espacio + espacio + espacio + espacio +  str(declarion)
+        retorno += "\n"
         return retorno
 
 
@@ -144,6 +146,7 @@ class ConditionalInstruction(InstructionClass):
         retorno += "\n"
         retorno += "CONDICIONAL"
         retorno += "\n"
+        retorno += str(self.ifCondition)
         for instruction in self.ifInstructionSet :
             retorno += str(instruction)
         

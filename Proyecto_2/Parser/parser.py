@@ -23,7 +23,6 @@ def p_program(p):
         p[0] = Instruction.Program(createSet = p[2],executeSet = p[4])
     if len(p) == 4:
         p[0] = Instruction.Program(createSet = None,executeSet = p[2])
-    p.set_lineno(0,p.lineno(1)) 
 
 #----------------------->   EXPRESIONES  <------------------------'''
 
@@ -58,7 +57,7 @@ def p_expression(p):
         elif ((p[2] == "<") or (p[2] == "<=") or (p[2] == ">") or (p[2] == ">=") or (p[2] == "=")):
             p[0] = Expression.RelationalExpresion(p[1],p[2],p[3])    
         elif ((p[1] == "(") and (p[3] == ")")):
-            p[0] = Expression.BooleanExpression(p[1],p[2],p[3])                     
+            p[0] = Expression.ParentizedExpression(p[1],p[2],p[3])                     
     elif len(p) == 3:             
         p[0] = Expression.BooleanExpression(expresion1= p[2], operador = p[1])        
     elif len(p) == 2:                    
@@ -83,7 +82,7 @@ def p_botCreate(p):
                  |       TkBool TkBot TkIdent botDeclaracionList TkEnd
                  |       TkChar TkBot TkIdent botDeclaracionList TkEnd'''
     p[0] = Instruction.CreateInstruction(p[1],p[3],p[4])
-    p.set_lineno(0,p.lineno(1)) 
+     
 
 def p_botDeclaracionList(p):
     '''botDeclaracionList :    botDeclaracionList botDeclaracion 
@@ -101,7 +100,7 @@ def p_botDeclaracion(p):
                     |       TkOn expression TkDosPuntos botInstruccionList TkEnd
                     |       TkOn TkDefault TkDosPuntos botInstruccionList TkEnd'''
     p[0] = Instruction.BotDeclaration(p[2],p[4])
-    p.set_lineno(0,p.lineno(1)) 
+     
     
 
 def p_botInstruccionList(p):
@@ -155,7 +154,6 @@ def p_identList(p):
         p[0].append(p[3])
     elif len(p) == 3:
         p[0] = p[1]
-        p[0].append(p[2])        
     elif len(p) == 2:
         p[0] = []
         p[0].append(p[1])    
@@ -184,7 +182,7 @@ def p_while(p):
 def p_activate(p):
     '''activate     :    TkActivate identList'''
     p[0] = Instruction.ActivateInstruction(p[2])
-    p.set_lineno(0,p.lineno(1)) 
+     
     
 def p_deactivate(p):
     '''deactivate     :    TkDeactivate identList'''
