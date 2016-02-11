@@ -32,8 +32,12 @@ class Program(InstructionClass):
         retorno += "PROGRAM"
         retorno += "\n"
         if self.createSet != None:
+            retorno += "CREATE"
+            retorno += "\n"
             for create in self.createSet :
                 retorno += str(create)
+        retorno += "EXECUTE"
+        retorno += "\n"
         for execute in self.executeSet :
             retorno += str(execute)
         return retorno
@@ -57,8 +61,8 @@ class CreateInstruction(InstructionClass):
         retorno += espacio + espacio + " - Nombre: " +  str(self.identifier);
         retorno += "\n"
         for declarion in self.declarationSet:
-            retorno += espacio + espacio + " - Nombre: " +  str(declarion);
-            retorno += "\n"
+            if declarion != None:
+                retorno += espacio + espacio + espacio + espacio +  str(declarion);
         return retorno
 
 
@@ -80,8 +84,9 @@ class BotDeclaration(InstructionClass):
             retorno +=espacio + "DEFAULT"
         retorno += "\n"
         for instruction in self.instructionSet:
-            retorno +=espacio + espacio + espacio + espacio + str(instruction)
-            retorno += "\n"
+            if instruction != None:
+                retorno +=espacio + espacio + espacio + espacio + str(instruction)
+                retorno += "\n"
         return retorno
         
 # Clase Intrucciones del boot
@@ -90,36 +95,40 @@ class BotInstruction(InstructionClass):
     def __init__(self, command,argument=None):
         self.command = command
         self.argument = argument
-        #
+   
+    def __str__(self):
+        espacio = ""
+        retorno = ""
+        if (self.argument != None):
+            if (self.command == "store"):
+                retorno +=espacio + espacio + espacio + espacio + " - instruccion: almacenamiento"
+            elif (self.command == "collect"):
+                retorno +=espacio + espacio + espacio+ espacio+ " - instruccion: coleccion"
+            elif (self.command == "recieve"):
+                retorno +=espacio + espacio+ espacio+ espacio + " - instruccion: lectura"
+            elif (self.command == "drop"):
+                retorno +=espacio + espacio + espacio+ espacio + " - instruccion: soltado"  
+            retorno += "\n"
+            retorno +=espacio + espacio + " - valor: "  + str(self.argument)
         
-    def imprimir(self,espacio):
+        elif (self.argument == None):
         
-        #if (self.argument != None):
-        #    if (self.command == "store"):
-        #        print(espacio,espacio," - instruccion: almacenamiento")
-        #    elif (self.command == "collect"):
-        #        print(espacio,espacio," - instruccion: coleccion")
-        #    elif (self.command == "recieve"):
-        #        print(espacio,espacio," - instruccion: lectura") 
-        #    elif (self.command == "drop"):
-        #        print(espacio,espacio," - instruccion: soltado")
-                 
-        #    print(espacio,espacio," - valor: ",self.argument)
-        #elif (self.argument == None):
-        #
-        #    if (self.command == "send"):
-        #        print(espacio,espacio," - instruccion: enviar")
-        #    elif (self.command == "read"):
-        #        print(espacio,espacio," - instruccion: leer")
-        #    elif (self.command == "left"):
-        #        print(espacio,espacio," - instruccion: movimiento hacia la izquierda")
-        #    elif (self.command == "right"):
-        #        print(espacio,espacio," - instruccion: movimiento hacia la derecha")
-        #    elif (self.command == "up"):
-        #        print(espacio,espacio," - instruccion: movimiento hacia arriba")
-        #    elif (self.command == "down"):
-        #        print(espacio,espacio," - instruccion: movimiento hacia abajo")
-        pass
+            if (self.command == "send"):
+                retorno +=espacio + espacio+ espacio+ espacio + " - instruccion: enviar"
+            elif (self.command == "read"):
+                retorno +=espacio + espacio+ espacio+ espacio + " - instruccion: leer"
+            elif (self.command == "left"):
+                retorno +=espacio + espacio+ espacio+ espacio + " - instruccion: movimiento hacia la izquierda"
+            elif (self.command == "right"):
+                retorno +=espacio + espacio+ espacio+ espacio + " - instruccion: movimiento hacia la derecha"
+            elif (self.command == "up"):
+                retorno +=espacio + espacio+ espacio+ espacio + " - instruccion: movimiento hacia arriba"
+            elif (self.command == "down"):
+                retorno +=espacio + espacio + " - instruccion: movimiento hacia abajo"
+        
+        retorno += "\n"
+        
+        return retorno 
 
 # Class ConditionalInstruction      
 class ConditionalInstruction(InstructionClass):
@@ -128,12 +137,20 @@ class ConditionalInstruction(InstructionClass):
         self.ifCondition = ifCondition
         self.ifInstructionSet = ifInstructionSet
         self.elseInstructionSet = elseInstructionSet    
-        #
+    
+    def __str__(self):
+        retorno = ""
+        retorno += "--------(ConditionalInstruction)-------"
+        retorno += "\n"
+        retorno += "CONDICIONAL"
+        retorno += "\n"
+        for instruction in self.ifInstructionSet :
+            retorno += str(instruction)
         
-    def imprimir(self,espacio):
-        print("--------(ConditionalInstruction)-------")
-        print(espacio,"CONDICIONAL")
-
+        if self.elseInstructionSet != None:
+            for instruction in self.elseInstructionSet :
+                retorno += str(instruction)
+        return retorno
         
 # Class whileInstruction
 class whileInstruction(InstructionClass):
@@ -142,11 +159,15 @@ class whileInstruction(InstructionClass):
         self.condition = condition
         self.instructionSet = instructionSet
         
-        #
-        
-    def imprimir(self,espacio):
-        print("--------(whileInstruction)-------")
-        print(espacio,"ITERACION INDETERMINADA")
+    def __str__(self):
+        retorno = ""
+        retorno += "--------(whileInstruction)-------"
+        retorno += "\n"
+        retorno += "ITERACION INDETERMINADA"
+        retorno += "\n"
+        for instruction in self.instructionSet :
+            retorno += str(instruction)
+        return retorno
         
         
 # Class ActivateInstruction (REVISAR COMO HACER EL FOR PENDIENTE EN DONDE)
@@ -157,22 +178,15 @@ class ActivateInstruction:
         
 
     def __str__(self):
+        espacio = ""
         retorno = ""
         retorno += "--------(ActivateInstruction)-------"
         retorno += "\n"
         retorno += "ACTIVACION"
         retorno += "\n"
         for nameBot in self.identList :
-            print("","",""," - var: ", nameBot)
+            retorno += espacio + espacio + espacio + " - var: " + str(nameBot)
         return retorno
-        
-    def imprimir(self,espacio):
-        print("--------(ActivateInstruction)-------")
-        print(espacio,espacio,"ACTIVACION")
-
-        for nameBot in self.identList :
-            print(espacio,espacio,espacio," - var: ", nameBot)
-        
         
 # Class DeactivateInstruction (REVISAR COMO HACER EL FOR PENDIENTE EN DONDE)
 class DeactivateInstruction:
@@ -181,22 +195,16 @@ class DeactivateInstruction:
         self.identList = identList
         
     def __str__(self):
+        espacio = ""
         retorno = ""
         retorno += "--------(DeactivateInstruction)-------"
         retorno += "\n"
         retorno += "DESACTIVACION"
         retorno += "\n"
         for nameBot in self.identList :
-            print("","",""," - var: ", nameBot)
+            retorno += espacio + espacio + espacio + " - var: " + str(nameBot)
         return retorno
-            
-    def imprimir(self,espacio):
-        print("--------(DeactivateInstruction)-------")
-        print(espacio,espacio,"DESACTIVACION")
 
-        for nameBot in self.identList :
-            print(espacio,espacio,espacio," - var: ", nameBot)
-    
  
 # Class AdvanceInstruction
 class AdvanceInstruction:
@@ -205,22 +213,14 @@ class AdvanceInstruction:
         self.identList = identList
     
     def __str__(self):
+        espacio = ""
         retorno = ""
         retorno += "--------(AdvanceInstruction)-------"
         retorno += "\n"
         retorno += "AVANCE"
         retorno += "\n"
         for nameBot in self.identList :
-            print("","",""," - var: ", nameBot)
+            retorno += espacio + espacio + espacio + " - var: " + str(nameBot)
         return retorno
-    
-        
-    def imprimir(self,espacio):
-        
-        print("--------(AdvanceInstruction)-------")
-        print(espacio,espacio,"AVANCE")
-
-        for nameBot in self.identList :
-            print(espacio,espacio,espacio," - var: ", nameBot)
         
         

@@ -73,10 +73,11 @@ def p_botCreateList(p):
     
     if len(p) == 3:
         if p[0] == None:    
-            p[0] = [p[1],p[2]]      
+            p[0] = [p[1]]      
         else:    
             p[0] = p[0].append(p[1])
-            p[0] = p[0].extend(p[2])
+            if p[2] != None:
+                p[0] = p[0].extend(p[2])
     
 def p_botCreate(p):
     '''botCreate :       TkInt  TkBot TkIdent botDeclaracionList TkEnd
@@ -90,7 +91,7 @@ def p_botDeclaracionList(p):
                           |    empty'''
     if len(p) == 3:
         if p[0] == None:
-            p[0] = [p[1],p[2]]  
+            p[0] = [p[1]]  
         else:          
             p[0] = p[0].append(p[1])
             p[0] = p[0].extend(p[2])
@@ -109,7 +110,7 @@ def p_botInstruccionList(p):
                            |    empty''' # Asi cortamos la lista
     if len(p) == 3:
         if p[0] == None:
-            p[0] = [p[1],p[2]]
+            p[0] = [p[1]]
         else:
             p[0] = p[0].append(p[1])
             p[0] = p[0].extend(p[2])

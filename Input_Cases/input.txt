@@ -4,13 +4,11 @@ create
 			store 3.
 		end
 	end
-	
 	int bot contador
 		on default:
 			store 35.
 		end
 	end
-	
 execute
 	activate contador,n.
 	$- Asignar al contador
