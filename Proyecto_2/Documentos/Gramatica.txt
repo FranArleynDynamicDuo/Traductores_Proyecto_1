@@ -5,83 +5,89 @@ NOTA: SI QUIERO COLOCAR VARIOS CONDICIONALES
                     
 '''-----------------------> BLOQUE INICIAL <------------------------'''
 
-'''program : bloque'''
-
-'''bloque : TkCreate create
-          | TkExecute execute TkEnd''' (Opcional Preguntar a Fran)
+'''program : TkCreate botCreateList TkExecute executeList TkEnd
+           | TkExecute executeList TkEnd'''
            
 '''---------------------------> CREATE <----------------------------'''
            
-'''create :  TkInt  TkBot TkIdent declaracion 
-          |  TkBool TkBot TkIdent declaracion
-          |  TkChar TkBot TkIdent declaracion'''
+'''botCreateList : botCreateList botCreate 
+                 | botCreate''' 
               
-'''declaracion : TkOn TkActivation TkDosPuntos instruccion 
-               | TkOn TkDeactivation TkDosPuntos instruccion
-               | TkOn TkCustomCondition TkDosPuntos instruccion
-               | TkOn TkDefault TkDosPuntos instruccion'''
+'''botCreate : TkInt  TkBot TkIdent botDeclaracionList TkEnd
+             | TkBool TkBot TkIdent botDeclaracionList TkEnd
+             | TkChar TkBot TkIdent botDeclaracionList TkEnd'''
               
-'''instruccion : TkStore TkNum TkPunto instruccion
-               | TkStore TkCaracter TkPunto instruccion
-               | TkCollect TkPunto                 // FALTA ALGO "as"
-               | TkRecieve TkPunto instruccion
-               | Tkdrop TkNum TkPunto instruccion
-               | Tkdrop TkCaracter TkPunto instruccion
-               | TkSend TkPunto instruccion     
-               | TkRead TkPunto instruccion     // FALTA ALGO "as"
-               | TkLeft TkPunto instruccion
-               | TkRight TkPunto instruccion
-               | TkUp TkPunto instruccion
-               | TkDown TkPunto instruccion    
-               | end'''
+'''botDeclaracionList : botDeclaracionList botDeclaracion 
+                      | botDeclaracion'''
               
-'''end : TkEnd end
-       | declaracion
-       | create
-       | bloque'''
+'''botDeclaracion  : TkOn TkActivation TkDosPuntos botInstruccionList TkEnd
+                   | TkOn TkDeactivation TkDosPuntos botInstruccionList TkEnd
+                   | TkOn expression TkDosPuntos botInstruccionList TkEnd
+                   | TkOn TkDefault TkDosPuntos botInstruccionList TkEnd'''
+                   
+'''botInstruccionList : botInstruccionList botInstruccion  
+                      | botInstruccion'''
+                      
+'''botInstruccion : TkStore TkNum TkPunto
+                  | TkStore TkCaracter TkPunto
+                  | TkCollect TkPunto
+                  | TkCollect TkIdent TkPunto                   
+                  | TkRecieve TkPunto
+                  | TkDrop TkNum TkPunto
+                  | TkDrop TkCaracter TkPunto
+                  | TkSend TkPunto     
+                  | TkRead TkPunto
+                  | TkLeft TkPunto
+                  | TkRight TkPunto
+                  | TkUp TkPunto
+                  | TkDown TkPunto'''
       
 '''---------------------------> EXECUTE <----------------------------'''
 
-'''execute : TkActivate identList
-           | TkDeactivate identLits'''
+'''executeList : executeList execCont 
+               | execCont'''
           
-'''identList : TkIdent TkPunto cont
-             | TkIdent TkComa identList'''
+'''identList : identList TkComa TkIdent
+             | identList TkPunto
+             | TkIdent''''
             
-'''cont : TkAdvance identList cont
-        | TkDeactivate identList cont
-        | conditional cont
-        | while cont
-        | TkEnd'''                     (SE BORRARIA)
+'''execCont : activate
+            | deactivate
+            | advance
+            | conditional
+            | while'''                 
        
-'''conditional : TkIf boolExpr TkDosPuntos cont TkElse cont TkEnd
-               | TkIf boolExpr TkDosPuntos cont TkEnd'''
+'''conditional  : TkIf expression TkDosPuntos executeList TkElse executeList TkEnd
+                | TkIf expression TkDosPuntos executeList TkEnd'''
               
-'''while : TkWhile boolExpr TkDosPuntos cont TkEnd'''
+'''while :  TkWhile expression TkDosPuntos executeList TkEnd'''
 
-'''boolExpr : TkParAbre boolExpr TkParCierra
-            | boolExpr TkConjuncion boolExpr
-            | boolExpr TkDisyuncion boolExpr
-            | TkNegacion boolExpr
-            | relExpr
-            | TkFalse
-            | TkTrue
-            | tkIdent'''
-             
-'''relExpr : TkParAbre relExpr TkParCierra
-           | relExpr TkMenor relExpr
-           | relExpr TkMenorIgual relExpr
-           | relExpr TkMayor relExpr
-           | relExpr TkMayorIgual relExpr
-           | relExpr TkIgual relExpr         
-           | aritExpr
-           | tkIdent'''
-           
-'''aritExpr : TkParAbre aritExpr TkParCierra
-            | aritExpr TkSuma aritExpr
-            | aritExpr TkResta aritExpr
-            | aritExpr TkMult aritExpr
-            | aritExpr TkDiv aritExpr
-            | aritExpr TkMod aritExpr
-            | TkNum
-            | tkIdent '''
+'''activate : TkActivate identList'''
+ 
+'''deactivate : TkDeactivate identList''' 
+
+'''advance : TkAdvance identList'''   
+
+#----------------------->   EXPRESIONES  <------------------------'''
+
+
+'''expression : TkParAbre expression TkParCierra
+                  | expression TkSuma expression
+                  | expression TkResta expression
+                  | expression TkMult expression
+                  | expression TkDiv expression
+                  | expression TkMod expression
+                  | expression TkConjuncion expression
+                  | expression TkDisyuncion expression
+                  | expression TkMenor expression
+                  | expression TkMenorIgual expression
+                  | expression TkMayor expression
+                  | expression TkMayorIgual expression
+                  | expression TkIgual expression
+                  | TkNegacion expression                  
+                  | TkNum                    
+                  | TkFalse
+                  | TkTrue                        
+                  | TkIdent'''
+
+

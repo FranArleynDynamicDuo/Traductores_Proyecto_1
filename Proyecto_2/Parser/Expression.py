@@ -38,21 +38,21 @@ def spacing(espacio):
     
 # Funcion para imprmir las Operaciones Binarias    
 def operacionBinariaString(expresion1,operador,expresion2):
-    espacio =""
+    espacio ="    "
     retorno =""
     operador = binary_symbol[operador]
-    retorno += (espacio + espacio + espacio + espacio + " - operacion: " +  "'"+operador+"'")
+    retorno += (espacio + espacio + espacio + " - operacion: " +  "'"+operador+"'")
     retorno += "\n"
-    retorno += espacio + espacio + espacio + espacio + " - operando izquierdo: " +  str(expresion1)
+    retorno += espacio + espacio + espacio + " - operando izquierdo: " +  str(expresion1)
     retorno += "\n"
-    retorno += espacio + espacio + espacio + espacio + " - operando derecho: " +  str(expresion2)
+    retorno += espacio + espacio + espacio + " - operando derecho: " +  str(expresion2)
     retorno += "\n"
     return retorno
 
 
 # Funcion para imprmir las Operaciones Unarias
 def operacionUnariaString(expresion1,operador):
-    espacio =""
+    espacio ="    "
     retorno =""
     operador = binary_symbol[operador]
     retorno += (espacio + espacio + espacio + espacio + " - operacion: " +  "'"+operador+"'")
@@ -63,13 +63,13 @@ def operacionUnariaString(expresion1,operador):
 
 # Funcion para imprmir las Expresiones Con Parentesis
 def expresionParentesisString(expresion):
-    espacio =""
+    espacio ="    "
     retorno =""
-    retorno += (espacio + espacio + espacio + espacio + "- parentesis izquierdo: " +  "'('")
+    retorno += (espacio + espacio + espacio +  "- parentesis izquierdo: " +  "'('")
     retorno += "\n"
-    retorno += espacio + espacio + espacio + espacio + "- expresion: " +  str(expresion)
+    retorno += espacio + espacio + espacio + "- expresion: " +  str(expresion)
     retorno += "\n"
-    retorno += espacio + espacio + espacio + espacio + "- parentesis derecho: " +  "')'"
+    retorno += espacio + espacio + espacio + "- parentesis derecho: " +  "')'"
     return retorno
     
 # Expresiones Aritmetica
@@ -87,12 +87,11 @@ class ArithmethicExpression:
         #self.imprimir("")
         
     def __str__(self):
-        espacio = ""
+        espacio ="    "
         retorno = ""
         retorno += "\n"
-        #retorno += "--------(ArithmethicExpression)-------"
         retorno += "\n"
-        retorno += espacio + espacio + espacio + espacio + "- guardia: ArithmethicExpression"
+        retorno += espacio + espacio + "- guardia: ArithmethicExpression"
         retorno += "\n"
         if( self.expresion1 != "(" ):
             if ( (self.operador != None) and (self.expresion2 != None) ):
@@ -110,12 +109,11 @@ class RelationalExpresion:
         #self.imprimir("")
         
     def __str__(self):
-        espacio = ""
+        espacio ="    "
         retorno = ""
         retorno += "\n"
-        #retorno += "--------(RelationalExpresion)-------"
         retorno += "\n"
-        retorno += espacio + espacio + espacio + espacio + "- guardia: RelationalExpresion"
+        retorno += espacio + espacio + "- guardia: RelationalExpresion"
         retorno += "\n"
         if( self.expresion1 != "(" ):
             if ( (self.operador != None) and (self.expresion2 != None) ):
@@ -134,12 +132,11 @@ class BooleanExpression:
         #self.imprimir("")
  
     def __str__(self):
-        espacio = ""
+        espacio ="    "
         retorno = ""
         retorno += "\n"
-        retorno += "--------(BooleanExpression)-------"
         retorno += "\n"
-        #retorno += espacio + espacio + espacio + espacio + "- guardia: BooleanExpression"
+        retorno += espacio + espacio + "- guardia: BooleanExpression"
         retorno += "\n"
         if( self.expresion1 != "(" ):
             if ( (self.operador != None) and (self.expresion2 != None) ):
@@ -160,14 +157,14 @@ class ParentizedExpression:
         #self.imprimir("")
  
     def __str__(self):
-        espacio = ""
+        espacio = "    "
         retorno = ""
         retorno += "\n"
         retorno += "\n"
-        retorno += espacio + espacio + espacio + espacio + "--- Open ParentizedExpression ---"
+        retorno += espacio + espacio + "--- Open ParentizedExpression ---"
         retorno += "\n"
         retorno += expresionParentesisString(self.expresion)
         retorno += "\n"
-        retorno += espacio + espacio + espacio + espacio + "--- Close ParentizedExpression ---"
+        retorno += espacio + espacio + "--- Close ParentizedExpression ---"
         retorno += "\n"
         return retorno 

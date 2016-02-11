@@ -7,7 +7,7 @@ Created on Feb 1, 2016
 
 from abc import ABCMeta, abstractmethod
     
-# Funcion para controlar el espaciado
+    
 def spacing(espacio):
         i = 0
         while (i < 4):
@@ -28,15 +28,12 @@ class Program(InstructionClass):
         
     def __str__(self):
         retorno = ""
+        retorno += "\n"
         retorno += "--------(Program)-------"
         retorno += "\n"
         retorno += "PROGRAM"
         retorno += "\n"
-        if self.createSet != None:
-            retorno += "CREATE"
-            retorno += "\n"
-            for create in self.createSet :
-                retorno += str(create)
+        retorno += "\n"
         retorno += "EXECUTE"
         retorno += "\n"
         for execute in self.executeSet :
@@ -54,19 +51,7 @@ class CreateInstruction(InstructionClass):
         self.declarationSet = declarationSet    
 
     def __str__(self):
-        espacio = ""
-        retorno = ""
-        retorno += "CREAR BOT"
-        retorno += "\n"
-        retorno += espacio + espacio + " - Tipo: " + str(self.botType);
-        retorno += "\n"
-        retorno += espacio + espacio + " - Nombre: " +  str(self.identifier);
-        retorno += "\n"
-        for declarion in self.declarationSet:
-            if declarion != None:
-                retorno += espacio + espacio + espacio + espacio +  str(declarion)
-        retorno += "\n"
-        return retorno
+        pass
 
 
 # Clase Declaracion del bot
@@ -77,20 +62,7 @@ class BotDeclaration(InstructionClass):
         self.instructionSet = instructionSet
  
     def __str__(self):
-        espacio = ""
-        retorno = ""
-        if (self.condition == "activation"):
-            retorno +=espacio + "ACTIVACION"
-        elif (self.condition == "deactivation"):
-            retorno +=espacio + "DESACTIVACION"
-        elif (self.condition == "default"):
-            retorno +=espacio + "DEFAULT"
-        retorno += "\n"
-        for instruction in self.instructionSet:
-            if instruction != None:
-                retorno +=espacio + espacio + espacio + espacio + str(instruction)
-                retorno += "\n"
-        return retorno
+        pass
         
 # Clase Intrucciones del boot
 class BotInstruction(InstructionClass):
@@ -100,38 +72,7 @@ class BotInstruction(InstructionClass):
         self.argument = argument
    
     def __str__(self):
-        espacio = ""
-        retorno = ""
-        if (self.argument != None):
-            if (self.command == "store"):
-                retorno +=espacio + espacio + espacio + espacio + " - instruccion: almacenamiento"
-            elif (self.command == "collect"):
-                retorno +=espacio + espacio + espacio+ espacio+ " - instruccion: coleccion"
-            elif (self.command == "recieve"):
-                retorno +=espacio + espacio+ espacio+ espacio + " - instruccion: lectura"
-            elif (self.command == "drop"):
-                retorno +=espacio + espacio + espacio+ espacio + " - instruccion: soltado"  
-            retorno += "\n"
-            retorno +=espacio + espacio + " - valor: "  + str(self.argument)
-        
-        elif (self.argument == None):
-        
-            if (self.command == "send"):
-                retorno +=espacio + espacio+ espacio+ espacio + " - instruccion: enviar"
-            elif (self.command == "read"):
-                retorno +=espacio + espacio+ espacio+ espacio + " - instruccion: leer"
-            elif (self.command == "left"):
-                retorno +=espacio + espacio+ espacio+ espacio + " - instruccion: movimiento hacia la izquierda"
-            elif (self.command == "right"):
-                retorno +=espacio + espacio+ espacio+ espacio + " - instruccion: movimiento hacia la derecha"
-            elif (self.command == "up"):
-                retorno +=espacio + espacio+ espacio+ espacio + " - instruccion: movimiento hacia arriba"
-            elif (self.command == "down"):
-                retorno +=espacio + espacio + " - instruccion: movimiento hacia abajo"
-        
-        retorno += "\n"
-        
-        return retorno 
+        pass
 
 # Class ConditionalInstruction      
 class ConditionalInstruction(InstructionClass):
@@ -146,8 +87,7 @@ class ConditionalInstruction(InstructionClass):
         retorno += "\n"
         retorno += "--------(ConditionalInstruction)-------"
         retorno += "\n"
-        retorno += "CONDICIONAL"
-        retorno += "\n"
+        retorno += "    CONDICIONAL"
         retorno += str(self.ifCondition)
         for instruction in self.ifInstructionSet :
             retorno += str(instruction)
@@ -160,7 +100,7 @@ class ConditionalInstruction(InstructionClass):
 # Class whileInstruction
 class whileInstruction(InstructionClass):
 
-    def __init__(self, condition,instructionSet):
+    def __init__(self,condition,instructionSet):
         self.condition = condition
         self.instructionSet = instructionSet
         
@@ -169,8 +109,9 @@ class whileInstruction(InstructionClass):
         retorno += "\n"
         retorno += "--------(whileInstruction)-------"
         retorno += "\n"
-        retorno += "ITERACION INDETERMINADA"
+        retorno += "    ITERACION INDETERMINADA"
         retorno += "\n"
+        retorno += str(self.condition)
         for instruction in self.instructionSet :
             retorno += str(instruction)
         return retorno
@@ -184,15 +125,15 @@ class ActivateInstruction:
         
 
     def __str__(self):
-        espacio = ""
+        espacio = "  "
         retorno = ""
         retorno += "\n"
         retorno += "--------(ActivateInstruction)-------"
         retorno += "\n"
-        retorno += "ACTIVACION"
+        retorno += "    ACTIVACION"
         retorno += "\n"
         for nameBot in self.identList :
-            retorno += espacio + espacio + espacio + " - var: " + str(nameBot)
+            retorno += espacio + espacio + " - var: " + str(nameBot)
             retorno += "\n"
         return retorno
         
@@ -203,15 +144,15 @@ class DeactivateInstruction:
         self.identList = identList
         
     def __str__(self):
-        espacio = ""
+        espacio = "  "
         retorno = ""
         retorno += "\n"
         retorno += "--------(DeactivateInstruction)-------"
         retorno += "\n"
-        retorno += "DESACTIVACION"
+        retorno += "    DESACTIVACION"
         retorno += "\n"
         for nameBot in self.identList :
-            retorno += espacio + espacio + espacio + " - var: " + str(nameBot)
+            retorno += espacio + espacio + " - var: " + str(nameBot)
             retorno += "\n"
         return retorno
 
@@ -223,15 +164,15 @@ class AdvanceInstruction:
         self.identList = identList
     
     def __str__(self):
-        espacio = ""
+        espacio = "    "
         retorno = ""
         retorno += "\n"
         retorno += "--------(AdvanceInstruction)-------"
         retorno += "\n"
-        retorno += "AVANCE"
+        retorno += "    AVANCE"
         retorno += "\n"
         for nameBot in self.identList :
-            retorno += espacio + espacio + espacio + " - var: " + str(nameBot)
+            retorno += espacio + espacio + " - var: " + str(nameBot)
             retorno += "\n"
         return retorno
         

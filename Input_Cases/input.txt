@@ -10,10 +10,10 @@ create
 		end
 	end
 execute
-	activate contador,n.
+	deactivate contador,n.
 	$- Asignar al contador
 	el valor 35, si bar > ~ 2 -$
-	if (3 + 3) > (2 + 2):
-		advance contador,n.
+	while (3 + 2) > (2 - 1):
+		deactivate contador,n.
 	end
 end

@@ -73,6 +73,7 @@ def p_botCreateList(p):
         p[0] = []
         p[0].append(p[1])
     
+    
 def p_botCreate(p):
     '''botCreate :       TkInt  TkBot TkIdent botDeclaracionList TkEnd
                  |       TkBool TkBot TkIdent botDeclaracionList TkEnd
@@ -90,13 +91,13 @@ def p_botDeclaracionList(p):
         p[0] = []
         p[0].append(p[1])
             
+            
 def p_botDeclaracion(p):
     '''botDeclaracion  :    TkOn TkActivation TkDosPuntos botInstruccionList TkEnd
                     |       TkOn TkDeactivation TkDosPuntos botInstruccionList TkEnd
                     |       TkOn expression TkDosPuntos botInstruccionList TkEnd
                     |       TkOn TkDefault TkDosPuntos botInstruccionList TkEnd'''
-    p[0] = Instruction.BotDeclaration(p[2],p[4])
-     
+    p[0] = Instruction.BotDeclaration(p[2],p[4])     
     
 
 def p_botInstruccionList(p):
@@ -108,6 +109,7 @@ def p_botInstruccionList(p):
     elif len(p) == 2:
         p[0] = []
         p[0].append(p[1])
+
 
 def p_botInstruccion(p):
     '''botInstruccion :    TkStore TkNum TkPunto
@@ -127,6 +129,7 @@ def p_botInstruccion(p):
         p[0] = Instruction.BotInstruction(p[1],p[2])
     if len(p) == 3:
         p[0] = Instruction.BotInstruction(p[1])
+
 # -----------------------> INSTRUCCIONES <--------------------------
 
 def p_execute(p):
@@ -163,6 +166,7 @@ def p_execCont(p):
                    |    while''' # Asi cortamos la lista'''
     p[0] = p[1]
 
+
 def p_conditional(p):
     '''conditional  :    TkIf expression TkDosPuntos executeList TkElse executeList TkEnd
                     |    TkIf expression TkDosPuntos executeList TkEnd'''
@@ -171,9 +175,11 @@ def p_conditional(p):
     elif len(p) == 6:
         p[0] = Instruction.ConditionalInstruction(p[2],p[4])
 
+
 def p_while(p):
-    '''while        :    TkWhile expression TkDosPuntos execCont TkEnd'''
+    '''while        :    TkWhile expression TkDosPuntos executeList TkEnd'''
     p[0] = Instruction.whileInstruction(p[2],p[4])
+
 
 def p_activate(p):
     '''activate     :    TkActivate identList'''
@@ -183,6 +189,7 @@ def p_activate(p):
 def p_deactivate(p):
     '''deactivate     :    TkDeactivate identList'''
     p[0] = Instruction.DeactivateInstruction(p[2])    
+    
     
 def p_advance(p):
     '''advance     :    TkAdvance identList'''
