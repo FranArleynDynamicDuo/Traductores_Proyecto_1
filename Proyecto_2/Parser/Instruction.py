@@ -7,6 +7,7 @@ Created on Feb 1, 2016
 
 from abc import ABCMeta, abstractmethod
     
+# Funcion para controlar el espaciado
 def spacing(espacio):
         i = 0
         while (i < 4):
@@ -142,6 +143,7 @@ class ConditionalInstruction(InstructionClass):
     
     def __str__(self):
         retorno = ""
+        retorno += "\n"
         retorno += "--------(ConditionalInstruction)-------"
         retorno += "\n"
         retorno += "CONDICIONAL"
@@ -164,6 +166,7 @@ class whileInstruction(InstructionClass):
         
     def __str__(self):
         retorno = ""
+        retorno += "\n"
         retorno += "--------(whileInstruction)-------"
         retorno += "\n"
         retorno += "ITERACION INDETERMINADA"
@@ -183,12 +186,14 @@ class ActivateInstruction:
     def __str__(self):
         espacio = ""
         retorno = ""
+        retorno += "\n"
         retorno += "--------(ActivateInstruction)-------"
         retorno += "\n"
         retorno += "ACTIVACION"
         retorno += "\n"
         for nameBot in self.identList :
             retorno += espacio + espacio + espacio + " - var: " + str(nameBot)
+            retorno += "\n"
         return retorno
         
 # Class DeactivateInstruction (REVISAR COMO HACER EL FOR PENDIENTE EN DONDE)
@@ -200,12 +205,14 @@ class DeactivateInstruction:
     def __str__(self):
         espacio = ""
         retorno = ""
+        retorno += "\n"
         retorno += "--------(DeactivateInstruction)-------"
         retorno += "\n"
         retorno += "DESACTIVACION"
         retorno += "\n"
         for nameBot in self.identList :
             retorno += espacio + espacio + espacio + " - var: " + str(nameBot)
+            retorno += "\n"
         return retorno
 
  
@@ -218,12 +225,14 @@ class AdvanceInstruction:
     def __str__(self):
         espacio = ""
         retorno = ""
+        retorno += "\n"
         retorno += "--------(AdvanceInstruction)-------"
         retorno += "\n"
         retorno += "AVANCE"
         retorno += "\n"
         for nameBot in self.identList :
             retorno += espacio + espacio + espacio + " - var: " + str(nameBot)
+            retorno += "\n"
         return retorno
         
         

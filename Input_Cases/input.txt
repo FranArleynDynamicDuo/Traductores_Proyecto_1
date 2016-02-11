@@ -6,14 +6,14 @@ create
 	end
 	int bot contador
 		on default:
-			store 35.
+			store 25.
 		end
 	end
 execute
 	activate contador,n.
 	$- Asignar al contador
 	el valor 35, si bar > ~ 2 -$
-	if ((3 + 1) > (2 + 2)) :
+	if (3 + 3) > (2 + 2):
 		advance contador,n.
 	end
 end

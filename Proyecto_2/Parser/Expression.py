@@ -27,6 +27,16 @@ binary_symbol = {
                     "~"      : "Negacion"
                 }  
 
+# Funcion para controlar el espaciado
+def spacing(espacio):
+        i = 0
+        while (i < 4):
+            espacio += " " 
+            i += 1
+        return espacio
+    
+    
+# Funcion para imprmir las Operaciones Binarias    
 def operacionBinariaString(expresion1,operador,expresion2):
     espacio =""
     retorno =""
@@ -39,6 +49,8 @@ def operacionBinariaString(expresion1,operador,expresion2):
     retorno += "\n"
     return retorno
 
+
+# Funcion para imprmir las Operaciones Unarias
 def operacionUnariaString(expresion1,operador):
     espacio =""
     retorno =""
@@ -49,43 +61,17 @@ def operacionUnariaString(expresion1,operador):
     retorno += "\n"
     return retorno
 
+# Funcion para imprmir las Expresiones Con Parentesis
 def expresionParentesisString(expresion):
     espacio =""
     retorno =""
-    retorno += (espacio + espacio + espacio + espacio + " - parentesis izquierdo: " +  "'('")
+    retorno += (espacio + espacio + espacio + espacio + "- parentesis izquierdo: " +  "'('")
     retorno += "\n"
-    retorno += espacio + espacio + espacio + espacio + " - expresion: " +  str(expresion)
+    retorno += espacio + espacio + espacio + espacio + "- expresion: " +  str(expresion)
     retorno += "\n"
-    retorno += espacio + espacio + espacio + espacio + " - parentesis derecho: " +  "')'"
-    retorno += "\n"
+    retorno += espacio + espacio + espacio + espacio + "- parentesis derecho: " +  "')'"
     return retorno
-
-def spacing(espacio):
-        i = 0
-        while (i < 4):
-            espacio += " " 
-            i += 1
-        return espacio
     
-class Expresion(metaclass=ABCMeta):
-    @abstractmethod
-    def __init__(self, params):
-        pass
-
-
-        
-# # Se Especifica el Bloque        
-# class ProgramExpression:
-#     
-#     def __init__(self,bloque):
-#         self.bloque = bloque
-#         #self.imprimir("")
-#         
-#     def imprimir(self,espacio):
-#         print("--------(Bloque)-------")
-#         print(espacio,"SECUENCIACION") #PREGUNTAR SI COLOCAR "EJECUTAR"
-
-
 # Expresiones Aritmetica
 class ArithmethicExpression:
     '''
@@ -103,7 +89,8 @@ class ArithmethicExpression:
     def __str__(self):
         espacio = ""
         retorno = ""
-        retorno += "--------(ArithmethicExpression)-------"
+        retorno += "\n"
+        #retorno += "--------(ArithmethicExpression)-------"
         retorno += "\n"
         retorno += espacio + espacio + espacio + espacio + "- guardia: ArithmethicExpression"
         retorno += "\n"
@@ -112,7 +99,6 @@ class ArithmethicExpression:
                 retorno += operacionBinariaString(self.expresion1,self.operador,self.expresion2)
             elif ( (self.operador == None) and (self.expresion2 == None) ):
                 retorno += espacio + espacio + espacio + espacio + " - variable: " + self.expresion1
-        retorno += "\n"
         return retorno    
         
 # Expresiones Relacionales
@@ -126,7 +112,8 @@ class RelationalExpresion:
     def __str__(self):
         espacio = ""
         retorno = ""
-        retorno += "--------(RelationalExpresion)-------"
+        retorno += "\n"
+        #retorno += "--------(RelationalExpresion)-------"
         retorno += "\n"
         retorno += espacio + espacio + espacio + espacio + "- guardia: RelationalExpresion"
         retorno += "\n"
@@ -149,9 +136,10 @@ class BooleanExpression:
     def __str__(self):
         espacio = ""
         retorno = ""
+        retorno += "\n"
         retorno += "--------(BooleanExpression)-------"
         retorno += "\n"
-        retorno += espacio + espacio + espacio + espacio + "- guardia: BooleanExpression"
+        #retorno += espacio + espacio + espacio + espacio + "- guardia: BooleanExpression"
         retorno += "\n"
         if( self.expresion1 != "(" ):
             if ( (self.operador != None) and (self.expresion2 != None) ):
@@ -163,7 +151,7 @@ class BooleanExpression:
         retorno += "\n"
         return retorno 
 
-# Expresiones Booleanas
+# Expresiones con Parentizacion
 class ParentizedExpression:
     def __init__(self,abre,expresion,cierra):
         self.cierra = cierra
@@ -174,10 +162,12 @@ class ParentizedExpression:
     def __str__(self):
         espacio = ""
         retorno = ""
-        retorno += "--------(ParentizedExpression)-------"
         retorno += "\n"
-        retorno += espacio + espacio + espacio + espacio + "- guardia: ParentizedExpression"
+        retorno += "\n"
+        retorno += espacio + espacio + espacio + espacio + "--- Open ParentizedExpression ---"
         retorno += "\n"
         retorno += expresionParentesisString(self.expresion)
+        retorno += "\n"
+        retorno += espacio + espacio + espacio + espacio + "--- Close ParentizedExpression ---"
         retorno += "\n"
         return retorno 

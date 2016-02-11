@@ -26,10 +26,6 @@ def p_program(p):
 
 #----------------------->   EXPRESIONES  <------------------------'''
 
-def p_empty(p):
-    'empty :'
-    pass
-
 def p_expression(p):
     '''expression : TkParAbre expression TkParCierra
                   | expression TkSuma expression
@@ -205,8 +201,10 @@ def p_error(p):
     else:
         print("Syntax error at EOF")
         exit()
+        
+        
 # Lista de precedencia en los operandos
-#
+
 precedence = (
     ('left','TkParAbre','TkParCierra'),
     ('left','TkMult','TkDiv','TkMod'),
