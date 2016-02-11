@@ -94,13 +94,11 @@ bot_Script = open(sys.argv[1],'r')
 
 data = bot_Script.read()
 
-# DEBUG
-result = BotParser.parse(data,debug=1)
+# # DEBUG
+# result = BotParser.parse(data,debug=1)
 
-# # Pasamos nuestra informacion al lexer
-# result = BotParser.parse(data)
+# Pasamos nuestra informacion al lexer
+result = BotParser.parse(data)
 
 # NO estamos claros si hay que usarlo
 print(result) 
-
-result.

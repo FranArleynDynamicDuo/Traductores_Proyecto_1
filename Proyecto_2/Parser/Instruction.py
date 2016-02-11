@@ -25,11 +25,19 @@ class Program(InstructionClass):
         self.createSet = createSet
         self.executeSet = executeSet
         
-class CodeBlock(InstructionClass):
-
-    def __init__(self, blockType,instructionSet ):
-        self.blockType = blockType
-        self.instructionSet = instructionSet
+    def __str__(self):
+        retorno = ""
+        retorno += "--------(Program)-------"
+        retorno += "\n"
+        retorno += "PROGRAM"
+        retorno += "\n"
+        if self.createSet != None:
+            for create in self.createSet :
+                retorno += str(create)
+        for execute in self.executeSet :
+            retorno += str(execute)
+        return retorno
+        
         
 # Clase Crear el LexBot 
 class CreateInstruction(InstructionClass):
@@ -38,13 +46,20 @@ class CreateInstruction(InstructionClass):
         self.botType = botType
         self.identifier = identifier
         self.declarationSet = declarationSet    
-        ##self.imprimir("")
-        
-    def imprimir(self,espacio):
-        # print(espacio, "CREAR BOT") 
-        # print(espacio,espacio," - Tipo: ", self.botType)
-        # print(espacio,espacio," - Nombre: ", self.identifier)
-        pass
+
+    def __str__(self):
+        espacio = ""
+        retorno = ""
+        retorno += "CREAR BOT"
+        retorno += "\n"
+        retorno += espacio + espacio + " - Tipo: " + str(self.botType);
+        retorno += "\n"
+        retorno += espacio + espacio + " - Nombre: " +  str(self.identifier);
+        retorno += "\n"
+        for declarion in self.declarationSet:
+            retorno += espacio + espacio + " - Nombre: " +  str(declarion);
+            retorno += "\n"
+        return retorno
 
 
 # Clase Declaracion del bot
@@ -53,16 +68,21 @@ class BotDeclaration(InstructionClass):
     def __init__(self,condition,instructionSet ):
         self.condition = condition
         self.instructionSet = instructionSet
-        #self.imprimir("")
-        
-    def imprimir(self,espacio):
-        #if (self.condition == "activation"):
-        #    print(espacio,"ACTIVACION")
-        #elif (self.condition == "deactivation"):
-        #    print(espacio,"DESACTIVACION")
-        #elif (self.condition == "default"):
-        #    print(espacio,"DEFAULT")
-        pass
+ 
+    def __str__(self):
+        espacio = ""
+        retorno = ""
+        if (self.condition == "activation"):
+            retorno +=espacio + "ACTIVACION"
+        elif (self.condition == "deactivation"):
+            retorno +=espacio + "DESACTIVACION"
+        elif (self.condition == "default"):
+            retorno +=espacio + "DEFAULT"
+        retorno += "\n"
+        for instruction in self.instructionSet:
+            retorno +=espacio + espacio + espacio + espacio + str(instruction)
+            retorno += "\n"
+        return retorno
         
 # Clase Intrucciones del boot
 class BotInstruction(InstructionClass):
@@ -70,7 +90,7 @@ class BotInstruction(InstructionClass):
     def __init__(self, command,argument=None):
         self.command = command
         self.argument = argument
-        #self.imprimir("")
+        #
         
     def imprimir(self,espacio):
         
@@ -108,7 +128,7 @@ class ConditionalInstruction(InstructionClass):
         self.ifCondition = ifCondition
         self.ifInstructionSet = ifInstructionSet
         self.elseInstructionSet = elseInstructionSet    
-        #self.imprimir("")
+        #
         
     def imprimir(self,espacio):
         print("--------(ConditionalInstruction)-------")
@@ -122,7 +142,7 @@ class whileInstruction(InstructionClass):
         self.condition = condition
         self.instructionSet = instructionSet
         
-        #self.imprimir("")
+        #
         
     def imprimir(self,espacio):
         print("--------(whileInstruction)-------")
@@ -134,7 +154,17 @@ class ActivateInstruction:
     
     def __init__(self,identList):
         self.identList = identList
-        #self.imprimir("")
+        
+
+    def __str__(self):
+        retorno = ""
+        retorno += "--------(ActivateInstruction)-------"
+        retorno += "\n"
+        retorno += "ACTIVACION"
+        retorno += "\n"
+        for nameBot in self.identList :
+            print("","",""," - var: ", nameBot)
+        return retorno
         
     def imprimir(self,espacio):
         print("--------(ActivateInstruction)-------")
@@ -149,8 +179,17 @@ class DeactivateInstruction:
     
     def __init__(self,identList):
         self.identList = identList
-        #self.imprimir("")
         
+    def __str__(self):
+        retorno = ""
+        retorno += "--------(DeactivateInstruction)-------"
+        retorno += "\n"
+        retorno += "DESACTIVACION"
+        retorno += "\n"
+        for nameBot in self.identList :
+            print("","",""," - var: ", nameBot)
+        return retorno
+            
     def imprimir(self,espacio):
         print("--------(DeactivateInstruction)-------")
         print(espacio,espacio,"DESACTIVACION")
@@ -164,12 +203,24 @@ class AdvanceInstruction:
 
     def __init__(self,identList):
         self.identList = identList
-        #self.imprimir("")
+    
+    def __str__(self):
+        retorno = ""
+        retorno += "--------(AdvanceInstruction)-------"
+        retorno += "\n"
+        retorno += "AVANCE"
+        retorno += "\n"
+        for nameBot in self.identList :
+            print("","",""," - var: ", nameBot)
+        return retorno
+    
         
     def imprimir(self,espacio):
+        
         print("--------(AdvanceInstruction)-------")
         print(espacio,espacio,"AVANCE")
 
         for nameBot in self.identList :
             print(espacio,espacio,espacio," - var: ", nameBot)
+        
         

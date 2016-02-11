@@ -27,6 +27,39 @@ binary_symbol = {
                     "~"      : "Negacion"
                 }  
 
+def operacionBinariaString(expresion1,operador,expresion2):
+    espacio =""
+    retorno =""
+    operador = binary_symbol[operador]
+    retorno += (espacio + espacio + espacio + espacio + " - operacion: " +  "'"+operador+"'")
+    retorno += "\n"
+    retorno += espacio + espacio + espacio + espacio + " - operando izquierdo: " +  expresion1
+    retorno += "\n"
+    retorno += espacio + espacio + espacio + espacio + " - operando derecho: " +  expresion2
+    retorno += "\n"
+    return retorno
+
+def operacionUnariaString(expresion1,operador):
+    espacio =""
+    retorno =""
+    operador = binary_symbol[operador]
+    retorno += (espacio + espacio + espacio + espacio + " - operacion: " +  "'"+operador+"'")
+    retorno += "\n"
+    retorno += espacio + espacio + espacio + espacio + " - operando: " +  expresion1
+    retorno += "\n"
+    return retorno
+
+def expresionParentesisString(expresion):
+    espacio =""
+    retorno =""
+    retorno += (espacio + espacio + espacio + espacio + " - operacion: " +  "'('")
+    retorno += "\n"
+    retorno += espacio + espacio + espacio + espacio + " - expresion: " +  expresion
+    retorno += "\n"
+    retorno += espacio + espacio + espacio + espacio + " - operando derecho: " +  "')'"
+    retorno += "\n"
+    return retorno
+
 def spacing(espacio):
         i = 0
         while (i < 4):
@@ -67,26 +100,23 @@ class ArithmethicExpression:
         self.expresion2 = expresion2
         #self.imprimir("")
         
-#     def imprimir(self,espacio):
-#         print("--------(ArithmethicExpression)-------")
-#         print(espacio,espacio,espacio,espacio,"- guardia: ArithmethicExpression")
-#         
-#         if( self.expresion1 != "(" ):
-#             if (self.operador != None):
-#                 operador = binary_symbol[self.operador]
-#                 print(espacio,espacio,espacio,espacio," - operacion: ", "'"+operador+"'")
-#                 print(espacio,espacio,espacio,espacio," - operador izquierdo: ", self.expresion1)
-#                 print(espacio,espacio,espacio,espacio," - operador derecho: ", self.expresion2)
-#             elif (self.operador == None):
-#                 print(espacio,espacio,espacio,espacio," - operador izquierdo: ", self.expresion1)
-#         
-#         elif( self.expresion1 == "(" ):
-#             operador = binary_symbol[self.expresion1]
-#             print(espacio,espacio,espacio,espacio," - operador: ", "'"+operador+"'")
-#             print(espacio,espacio,espacio,espacio," - operador central: ", self.expresion1)
-#             operador = binary_symbol[self.expresion2]
-#             print(espacio,espacio,espacio,espacio," - operador: ", "'"+operador+"'")
-#             
+    def __str__(self):
+        espacio = ""
+        retorno = ""
+        retorno += "--------(ArithmethicExpression)-------"
+        retorno += "\n"
+        retorno += espacio + espacio + espacio + espacio + "- guardia: ArithmethicExpression"
+        retorno += "\n"
+        if( self.expresion1 != "(" ):
+            if ( (self.operador != None) and (self.expresion2 != None) ):
+                operador = binary_symbol[self.operador]
+                retorno += operacionBinariaString(self.expresion1,operador,self.expresion2)
+            elif ( (self.operador == None) and (self.expresion2 == None) ):
+                retorno += espacio + espacio + espacio + espacio + " - variable: " + self.expresion1
+                retorno += "\n"
+        elif( self.expresion1 == "(" ):
+            retorno += expresionParentesisString(self.expresion1)
+        return retorno    
         
 # Expresiones Relacionales
 class RelationalExpresion:
@@ -96,27 +126,25 @@ class RelationalExpresion:
         self.expresion2 = expresion2
         #self.imprimir("")
         
-#     def imprimir(self,espacio):
-#         print("--------(RelationalExpresion)-------")
-#         print(espacio,espacio,espacio,espacio,"- guardia: RelationalExpresion")
-#         
-#         if( self.expresion1 != "(" ):
-#             if (self.operador != None):
-#                 operador = binary_symbol[self.operador]
-#                 print(espacio,espacio,espacio,espacio," - operacion: ", "'"+operador+"'")
-#                 print(espacio,espacio,espacio,espacio," - operador izquierdo: ", self.expresion1)
-#                 print(espacio,espacio,espacio,espacio," - operador derecho: ", self.expresion2)
-#             elif (self.operador == None):
-#                 print(espacio,espacio,espacio,espacio," - variable: ", self.expresion1)
-#                 
-#         elif( self.expresion1 == "(" ):
-#             operador = binary_symbol[self.expresion1]
-#             print(espacio,espacio,espacio,espacio," - operador: ", "'"+operador+"'")
-#             print(espacio,espacio,espacio,espacio," - operador central: ", self.operador)
-#             operador = binary_symbol[self.expresion2]
-#             print(espacio,espacio,espacio,espacio," - operador: ", "'"+operador+"'")
-#             
-        
+    def __str__(self):
+        espacio = ""
+        retorno = ""
+        retorno += "--------(RelationalExpresion)-------"
+        retorno += "\n"
+        retorno += espacio + espacio + espacio + espacio + "- guardia: RelationalExpresion"
+        retorno += "\n"
+        if( self.expresion1 != "(" ):
+            if ( (self.operador != None) and (self.expresion2 != None) ):
+                operador = binary_symbol[self.operador]
+                retorno += operacionBinariaString(self.expresion1,operador,self.expresion2)
+            elif ( (self.operador == None) and (self.expresion2 == None) ):
+                retorno += espacio + espacio + espacio + espacio + " - variable: " + self.expresion1
+                retorno += "\n"
+                 
+        elif( self.expresion1 == "(" ):
+            retorno += expresionParentesisString(self.expresion1)
+        return retorno   
+          
 # Expresiones Booleanas
 class BooleanExpression:
     def __init__(self,expresion1,operador=None,expresion2=None):
@@ -124,27 +152,26 @@ class BooleanExpression:
         self.operador = operador
         self.expresion2 = expresion2
         #self.imprimir("")
-        
-#     def imprimir(self,espacio):
-#         print("--------(BooleanExpression)-------")
-#         print(espacio,espacio,espacio,espacio,"- guardia: BooleanExpression")
-#         
-#         if( self.expresion1 != "(" ):
-#             if ( (self.operador != None) and (self.expresion2 != None) ):
-#                 operador = binary_symbol[self.operador]
-#                 print(espacio,espacio,espacio,espacio," - operacion: ", "'"+operador+"'")
-#                 print(espacio,espacio,espacio,espacio," - operador izquierdo: ", self.expresion1)
-#                 print(espacio,espacio,espacio,espacio," - operador derecho: ", self.expresion2)
-#             elif ( (self.operador != None) and (self.expresion2 == None) ):
-#                 operador = binary_symbol[self.expresion1]
-#                 print(espacio,espacio,espacio,espacio," - operador: ", "'"+operador+"'")
-#                 print(espacio,espacio,espacio,espacio," - variable: ", self.operador)
-#             elif ( (self.operador == None) and (self.expresion2 == None) ):
-#                 print(espacio,espacio,espacio,espacio," - variable: ", self.expresion1)
-#                 
-#         elif( self.expresion1 == "(" ):
-#             operador = binary_symbol[self.expresion1]
-#             print(espacio,espacio,espacio,espacio," - operador: ", "'"+operador+"'")
-#             print(espacio,espacio,espacio,espacio," - operador central: ", self.operador)
-#             operador = binary_symbol[self.expresion2]
-#             print(espacio,espacio,espacio,espacio," - operador: ", "'"+operador+"'")
+ 
+    def __str__(self):
+        espacio = ""
+        retorno = ""
+        retorno += "--------(BooleanExpression)-------"
+        retorno += "\n"
+        retorno += espacio + espacio + espacio + espacio + "- guardia: BooleanExpression"
+        retorno += "\n"
+        if( self.expresion1 != "(" ):
+            if ( (self.operador != None) and (self.expresion2 != None) ):
+                operador = binary_symbol[self.operador]
+                retorno += operacionBinariaString(self.expresion1,operador,self.expresion2)
+            elif ( (self.operador != None) and (self.expresion2 == None) ):
+                operador = binary_symbol[self.operador]
+                retorno += operacionUnariaString(self.expresion1,operador)
+            elif ( (self.operador == None) and (self.expresion2 == None) ):
+                retorno += espacio + espacio + espacio + espacio + " - variable: " + self.expresion1
+                retorno += "\n"
+                 
+        elif( self.expresion1 == "(" ):
+            retorno += expresionParentesisString(self.expresion1)
+        return retorno 
+

@@ -19,12 +19,9 @@ def p_program(p):
                | TkExecute execute TkEnd'''
     
     # POR AQUI NO ESTA PASANDO
-    print("PASE POR AQUI")
     if len(p) == 6:
-        print("PASE POR AQUI")
         p[0] = Instruction.Program(createSet = p[2],executeSet = p[4])
     if len(p) == 4:
-        print("PASE POR AQUI")
         p[0] = Instruction.Program(createSet = None,executeSet = p[2])
     p.set_lineno(0,p.lineno(1)) 
 
@@ -62,8 +59,8 @@ def p_expression(p):
             p[0] = Expression.RelationalExpresion(p[1],p[2],p[3])    
         elif ((p[1] == "(") and (p[3] == ")")):
             p[0] = Expression.BooleanExpression(p[1],p[2],p[3])                     
-    elif len(p) == 3:                    
-        p[0] = Expression.BooleanExpression(p[2],p[1])        
+    elif len(p) == 3:             
+        p[0] = Expression.BooleanExpression(expresion1= p[2], operador = p[1])        
     elif len(p) == 2:                    
         p[0] = p[1]   
 
