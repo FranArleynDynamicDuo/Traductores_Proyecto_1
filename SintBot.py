@@ -95,8 +95,9 @@ bot_Script = open(sys.argv[1],'r')
 data = bot_Script.read()
 
 # DEBUG
-result = BotParser.parse(data,debug=1)
+# result = BotParser.parse(data,debug=1)
 
+result = BotParser.parse(data)
 
 # NO estamos claros si hay que usarlo
 print(result) 
