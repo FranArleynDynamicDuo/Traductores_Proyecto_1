@@ -33,7 +33,11 @@ class Program(InstructionClass):
         retorno += "\n"
         retorno += "PROGRAM"
         retorno += "\n"
-        retorno += "\n"
+        if self.createSet != None:
+            retorno += "CREATE"
+            retorno += "\n"
+            for create in self.createSet :
+                retorno += str(create)
         retorno += "EXECUTE"
         retorno += "\n"
         for execute in self.executeSet :
@@ -51,7 +55,19 @@ class CreateInstruction(InstructionClass):
         self.declarationSet = declarationSet    
 
     def __str__(self):
-        pass
+        espacio = ""
+        retorno = ""
+        retorno += "CREAR BOT"
+        retorno += "\n"
+        retorno += espacio + espacio + " - Tipo: " + str(self.botType);
+        retorno += "\n"
+        retorno += espacio + espacio + " - Nombre: " +  str(self.identifier);
+        retorno += "\n"
+        for declarion in self.declarationSet:
+            if declarion != None:
+                retorno += espacio + espacio + espacio + espacio +  str(declarion)
+        retorno += "\n"
+        return retorno
 
 
 # Clase Declaracion del bot
@@ -62,7 +78,20 @@ class BotDeclaration(InstructionClass):
         self.instructionSet = instructionSet
  
     def __str__(self):
-        pass
+        espacio = ""
+        retorno = ""
+        if (self.condition == "activation"):
+            retorno +=espacio + "ACTIVACION"
+        elif (self.condition == "deactivation"):
+            retorno +=espacio + "DESACTIVACION"
+        elif (self.condition == "default"):
+            retorno +=espacio + "DEFAULT"
+        retorno += "\n"
+        for instruction in self.instructionSet:
+            if instruction != None:
+                retorno +=espacio + espacio + espacio + espacio + str(instruction)
+                retorno += "\n"
+        return retorno
         
 # Clase Intrucciones del boot
 class BotInstruction(InstructionClass):
@@ -72,7 +101,38 @@ class BotInstruction(InstructionClass):
         self.argument = argument
    
     def __str__(self):
-        pass
+        espacio = ""
+        retorno = ""
+        if (self.argument != None):
+            if (self.command == "store"):
+                retorno +=espacio + espacio + espacio + espacio + " - instruccion: almacenamiento"
+            elif (self.command == "collect"):
+                retorno +=espacio + espacio + espacio+ espacio+ " - instruccion: coleccion"
+            elif (self.command == "recieve"):
+                retorno +=espacio + espacio+ espacio+ espacio + " - instruccion: lectura"
+            elif (self.command == "drop"):
+                retorno +=espacio + espacio + espacio+ espacio + " - instruccion: soltado"  
+            retorno += "\n"
+            retorno +=espacio + espacio + " - valor: "  + str(self.argument)
+        
+        elif (self.argument == None):
+        
+            if (self.command == "send"):
+                retorno +=espacio + espacio+ espacio+ espacio + " - instruccion: enviar"
+            elif (self.command == "read"):
+                retorno +=espacio + espacio+ espacio+ espacio + " - instruccion: leer"
+            elif (self.command == "left"):
+                retorno +=espacio + espacio+ espacio+ espacio + " - instruccion: movimiento hacia la izquierda"
+            elif (self.command == "right"):
+                retorno +=espacio + espacio+ espacio+ espacio + " - instruccion: movimiento hacia la derecha"
+            elif (self.command == "up"):
+                retorno +=espacio + espacio+ espacio+ espacio + " - instruccion: movimiento hacia arriba"
+            elif (self.command == "down"):
+                retorno +=espacio + espacio + " - instruccion: movimiento hacia abajo"
+        
+        retorno += "\n"
+        
+        return retorno 
 
 # Class ConditionalInstruction      
 class ConditionalInstruction(InstructionClass):

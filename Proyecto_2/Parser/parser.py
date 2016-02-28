@@ -40,6 +40,7 @@ def p_expression(p):
                   | expression TkMayor expression
                   | expression TkMayorIgual expression
                   | expression TkIgual expression
+                  | expression TkDesigual expression
                   | TkNegacion expression                  
                   | TkNum                    
                   | TkFalse
@@ -50,7 +51,8 @@ def p_expression(p):
             p[0] = Expression.ArithmethicExpression(p[1],p[2],p[3])
         elif ((p[2] == "/\\") or (p[2] == "\/")):
             p[0] = Expression.BooleanExpression(p[1],p[2],p[3])
-        elif ((p[2] == "<") or (p[2] == "<=") or (p[2] == ">") or (p[2] == ">=") or (p[2] == "=")):
+        elif ((p[2] == "<") or (p[2] == "<=") or (p[2] == ">") or (p[2] == ">=") or (p[2] == "=") or
+              (p[2] == "/=")):
             p[0] = Expression.RelationalExpresion(p[1],p[2],p[3])    
         elif ((p[1] == "(") and (p[3] == ")")):
             p[0] = Expression.ParentizedExpression(p[1],p[2],p[3])                     
@@ -216,7 +218,7 @@ precedence = (
     ('left','TkParAbre','TkParCierra'),
     ('left','TkMult','TkDiv','TkMod'),
     ('left','TkSuma','TkResta'),
-    ('left','TkMenor','TkMenorIgual','TkMayor','TkMayorIgual'),
+    ('left','TkMenor','TkMenorIgual','TkMayor','TkMayorIgual','TkDesigual'),
     ('left','TkIgual'),
     ('left','TkNegacion'),
     ('left','TkConjuncion'),

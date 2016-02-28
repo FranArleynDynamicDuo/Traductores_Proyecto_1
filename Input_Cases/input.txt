@@ -13,7 +13,7 @@ execute
 	deactivate contador,n.
 	$- Asignar al contador
 	el valor 35, si bar > ~ 2 -$
-	while (3 + 2) > (2 - 1):
+	while (3 + 2) /= (2 - 1):
 		deactivate contador,n.
 	end
 end

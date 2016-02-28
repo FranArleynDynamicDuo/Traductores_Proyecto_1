@@ -12,7 +12,7 @@ tokens = ['TkNum','TkCaracter','TkCollect',
           'TkComa','TkPunto','TkDosPuntos','TkParAbre','TkParCierra',
           'TkSuma','TkResta','TkMult','TkDiv','TkMod','TkConjuncion',
           'TkDisyuncion','TkNegacion','TkMenor','TkMenorIgual',
-          'TkMayor','TkMayorIgual','TkIgual','TkIdent']
+          'TkMayor','TkMayorIgual','TkIgual','TkDesigual','TkIdent']
 
 reserved = {
     'create' : 'TkCreate',
@@ -73,11 +73,12 @@ t_TkMenorIgual = r'<='
 t_TkMayor = r'>' 
 t_TkMayorIgual = r'>=' 
 t_TkIgual = r'=' 
+t_TkDesigual = r'/=' 
 
 # Literales
 
-t_TkNum = '[0-9]+'
-t_TkCaracter = "'(.)'"
+t_TkNum = '([0-9]+)|(-[0-9]+)'
+t_TkCaracter = "'(.)'|'(\n)'|'(\t)'|'(\')'"
 
 #t_TkIdent = '[a-zA-Z][a-zA-Z0-9_]*'
 def t_TkCollect(t):
@@ -101,8 +102,7 @@ t_ignore_spaces = '\s+' # Se ignoran los espacios en blanco de cualquier tipo
 
 def t_COMMENT(t):
     
-    '\$-([^\-]|((\-)+[^\$]))*(\-)(\$)'
-    pass
+    '(\$-([^\-]|((\-)+[^\$]))*(\-)(\$))|(\$\$(.)*\n)'
     # No se hace nada con el contenido de los comentarios
  
 # Regla para calcular el numero de linea en el que se encuentra el token
