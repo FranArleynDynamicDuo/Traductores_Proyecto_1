@@ -8,7 +8,7 @@ import ply.lex as lex
 
 
 # Lista de tipos de tokens
-tokens = ['TkNum','TkCaracter','TkCollect',
+tokens = ['TkNum','TkCaracter',
           'TkComa','TkPunto','TkDosPuntos','TkParAbre','TkParCierra',
           'TkSuma','TkResta','TkMult','TkDiv','TkMod','TkConjuncion',
           'TkDisyuncion','TkNegacion','TkMenor','TkMenorIgual',
@@ -28,6 +28,8 @@ reserved = {
     'end' : 'TkEnd',
     'store' : 'TkStore',
     'recieve' : 'TkRecieve',
+    'as'    : 'TkAs',
+    'collect':'TkCollect',
     'drop' : 'TkDrop',
     'left' : 'TkLeft',
     'right' : 'TkRight',
@@ -79,11 +81,6 @@ t_TkDesigual = r'/='
 
 t_TkNum = '([0-9]+)|(-[0-9]+)'
 t_TkCaracter = "'(.)'|'(\n)'|'(\t)'|'(\')'"
-
-#t_TkIdent = '[a-zA-Z][a-zA-Z0-9_]*'
-def t_TkCollect(t):
-    r'collect as|collect'
-    return t
 
 #t_TkIdent = '[a-zA-Z][a-zA-Z0-9_]*'
 def t_TkIdent(t):

@@ -2,13 +2,18 @@
 #@author: francisco
 
 import ply.yacc as yacc;
+from copy import deepcopy
 
 # Get the token map from the lexer.  This is required.
 from Proyecto_1.Lexer.Lexer import tokens as botTokens
 from Proyecto_2.Parser import Expression
 from Proyecto_2.Parser import Instruction
+from Proyecto_3.contextAnalisis.contextAnalisis import SymbolTable
+from Proyecto_3.contextAnalisis.contextAnalisis import Symbol
+
 
 tokens = botTokens;
+sintBotSymbolTable = SymbolTable(None);
 
 #-----------------------> PROGRAMA GENERAL <------------------------
 
@@ -17,10 +22,13 @@ def p_program(p):
     # Camino 2: Hay un bloque execute
     '''program : TkCreate botCreateList TkExecute executeList TkEnd
                | TkExecute executeList TkEnd'''
-    
-    # POR AQUI NO ESTA PASANDO
     if len(p) == 6:
         p[0] = Instruction.Program(createSet = p[2],executeSet = p[4])
+        global sintBotSymbolTable
+        if sintBotSymbolTable is None:
+            sintBotSymbolTable = SymbolTable(None)
+        else:
+            sintBotSymbolTable = SymbolTable(deepcopy(sintBotSymbolTable))
     if len(p) == 4:
         p[0] = Instruction.Program(createSet = None,executeSet = p[2])
 
@@ -41,7 +49,8 @@ def p_expression(p):
                   | expression TkMayorIgual expression
                   | expression TkIgual expression
                   | expression TkDesigual expression
-                  | TkNegacion expression                  
+                  | TkNegacion expression
+                  | TkCaracter                
                   | TkNum                    
                   | TkFalse
                   | TkTrue                        
@@ -75,13 +84,14 @@ def p_botCreateList(p):
         p[0] = []
         p[0].append(p[1])
     
-    
 def p_botCreate(p):
     '''botCreate :       TkInt  TkBot TkIdent botDeclaracionList TkEnd
                  |       TkBool TkBot TkIdent botDeclaracionList TkEnd
                  |       TkChar TkBot TkIdent botDeclaracionList TkEnd'''
     p[0] = Instruction.CreateInstruction(p[1],p[3],p[4])
-     
+    symbol = Symbol(p[3],p[1],None)
+    global sintBotSymbolTable
+    sintBotSymbolTable = sintBotSymbolTable.addToTable(p[3],symbol)
 
 def p_botDeclaracionList(p):
     '''botDeclaracionList :    botDeclaracionList botDeclaracion 
@@ -114,23 +124,33 @@ def p_botInstruccionList(p):
 
 
 def p_botInstruccion(p):
-    '''botInstruccion :    TkStore TkNum TkPunto
-                   |       TkStore TkCaracter TkPunto
+    '''botInstruccion :    TkStore expression TkPunto
+                   |       TkDrop expression TkPunto    
+
                    |       TkCollect TkPunto
-                   |       TkCollect TkIdent TkPunto                   
+                   |       TkCollect TkAs TkIdent TkPunto                   
+
                    |       TkRecieve TkPunto
-                   |       TkDrop TkNum TkPunto
-                   |       TkDrop TkCaracter TkPunto
                    |       TkSend TkPunto     
                    |       TkRead TkPunto
+                   |       TkRead TkAs TkIdent TkPunto
+                   
+                   |       TkLeft expression TkPunto
+                   |       TkRight expression TkPunto
+                   |       TkUp expression TkPunto
+                   |       TkDown expression TkPunto
+
                    |       TkLeft TkPunto
                    |       TkRight TkPunto
                    |       TkUp TkPunto
-                   |       TkDown TkPunto''' # Asi cortamos la lista
-    if len(p) == 4:
+                   |       TkDown TkPunto'''  # Asi cortamos la lista
+    if len(p) == 5:
+        p[0] = Instruction.BotInstruction(p[1],p[3])
+    elif len(p) == 4:
         p[0] = Instruction.BotInstruction(p[1],p[2])
-    if len(p) == 3:
+    elif len(p) == 3:
         p[0] = Instruction.BotInstruction(p[1])
+
 
 # -----------------------> INSTRUCCIONES <--------------------------
 
@@ -165,10 +185,10 @@ def p_execCont(p):
                    |    deactivate
                    |    advance
                    |    conditional
-                   |    while''' # Asi cortamos la lista'''
+                   |    while
+                   |    program''' # Incorporacion de alcance
     p[0] = p[1]
-
-
+        
 def p_conditional(p):
     '''conditional  :    TkIf expression TkDosPuntos executeList TkElse executeList TkEnd
                     |    TkIf expression TkDosPuntos executeList TkEnd'''

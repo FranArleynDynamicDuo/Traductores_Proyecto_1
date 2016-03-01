@@ -15,9 +15,7 @@ from Proyecto_1.Lexer.Lexer import botLexer
 from Proyecto_1.Lexer.Lexer import column_token
 from Proyecto_1.Lexer.Token import Token
 from Proyecto_2.Parser.parser import BotParser
-from Proyecto_3.contextAnalisis.contextAnalisis import BotVariable
-from Proyecto_3.contextAnalisis.contextAnalisis import buildVariableList
-
+import globalVar
 
 ##################### Funciones ################################################
 # Calculo de columna en la que se encuentra el numero de columna
@@ -91,6 +89,7 @@ print("\n")
 botLexer.input(data)
 bot_Script.close()
 
+
 # Abrimos el archivo y lo leemos
 bot_Script = open(sys.argv[1],'r')
 
@@ -100,10 +99,10 @@ data = bot_Script.read()
 result = BotParser.parse(data,debug=1)
 # 
 # result = BotParser.parse(data)
-# 
-# # NO estamos claros si hay que usarlo
+
+from Proyecto_2.Parser.parser import sintBotSymbolTable
+
+print(str(sintBotSymbolTable))
+ 
+# NO estamos claros si hay que usarlo
 # print(result) 
-
-botTable = buildVariableList(result)
-
-print(botTable.get("bar"))
