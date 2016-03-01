@@ -15,7 +15,6 @@ from Proyecto_1.Lexer.Lexer import botLexer
 from Proyecto_1.Lexer.Lexer import column_token
 from Proyecto_1.Lexer.Token import Token
 from Proyecto_2.Parser.parser import BotParser
-import globalVar
 
 ##################### Funciones ################################################
 # Calculo de columna en la que se encuentra el numero de columna
