@@ -20,17 +20,22 @@ sintBotSymbolTable = SymbolTable(None);
 def p_program(p):
     # Camino 1: Hay un bloque create y un bloque execute
     # Camino 2: Hay un bloque execute
-    '''program : TkCreate botCreateList TkExecute executeList TkEnd
+    '''program : TkCreate botCreateList finishBotList TkExecute executeList TkEnd
                | TkExecute executeList TkEnd'''
-    if len(p) == 6:
+    if len(p) == 7:
         p[0] = Instruction.Program(createSet = p[2],executeSet = p[4])
         global sintBotSymbolTable
-        if sintBotSymbolTable is None:
-            sintBotSymbolTable = SymbolTable(None)
-        else:
-            sintBotSymbolTable = SymbolTable(deepcopy(sintBotSymbolTable))
+        if sintBotSymbolTable.emptyTable():
+            sintBotSymbolTable = sintBotSymbolTable.getUpperLevel()
     if len(p) == 4:
         p[0] = Instruction.Program(createSet = None,executeSet = p[2])
+
+def p_finishBotList(p):
+    # Regla vacia que permite ejecutar una instruccion apenas se terminen 
+    # las declaraciones de bots
+    "finishBotList :"
+    global sintBotSymbolTable
+    sintBotSymbolTable = SymbolTable(deepcopy(sintBotSymbolTable))
 
 #----------------------->   EXPRESIONES  <------------------------'''
 
