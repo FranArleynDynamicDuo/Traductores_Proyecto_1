@@ -13,27 +13,6 @@ execute
 	deactivate contador,n.
 	$- Asignar al contador
 	el valor 35, si bar > ~ 2 -$
-		create
-		int bot bar
-			on activation:
-				store 3.
-			end
-		end
-		int bot contador
-			on default:
-				store me.
-			end
-		end
-		execute
-			deactivate contador,n.
-			$- Asignar al contador
-			el valor 35, si bar > ~ 2 -$
-			
-			while (3 + 2) /= (2 - 1):
-				deactivate contador,n.
-			end
-		end
-		
 	while (3 + 2) /= (2 - 1):
 		deactivate contador,n.
 	end

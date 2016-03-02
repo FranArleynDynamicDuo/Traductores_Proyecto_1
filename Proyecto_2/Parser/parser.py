@@ -10,7 +10,7 @@ from Proyecto_2.Parser import Expression
 from Proyecto_2.Parser import Instruction
 from Proyecto_3.contextAnalisis.contextAnalisis import SymbolTable
 from Proyecto_3.contextAnalisis.contextAnalisis import Symbol
-
+from Proyecto_3.contextAnalisis.contextAnalisis import expressionAnalisis
 
 tokens = botTokens;
 sintBotSymbolTable = SymbolTable(None);
@@ -69,9 +69,20 @@ def p_expression(p):
               (p[2] == "/=")):
             p[0] = Expression.RelationalExpresion(p[1],p[2],p[3])    
         elif ((p[1] == "(") and (p[3] == ")")):
-            p[0] = Expression.ParentizedExpression(p[1],p[2],p[3])                     
+            p[0] = Expression.ParentizedExpression(p[1],p[2],p[3])   
+        
+        global sintBotSymbolTable
+        if (expressionAnalisis(sintBotSymbolTable,p[0])):
+            print("Analisis Correcto")
+        else:
+            exit()                  
     elif len(p) == 3:             
-        p[0] = Expression.BooleanExpression(expresion1= p[2], operador = p[1])        
+        p[0] = Expression.BooleanExpression(expresion1= p[2], operador = p[1])
+        global sintBotSymbolTable
+        if (expressionAnalisis(sintBotSymbolTable,p[0])):
+            print("Analisis Correcto")
+        else:
+            exit()        
     elif len(p) == 2:                    
         p[0] = p[1]   
 
