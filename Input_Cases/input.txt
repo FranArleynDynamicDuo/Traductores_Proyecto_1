@@ -1,7 +1,7 @@
 create
 	int bot bar
 		on activation:
-			store x + 1.
+			store 3.
 		end
 	end
 	int bot contador
@@ -11,10 +11,10 @@ create
 		end
 	end
 execute
-	deactivate contador,n.
+	deactivate contador,bar.
 	$- Asignar al contador
 	el valor 35, si bar > ~ 2 -$
 	while (3 + 2) /= (2 - 1):
-		deactivate contador,n.
+		deactivate contador,bar.
 	end
 end

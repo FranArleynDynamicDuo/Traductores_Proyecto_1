@@ -73,14 +73,14 @@ def p_expression(p):
         
         global sintBotSymbolTable
         if (expressionAnalisis(sintBotSymbolTable,p[0],p.lexer.lineno -18,p.lexer.lexpos - p.lexer.current)):
-            print("Analisis Correcto")
+            pass
         else:
             exit()                  
     elif len(p) == 3:             
         p[0] = Expression.BooleanExpression(expresion1= p[2], operador = p[1])
         global sintBotSymbolTable
         if (expressionAnalisis(sintBotSymbolTable,p[0],p.lexer.lineno -18,p.lexer.lexpos - p.lexer.current)):
-            print("Analisis Correcto")
+            pass
         else:
             exit()        
     elif len(p) == 2:                    
@@ -193,12 +193,19 @@ def p_identList(p):
     if len(p) == 4:
         p[0] = p[1]
         p[0].append(p[3])
+        global sintBotSymbolTable
+        if not sintBotSymbolTable.searchForSymbol(p[3]):
+            print("Simbolo No Declarado --> " + p[3] + " ("
+                  + str(p.lexer.lineno -18) + "," + str(p.lexer.lexpos - p.lexer.current) + ")")
     elif len(p) == 3:
         p[0] = p[1]
     elif len(p) == 2:
         p[0] = []
         p[0].append(p[1])    
-
+        global sintBotSymbolTable
+        if not sintBotSymbolTable.searchForSymbol(p[1]):
+            print("Simbolo No Declarado --> " + p[1] + " ("
+                  + str(p.lexer.lineno -18) + "," + str(p.lexer.lexpos - p.lexer.current) + ")")
 
 def p_execCont(p):
     '''execCont    :    activate

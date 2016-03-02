@@ -143,7 +143,6 @@ def validateArit(variableTable,expression,line,column):
         
         return expressionAnalisis(variableTable,expression.expresion)    
     
-    print(match(numPattern,expression))
     # Verificamos la primera expresion
     if (type(expression) is ArithmethicExpression):
         valid = True
@@ -169,8 +168,6 @@ def validateArit(variableTable,expression,line,column):
 # Metodo que lee el arbol de parseo y obtiene las variables declaradas y las coloca en un diccionario
 def validateBool(variableTable,expression,line,column):
 
-
-   
     # Caso 3.1: Es una expresion Booleana
     if (type(expression) is BooleanExpression):
         valid = True
@@ -202,7 +199,7 @@ def validateRel(variableTable,expression,line,column):
     
     if type(expression) is ParentizedExpression:
         
-        return expressionAnalisis(variableTable,expression.expresion)
+        return expressionAnalisis(variableTable,expression.expresion,line,column)
     
     if expression.operador == "=" or expression.operador == "/=":
         # Caso 3.1: Es una expresion Aritmetica
