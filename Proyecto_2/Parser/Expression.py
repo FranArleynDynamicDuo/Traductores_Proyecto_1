@@ -84,7 +84,6 @@ class ArithmethicExpression:
         self.expresion1 = expresion1
         self.operador = operador
         self.expresion2 = expresion2
-        #self.imprimir("")
         
     def __str__(self):
         espacio ="    "

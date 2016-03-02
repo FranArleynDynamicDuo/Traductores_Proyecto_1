@@ -1,12 +1,13 @@
 create
 	int bot bar
 		on activation:
-			store 3.
+			store x + 1.
 		end
 	end
 	int bot contador
 		on default:
-			store me.
+			collect as x.
+			store x + 1.
 		end
 	end
 execute

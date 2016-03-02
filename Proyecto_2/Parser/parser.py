@@ -72,14 +72,14 @@ def p_expression(p):
             p[0] = Expression.ParentizedExpression(p[1],p[2],p[3])   
         
         global sintBotSymbolTable
-        if (expressionAnalisis(sintBotSymbolTable,p[0])):
+        if (expressionAnalisis(sintBotSymbolTable,p[0],p.lexer.lineno -18,p.lexer.lexpos - p.lexer.current)):
             print("Analisis Correcto")
         else:
             exit()                  
     elif len(p) == 3:             
         p[0] = Expression.BooleanExpression(expresion1= p[2], operador = p[1])
         global sintBotSymbolTable
-        if (expressionAnalisis(sintBotSymbolTable,p[0])):
+        if (expressionAnalisis(sintBotSymbolTable,p[0],p.lexer.lineno -18,p.lexer.lexpos - p.lexer.current)):
             print("Analisis Correcto")
         else:
             exit()        
@@ -162,6 +162,10 @@ def p_botInstruccion(p):
                    |       TkDown TkPunto'''  # Asi cortamos la lista
     if len(p) == 5:
         p[0] = Instruction.BotInstruction(p[1],p[3])
+        if p[3] != "me":
+            symbol = Symbol(p[3],"int",None)
+            global sintBotSymbolTable
+            sintBotSymbolTable = sintBotSymbolTable.addToTable(p[3],symbol)
     elif len(p) == 4:
         p[0] = Instruction.BotInstruction(p[1],p[2])
     elif len(p) == 3:

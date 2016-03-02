@@ -137,7 +137,7 @@ def executeAnalisis(parseTree):
     pass
 
 # Metodo que lee el arbol de parseo y obtiene las variables declaradas y las coloca en un diccionario
-def validateArit(variableTable,expression):
+def validateArit(variableTable,expression,line,column):
     
     if type(expression) is ParentizedExpression:
         
@@ -154,18 +154,20 @@ def validateArit(variableTable,expression):
         if symbol.symbolType == 'int':
             valid = True
         elif symbol.symbolType == 'char' or symbol.symbolType == 'bool':
-            print("Conflicto De Tipos ")
+            print("Conflicto De Tipos --> " + expression + " no es tipo 'int' ("
+                  + str(line) + "," + str(column) + ")")
             return False                
-        else:
-            print("Simbolo No Declarado ")
+    elif not variableTable.searchForSymbol(expression):
+            print("Simbolo No Declarado --> " + expression + " ("
+                  + str(line) + "," + str(column) + ")")
             return False
     else:
-        print("Conflicto De Tipos ")
+        print("Conflicto De Tipos desconocido")
         return False
     return valid
 
 # Metodo que lee el arbol de parseo y obtiene las variables declaradas y las coloca en un diccionario
-def validateBool(variableTable,expression):
+def validateBool(variableTable,expression,line,column):
 
 
    
@@ -184,17 +186,19 @@ def validateBool(variableTable,expression):
         if symbol.symbolType == 'bool':
             valid = True
         elif symbol.symbolType == 'char' or symbol.symbolType == 'int':
-            print("Conflicto De Tipos")
-            return False
-        else:
-            print("Simbolo No Declarado")
-            return False
+            print("Conflicto De Tipos --> " + expression + " no es tipo 'int' ni 'char' ("
+                  + str(line) + "," + str(column) + ")")
+            return False    
+    elif not variableTable.searchForSymbol(expression):
+            print("Simbolo No Declarado --> " + expression + " ("
+                  + str(line) + "," + str(column) + ")")
     else:
+        print("Conflicto De Tipos desconocido")
         return False
     return valid
 
 # Metodo que lee el arbol de parseo y obtiene las variables declaradas y las coloca en un diccionario
-def validateRel(variableTable,expression):
+def validateRel(variableTable,expression,line,column):
     
     if type(expression) is ParentizedExpression:
         
@@ -222,12 +226,14 @@ def validateRel(variableTable,expression):
             if symbol.symbolType == 'bool' or symbol.symbolType == 'int':
                 valid = True
             elif symbol.symbolType == 'char':
-                print("Conflicto De Tipos")
+                print("Conflicto De Tipos --> " + expression + " no es tipo 'int' ni 'bool' ("
+                  + str(line) + "," + str(column) + ")")
                 return False
-            else:
-                print("Simbolo No Declarado")
-                return False
+        elif not variableTable.searchForSymbol(expression):
+            print("Simbolo No Declarado --> " + expression + " ("
+                  + str(line) + "," + str(column) + ")")
         else:
+            print("Conflicto De Tipos desconocido")
             return False
             
     elif (expression.operador == "<" or expression.operador == "<=" or 
@@ -245,33 +251,34 @@ def validateRel(variableTable,expression):
             if symbol.symbolType == 'int':
                 valid = True
             elif symbol.symbolType == 'char' or symbol.symbolType == 'bool':
-                print("Conflicto De Tipos")
+                print("Conflicto De Tipos --> " + expression + " no es tipo 'int' ("
+                  + str(line) + "," + str(column) + ")")
                 return False
-            else:
-                print("Simbolo No Declarado")
-                return False
+        elif not variableTable.searchForSymbol(expression):
+            print("Simbolo No Declarado --> " + expression + " ("
+                  + str(line) + "," + str(column) + ")")
         else:
+            print("Conflicto De Tipos desconocido")
             return False
     
     return valid
 
 # Metodo que lee el arbol de parseo y obtiene las variables declaradas y las coloca en un diccionario
-def expressionAnalisis(variableTable,expression):
+def expressionAnalisis(variableTable,expression,line,column):
 
         # Creamos la tabla vacia
         expressionType = type(expression)
-        print(expressionType)
     
         # Caso 1: Expresion Aritmetica
         if expressionType is ArithmethicExpression:
             
             # Verificamos la primera expresion
-            valid1 = validateArit(variableTable,expression.expresion1)
+            valid1 = validateArit(variableTable,expression.expresion1,line,column)
             
             if (valid1):
             
                 # Verificamos la Segunda expresion
-                valid2 = validateArit(variableTable,expression.expresion2)
+                valid2 = validateArit(variableTable,expression.expresion2,line,column)
             
             else:
                 return False    
@@ -280,13 +287,13 @@ def expressionAnalisis(variableTable,expression):
         elif expressionType is RelationalExpresion:
             
             # Verificamos la primera expresion
-            valid1 = validateRel(variableTable,expression.expresion1)
+            valid1 = validateRel(variableTable,expression.expresion1,line,column)
             
             # Si la primera expresion es valida podemos continuar
             if (valid1):            
                 
                 # Verificamos la Segunda expresion
-                valid2 = validateRel(variableTable,expression.expresion2)  
+                valid2 = validateRel(variableTable,expression.expresion2,line,column)  
                 
                 expreType1 = type(expression.expresion1)
                 expreType2 = type(expression.expresion2)
@@ -333,19 +340,19 @@ def expressionAnalisis(variableTable,expression):
         elif expressionType is BooleanExpression:
             
             # Verificamos la primera expresion
-            valid1 = validateBool(variableTable,expression.expresion1)
+            valid1 = validateBool(variableTable,expression.expresion1,line,column)
 
             if (valid1):
            
                 # Verificamos la Segunda expresion
-                valid2 = validateBool(variableTable,expression.expresion2)  
+                valid2 = validateBool(variableTable,expression.expresion2,line,column)  
 
             else:
                 return False   
 
         elif expressionType is ParentizedExpression:
             
-            return expressionAnalisis(variableTable,expression.expresion)
+            return expressionAnalisis(variableTable,expression.expresion,line,column)
        
         return valid1 and valid2 
 
