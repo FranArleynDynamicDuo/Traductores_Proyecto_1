@@ -24,6 +24,7 @@ idenPattern = compile(r'[a-zA-Z][a-zA-Z0-9_]*')
 intTipo = "int"
 boolTipo = "bool"
 charTipo = "char"
+tokenMe = "me"
 
 ''' Mensajes De Error '''
 
@@ -187,7 +188,7 @@ def validateArit(variableTable,expression,line,column):
         valid = True
     elif match(numPattern,expression):
         valid = True
-    elif expression == "me":
+    elif expression == tokenMe:
         print(errorMe + expression + lineInfo
               + str(line) + columnInfo + str(column) + closeInfo)
         return False
@@ -234,8 +235,8 @@ def validateBool(variableTable,expression,line,column):
     # Caso 3.3: Es una literal booleano (true o false)
     elif match(boolPattern,expression):
         valid = True
-    elif expression == "me":
-        print(errorMe + expression + " ("
+    elif expression == tokenMe:
+        print(errorMe + expression + lineInfo
               + str(line) + columnInfo + str(column) + closeInfo)
         return False
     # Caso 3.4: Es un identificador
@@ -292,7 +293,7 @@ def validateRel(variableTable,expression,line,column):
         # Caso 3.5: Es una literal booleano (true o false)
         elif match(boolPattern,expression):
             valid = True
-        elif expression == "me":
+        elif expression == tokenMe:
             print(errorMe + expression + lineInfo
                   + str(line) + columnInfo + str(column) + closeInfo)
             return False
@@ -321,7 +322,7 @@ def validateRel(variableTable,expression,line,column):
         # Caso 3.4: Es una literal aritmetico (numeros)
         elif match(numPattern,expression):
             valid = True
-        elif expression == "me":
+        elif expression == tokenMe:
             print(errorMe 
                   + expression + lineInfo
                   + str(line) + columnInfo + str(column) + closeInfo)
