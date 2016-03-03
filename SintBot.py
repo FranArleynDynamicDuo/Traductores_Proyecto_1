@@ -104,13 +104,5 @@ from Proyecto_2.Parser.parser import sintBotSymbolTable
 
 print(str(sintBotSymbolTable))
 
-print("")
-print("------------------------")
-print("")
-import gc
-for obj in gc.get_objects():
-    if isinstance(obj, SymbolTable):
-        print(obj)
- 
 # NO estamos claros si hay que usarlo
 # print(result) 
