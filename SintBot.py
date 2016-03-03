@@ -15,6 +15,7 @@ from Proyecto_1.Lexer.Lexer import botLexer
 from Proyecto_1.Lexer.Lexer import column_token
 from Proyecto_1.Lexer.Token import Token
 from Proyecto_2.Parser.parser import BotParser
+from Proyecto_3.contextAnalisis.contextAnalisis import SymbolTable
 
 ##################### Funciones ################################################
 # Calculo de columna en la que se encuentra el numero de columna
@@ -102,6 +103,14 @@ result = BotParser.parse(data)
 from Proyecto_2.Parser.parser import sintBotSymbolTable
 
 print(str(sintBotSymbolTable))
+
+print("")
+print("------------------------")
+print("")
+import gc
+for obj in gc.get_objects():
+    if isinstance(obj, SymbolTable):
+        print(obj)
  
 # NO estamos claros si hay que usarlo
 # print(result) 

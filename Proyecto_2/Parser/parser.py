@@ -14,6 +14,8 @@ from Proyecto_3.contextAnalisis.contextAnalisis import expressionAnalisis
 
 tokens = botTokens;
 sintBotSymbolTable = SymbolTable(None);
+currentBotType = None
+currentBotValue = None
 
 #-----------------------> PROGRAMA GENERAL <------------------------
 
@@ -92,7 +94,6 @@ def p_expression(p):
 def p_botCreateList(p):
     '''botCreateList :    botCreateList botCreate 
                      |    botCreate''' # Asi cortamos la lista'''
-    
     if len(p) == 3:
         p[0] = p[1]
         p[0].append(p[2])
@@ -108,6 +109,8 @@ def p_botCreate(p):
     symbol = Symbol(p[3],p[1],None)
     global sintBotSymbolTable
     sintBotSymbolTable = sintBotSymbolTable.addToTable(p[3],symbol)
+    global currentBotType
+    currentBotType = p[1]
 
 def p_botDeclaracionList(p):
     '''botDeclaracionList :    botDeclaracionList botDeclaracion 
@@ -115,18 +118,31 @@ def p_botDeclaracionList(p):
     if len(p) == 3:
         p[0] = p[1]
         p[0].append(p[2])
+
     elif len(p) == 2:
         p[0] = []
         p[0].append(p[1])
+        
+        
             
             
 def p_botDeclaracion(p):
-    '''botDeclaracion  :    TkOn TkActivation TkDosPuntos botInstruccionList TkEnd
-                    |       TkOn TkDeactivation TkDosPuntos botInstruccionList TkEnd
-                    |       TkOn expression TkDosPuntos botInstruccionList TkEnd
-                    |       TkOn TkDefault TkDosPuntos botInstruccionList TkEnd'''
-    p[0] = Instruction.BotDeclaration(p[2],p[4])     
-    
+    '''botDeclaracion  :    TkOn TkActivation startBotDeclaration TkDosPuntos botInstruccionList TkEnd
+                    |       TkOn TkDeactivation startBotDeclaration TkDosPuntos botInstruccionList TkEnd
+                    |       TkOn expression startBotDeclaration TkDosPuntos botInstruccionList TkEnd
+                    |       TkOn TkDefault startBotDeclaration TkDosPuntos botInstruccionList TkEnd'''
+    p[0] = Instruction.BotDeclaration(p[2],p[5])
+    global sintBotSymbolTable
+    sintBotSymbolTable = sintBotSymbolTable.getUpperLevel()
+
+def p_startBotDeclaration(p):
+    '''startBotDeclaration  :   '''
+    global sintBotSymbolTable
+    sintBotSymbolTable = SymbolTable(deepcopy(sintBotSymbolTable))
+    global currentBotType
+    symbol = Symbol("me",currentBotType,None)
+    sintBotSymbolTable = sintBotSymbolTable.addToTable(symbol.getIdentifier(),symbol)
+         
 
 def p_botInstruccionList(p):
     '''botInstruccionList  :    botInstruccionList botInstruccion  
@@ -137,8 +153,7 @@ def p_botInstruccionList(p):
     elif len(p) == 2:
         p[0] = []
         p[0].append(p[1])
-
-
+        
 def p_botInstruccion(p):
     '''botInstruccion :    TkStore expression TkPunto
                    |       TkDrop expression TkPunto    

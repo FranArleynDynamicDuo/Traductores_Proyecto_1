@@ -11,18 +11,45 @@ from Proyecto_2.Parser.Expression import ParentizedExpression
 from re import compile
 from re import match
 
+'''--------------------------------- CONSTANTES --------------------------------'''
+
+''' Patrones de comparacion '''
+
 boolPattern = compile('true|false')
 numPattern = compile('([0-9]+)|(-[0-9]+)')
 idenPattern = compile(r'[a-zA-Z][a-zA-Z0-9_]*')
 
+''' Tipos de Simbolos '''
 
-# Clase de tabla de simbolos
+intTipo = "int"
+boolTipo = "bool"
+charTipo = "char"
+
+''' Mensajes De Error '''
+
+notInt = " no es tipo 'int'"
+notIntChar = " no es tipo 'int' ni 'char'"
+notIntBool = "no es tipo 'int' ni 'bool'"
+
+''' Informacion Linea/Columna '''
+
+lineInfo = " (L:"
+columnInfo = ",C:"
+closeInfo = ")"
+
+''' Mensajes De Error '''
+
+errorMe = "Uso de la palabra reservada 'me' fuera de un comportamiento "
+errorConflictoTipos = "Conflicto De Tipos --> "
+errorSimNoDeclarado = "Simbolo No Declarado --> "
+errorDesconocido = "Error desconocido"
+
+
 class SymbolTable():
-    
-    def __init__(self,upperLevel ):
+    def __init__(self, upperLevel):
         self.table = dict()
         self.upperLevel = upperLevel
-        
+      
     def __str__(self):
         retorno = ""
         if self.upperLevel is None:
@@ -45,28 +72,25 @@ class SymbolTable():
             return retorno
     
     ''' Funciones simples de primer nivel '''
-    
     def addToTable(self,key,element):
         self.table.update({key: element})
         return self
-    
     def emptyTable(self):
         if (self.table):
             return False
         else:
             return True
-    
+        
     def getElement(self,key):
         return self.table.get(key)
     
     def getUpperLevel(self):
         return self.upperLevel
-
+    
     def getTable(self):
         return self.table
     
     ''' Funciones Complejas Recursivas '''
-    
     def searchForSymbol(self,identifier):
         """
         Busca un elemento en los distintos niveles de la tabla de simbolos y 
@@ -94,6 +118,7 @@ class SymbolTable():
             # Caso 2.2: No estamos en el ultimo nivel, buscamos en el nivel superior
             else:
                 return self.getUpperLevel().searchForSymbol(identifier) 
+
 
 class Symbol():
     
@@ -138,6 +163,20 @@ def executeAnalisis(parseTree):
 
 # Metodo que lee el arbol de parseo y obtiene las variables declaradas y las coloca en un diccionario
 def validateArit(variableTable,expression,line,column):
+    """
+    Busca errores estaticos en una expresion aritmetica
+    
+    @type  variableTable: SymbolTable
+    @param variableTable: Tabla de simbolos actual
+    @type  expression: ArithmethicExpression
+    @param expression: expresion a analizar
+    @type  line: int
+    @param line: numero de linea de la expresion
+    @type  column: int
+    @param column: numero de columna de la expresion
+    @rtype:   booleano
+    @return:  Indicacion si hubo error o no
+    """
     
     if type(expression) is ParentizedExpression:
         
@@ -148,26 +187,44 @@ def validateArit(variableTable,expression,line,column):
         valid = True
     elif match(numPattern,expression):
         valid = True
+    elif expression == "me":
+        print(errorMe + expression + lineInfo
+              + str(line) + columnInfo + str(column) + closeInfo)
+        return False
     elif variableTable.searchForSymbol(expression):
         symbol = variableTable.searchForSymbol(expression)
-        if symbol.symbolType == 'int':
+        if symbol.symbolType == intTipo:
             valid = True
-        elif symbol.symbolType == 'char' or symbol.symbolType == 'bool':
-            print("Conflicto De Tipos --> " + expression + " no es tipo 'int' ("
-                  + str(line) + "," + str(column) + ")")
+        elif symbol.symbolType == charTipo or symbol.symbolType == boolTipo:
+            print(errorConflictoTipos + expression + notInt + lineInfo
+                  + str(line) + columnInfo + str(column) + closeInfo)
             return False                
     elif not variableTable.searchForSymbol(expression):
-            print("Simbolo No Declarado --> " + expression + " ("
-                  + str(line) + "," + str(column) + ")")
+            print(errorSimNoDeclarado + expression + lineInfo
+                  + str(line) + columnInfo + str(column) + closeInfo)
             return False
     else:
-        print("Conflicto De Tipos desconocido")
+        print(errorDesconocido)
         return False
     return valid
 
 # Metodo que lee el arbol de parseo y obtiene las variables declaradas y las coloca en un diccionario
 def validateBool(variableTable,expression,line,column):
-
+    """
+    Busca errores estaticos en una expresion Booleana
+    
+    @type  variableTable: SymbolTable
+    @param variableTable: Tabla de simbolos actual
+    @type  expression: BooleanExpression
+    @param expression: expresion a analizar
+    @type  line: int
+    @param line: numero de linea de la expresion
+    @type  column: int
+    @param column: numero de columna de la expresion
+    @rtype:   booleano
+    @return:  Indicacion si hubo error o no
+    """
+    
     # Caso 3.1: Es una expresion Booleana
     if (type(expression) is BooleanExpression):
         valid = True
@@ -177,25 +234,43 @@ def validateBool(variableTable,expression,line,column):
     # Caso 3.3: Es una literal booleano (true o false)
     elif match(boolPattern,expression):
         valid = True
+    elif expression == "me":
+        print(errorMe + expression + " ("
+              + str(line) + columnInfo + str(column) + closeInfo)
+        return False
     # Caso 3.4: Es un identificador
     elif variableTable.searchForSymbol(expression):
         symbol = variableTable.searchForSymbol(expression)
-        if symbol.symbolType == 'bool':
+        if symbol.symbolType == boolTipo:
             valid = True
-        elif symbol.symbolType == 'char' or symbol.symbolType == 'int':
-            print("Conflicto De Tipos --> " + expression + " no es tipo 'int' ni 'char' ("
-                  + str(line) + "," + str(column) + ")")
+        elif symbol.symbolType == charTipo or symbol.symbolType == intTipo:
+            print(errorConflictoTipos + expression + notIntChar + lineInfo
+                  + str(line) + columnInfo + str(column) + closeInfo)
             return False    
     elif not variableTable.searchForSymbol(expression):
-            print("Simbolo No Declarado --> " + expression + " ("
-                  + str(line) + "," + str(column) + ")")
+            print(errorSimNoDeclarado + expression + lineInfo
+                  + str(line) + columnInfo + str(column) + closeInfo)
     else:
-        print("Conflicto De Tipos desconocido")
+        print(errorDesconocido)
         return False
     return valid
 
 # Metodo que lee el arbol de parseo y obtiene las variables declaradas y las coloca en un diccionario
 def validateRel(variableTable,expression,line,column):
+    """
+    Busca errores estaticos en una expresion Relacional
+    
+    @type  variableTable: SymbolTable
+    @param variableTable: Tabla de simbolos actual
+    @type  expression: RelationalExpresion
+    @param expression: expresion a analizar
+    @type  line: int
+    @param line: numero de linea de la expresion
+    @type  column: int
+    @param column: numero de columna de la expresion
+    @rtype:   booleano
+    @return:  Indicacion si hubo error o no
+    """
     
     if type(expression) is ParentizedExpression:
         
@@ -217,20 +292,24 @@ def validateRel(variableTable,expression,line,column):
         # Caso 3.5: Es una literal booleano (true o false)
         elif match(boolPattern,expression):
             valid = True
+        elif expression == "me":
+            print(errorMe + expression + lineInfo
+                  + str(line) + columnInfo + str(column) + closeInfo)
+            return False
         # Caso 3.6: Es un identificador
         elif variableTable.searchForSymbol(expression):
             symbol = variableTable.searchForSymbol(expression)
-            if symbol.symbolType == 'bool' or symbol.symbolType == 'int':
+            if symbol.symbolType == boolTipo or symbol.symbolType == intTipo:
                 valid = True
-            elif symbol.symbolType == 'char':
-                print("Conflicto De Tipos --> " + expression + " no es tipo 'int' ni 'bool' ("
-                  + str(line) + "," + str(column) + ")")
+            elif symbol.symbolType == charTipo:
+                print(errorConflictoTipos + expression + notIntBool + lineInfo
+                  + str(line) + columnInfo + str(column) + closeInfo)
                 return False
         elif not variableTable.searchForSymbol(expression):
-            print("Simbolo No Declarado --> " + expression + " ("
-                  + str(line) + "," + str(column) + ")")
+            print(errorSimNoDeclarado + expression + lineInfo
+                  + str(line) + columnInfo + str(column) + closeInfo)
         else:
-            print("Conflicto De Tipos desconocido")
+            print(errorDesconocido)
             return False
             
     elif (expression.operador == "<" or expression.operador == "<=" or 
@@ -242,115 +321,133 @@ def validateRel(variableTable,expression,line,column):
         # Caso 3.4: Es una literal aritmetico (numeros)
         elif match(numPattern,expression):
             valid = True
+        elif expression == "me":
+            print(errorMe 
+                  + expression + lineInfo
+                  + str(line) + columnInfo + str(column) + closeInfo)
+            return False
         # Caso 3.6: Es un identificador
         elif variableTable.searchForSymbol(expression):
             symbol = variableTable.searchForSymbol(expression)
-            if symbol.symbolType == 'int':
+            if symbol.symbolType == intTipo:
                 valid = True
-            elif symbol.symbolType == 'char' or symbol.symbolType == 'bool':
-                print("Conflicto De Tipos --> " + expression + " no es tipo 'int' ("
-                  + str(line) + "," + str(column) + ")")
+            elif symbol.symbolType == charTipo or symbol.symbolType == boolTipo:
+                print(errorConflictoTipos + expression + notInt + lineInfo
+                  + str(line) + columnInfo + str(column) + closeInfo)
                 return False
         elif not variableTable.searchForSymbol(expression):
-            print("Simbolo No Declarado --> " + expression + " ("
-                  + str(line) + "," + str(column) + ")")
+            print(errorSimNoDeclarado + expression + lineInfo
+                  + str(line) + columnInfo + str(column) + closeInfo)
         else:
-            print("Conflicto De Tipos desconocido")
+            print(errorDesconocido)
             return False
     
     return valid
 
 # Metodo que lee el arbol de parseo y obtiene las variables declaradas y las coloca en un diccionario
 def expressionAnalisis(variableTable,expression,line,column):
-
-        # Creamos la tabla vacia
-        expressionType = type(expression)
+    """
+    Orquesta la busqueda de errores en una expresion
     
-        # Caso 1: Expresion Aritmetica
-        if expressionType is ArithmethicExpression:
-            
-            # Verificamos la primera expresion
-            valid1 = validateArit(variableTable,expression.expresion1,line,column)
-            
-            if (valid1):
-            
-                # Verificamos la Segunda expresion
-                valid2 = validateArit(variableTable,expression.expresion2,line,column)
-            
-            else:
-                return False    
+    @type  variableTable: SymbolTable
+    @param variableTable: Tabla de simbolos actual
+    @type  expression: Expression
+    @param expression: expresion a analizar
+    @type  line: int
+    @param line: numero de linea de la expresion
+    @type  column: int
+    @param column: numero de columna de la expresion
+    @rtype:   booleano
+    @return:  Indicacion si hubo error o no
+    """
+    # Creamos la tabla vacia
+    expressionType = type(expression)
+
+    # Caso 1: Expresion Aritmetica
+    if expressionType is ArithmethicExpression:
         
-        # Caso 2: Expresion Relacional    
-        elif expressionType is RelationalExpresion:
+        # Verificamos la primera expresion
+        valid1 = validateArit(variableTable,expression.expresion1,line,column)
+        
+        if (valid1):
+        
+            # Verificamos la Segunda expresion
+            valid2 = validateArit(variableTable,expression.expresion2,line,column)
+        
+        else:
+            return False    
+    
+    # Caso 2: Expresion Relacional    
+    elif expressionType is RelationalExpresion:
+        
+        # Verificamos la primera expresion
+        valid1 = validateRel(variableTable,expression.expresion1,line,column)
+        
+        # Si la primera expresion es valida podemos continuar
+        if (valid1):            
             
-            # Verificamos la primera expresion
-            valid1 = validateRel(variableTable,expression.expresion1,line,column)
+            # Verificamos la Segunda expresion
+            valid2 = validateRel(variableTable,expression.expresion2,line,column)  
             
-            # Si la primera expresion es valida podemos continuar
-            if (valid1):            
-                
-                # Verificamos la Segunda expresion
-                valid2 = validateRel(variableTable,expression.expresion2,line,column)  
-                
-                expreType1 = type(expression.expresion1)
-                expreType2 = type(expression.expresion2)
-                symbol1 = variableTable.searchForSymbol(expression.expresion1)
-                symbol2 = variableTable.searchForSymbol(expression.expresion2)
-                
-                # La expresion relacional cuando usa los operadores de igualdad y desigualdad,
-                # tiene muchas combinaciones de tipos, asi que descartamos la expresion si
-                # es una expresion invalida
-                if valid2 and (expression.operador == "=" or expression.operador == "/="):
-                    
-                    # Una expresion aritmetica no puede ser igualada a otro tipo de expresion
-                    if ((expreType1 is ArithmethicExpression or expreType2 is ArithmethicExpression)
-                          and (expreType1 is not ArithmethicExpression or 
-                          expreType2 is not ArithmethicExpression)):
-                        print()
-                        return False
-                    
-                    # Una expresion aritmetica solo puede ser igualada a una variable si esta es
-                    # de tipo entero
-                    elif ((expreType1 is ArithmethicExpression and symbol2.getType() != "int")
-                        or
-                        (expreType1 is BooleanExpression and symbol2.getType() == "int")
-                        or
-                        (expreType1 is RelationalExpresion and symbol2.getType() == "int")):
-                        print()
-                        return False
-                    
-                    # Una expresion aritmetica solo puede ser igualada a una variable si esta es
-                    # de tipo entero 
-                    elif ((expreType2 is ArithmethicExpression and symbol1.getType() != "int")
-                        or
-                        (expreType2 is BooleanExpression and symbol1.getType() == "int")
-                        or
-                        (expreType2 is RelationalExpresion and symbol1.getType() == "int")):
-                        print()
-                        return False
-                
-            # Si la primera expresion es invalida, ya la expresion entera es invalida     
-            else:
-                return False   
-  
-        # Caso 3: Expresion Booleana
-        elif expressionType is BooleanExpression:
+            expreType1 = type(expression.expresion1)
+            expreType2 = type(expression.expresion2)
+            symbol1 = variableTable.searchForSymbol(expression.expresion1)
+            symbol2 = variableTable.searchForSymbol(expression.expresion2)
             
-            # Verificamos la primera expresion
-            valid1 = validateBool(variableTable,expression.expresion1,line,column)
+            # La expresion relacional cuando usa los operadores de igualdad y desigualdad,
+            # tiene muchas combinaciones de tipos, asi que descartamos la expresion si
+            # es una expresion invalida
+            if valid2 and (expression.operador == "=" or expression.operador == "/="):
+                
+                # Una expresion aritmetica no puede ser igualada a otro tipo de expresion
+                if ((expreType1 is ArithmethicExpression or expreType2 is ArithmethicExpression)
+                      and (expreType1 is not ArithmethicExpression or 
+                      expreType2 is not ArithmethicExpression)):
+                    print()
+                    return False
+                
+                # Una expresion aritmetica solo puede ser igualada a una variable si esta es
+                # de tipo entero
+                elif ((expreType1 is ArithmethicExpression and symbol2.getType() != intTipo)
+                    or
+                    (expreType1 is BooleanExpression and symbol2.getType() == intTipo)
+                    or
+                    (expreType1 is RelationalExpresion and symbol2.getType() == intTipo)):
+                    print()
+                    return False
+                
+                # Una expresion aritmetica solo puede ser igualada a una variable si esta es
+                # de tipo entero 
+                elif ((expreType2 is ArithmethicExpression and symbol1.getType() != intTipo)
+                    or
+                    (expreType2 is BooleanExpression and symbol1.getType() == intTipo)
+                    or
+                    (expreType2 is RelationalExpresion and symbol1.getType() == intTipo)):
+                    print()
+                    return False
+            
+        # Si la primera expresion es invalida, ya la expresion entera es invalida     
+        else:
+            return False   
 
-            if (valid1):
-           
-                # Verificamos la Segunda expresion
-                valid2 = validateBool(variableTable,expression.expresion2,line,column)  
+    # Caso 3: Expresion Booleana
+    elif expressionType is BooleanExpression:
+        
+        # Verificamos la primera expresion
+        valid1 = validateBool(variableTable,expression.expresion1,line,column)
 
-            else:
-                return False   
-
-        elif expressionType is ParentizedExpression:
-            
-            return expressionAnalisis(variableTable,expression.expresion,line,column)
+        if (valid1):
        
-        return valid1 and valid2 
+            # Verificamos la Segunda expresion
+            valid2 = validateBool(variableTable,expression.expresion2,line,column)  
+
+        else:
+            return False   
+
+    elif expressionType is ParentizedExpression:
+        
+        return expressionAnalisis(variableTable,expression.expresion,line,column)
+   
+    return valid1 and valid2 
 
         

@@ -6,15 +6,15 @@ create
 	end
 	int bot contador
 		on default:
-			collect as x.
-			store x + 1.
+			collect as z.
+			store z + 1.
 		end
 	end
 execute
 	deactivate contador,bar.
 	$- Asignar al contador
 	el valor 35, si bar > ~ 2 -$
-	while (3 + 2) /= (2 - 1):
+	while (me + 2) /= (2 - 1):
 		deactivate contador,bar.
 	end
 end
