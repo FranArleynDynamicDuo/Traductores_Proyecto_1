@@ -1,0 +1,3 @@
+#!/bin/bash
+clear
+python3 ../SintBot.py ../Input_Cases/$1
