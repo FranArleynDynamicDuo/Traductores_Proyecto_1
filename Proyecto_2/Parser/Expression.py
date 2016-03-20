@@ -105,12 +105,12 @@ class ArithmethicExpression:
         expresionDos = None
         
         
-        if type(expresionUno) is str:
+        if type(self.expresion1) is str:
             expresionUno = int(self.expresion1)
         else:
             expresionUno = self.expresion1.evaluar()
         
-        if type() is str:
+        if type(self.expresion2) is str:
             expresionDos = int(self.expresion2)
         else:
             expresionDos = self.expresion2.evaluar()     
@@ -154,31 +154,10 @@ class RelationalExpresion:
     # Evaluar Resultado de evaluacion
     def evaluar(self):
         expresionUno = None
-        operador = None
         expresionDos = None
 
 
-        if type(expresionUno) is str:
-            expresionUno = int(self.expresion1)
-        else:
-            expresionUno = self.expresion1.evaluar()
-        
-        if type() is str:
-            expresionDos = int(self.expresion2)
-        else:
-            expresionDos = self.expresion2.evaluar()     
-        
-        
-        if (self.operador == "+"):
-            return (expresionUno + expresionDos)
-        elif (self.operador == "-"):
-            return (expresionUno - expresionDos)
-        elif (self.operador == "*"):
-            return (expresionUno * expresionDos)
-        elif  (self.operador == "/"):
-            return (expresionUno / expresionDos)
-        elif  (self.operador == "%"):
-            return (expresionUno % expresionDos)
+
 
 
           
@@ -210,10 +189,29 @@ class BooleanExpression:
     # Evaluar Resultado de evaluacion
     def evaluar(self):
         expresionUno = None
-        operador = None
         expresionDos = None
-        pass
 
+        if type(self.expresion1) is str:
+            if self.expresion1 == "true":
+                expresionUno == True
+            elif self.expresion1 == "false":
+                expresionUno == False
+            expresionUno = int(self.expresion1)
+        else:
+            expresionUno = self.expresion1.evaluar()
+        
+        if type(self.expresion2) is str:
+            if self.expresion2 == "true":
+                expresionDos == True
+            elif self.expresion2 == "false":
+                expresionDos == False
+        else:
+            expresionUno = self.expresion1.evaluar()  
+        
+        if (self.operador == "/\\"):
+            return (expresionUno and expresionDos)
+        elif (self.operador == "\/"):
+            return (expresionUno or expresionDos)
 
 # Expresiones con Parentizacion
 class ParentizedExpression:
