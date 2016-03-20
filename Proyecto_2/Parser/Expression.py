@@ -98,6 +98,35 @@ class ArithmethicExpression:
             elif ( (self.operador == None) and (self.expresion2 == None) ):
                 retorno += espacio + espacio + espacio + espacio + " - variable: " + self.expresion1
         return retorno    
+
+    # Evaluar Resultado de evaluacion
+    def evaluar(self):
+        expresionUno = None
+        expresionDos = None
+        
+        
+        if type(expresionUno) is str:
+            expresionUno = int(self.expresion1)
+        else:
+            expresionUno = self.expresion1.evaluar()
+        
+        if type() is str:
+            expresionDos = int(self.expresion2)
+        else:
+            expresionDos = self.expresion2.evaluar()     
+        
+        
+        if (self.operador == "+"):
+            return (expresionUno + expresionDos)
+        elif (self.operador == "-"):
+            return (expresionUno - expresionDos)
+        elif (self.operador == "*"):
+            return (expresionUno * expresionDos)
+        elif  (self.operador == "/"):
+            return (expresionUno / expresionDos)
+        elif  (self.operador == "%"):
+            return (expresionUno % expresionDos)
+
         
 # Expresiones Relacionales
 class RelationalExpresion:
@@ -121,6 +150,37 @@ class RelationalExpresion:
                 retorno += espacio + espacio + espacio + espacio + " - variable: " + self.expresion1
         retorno += "\n"
         return retorno   
+    
+    # Evaluar Resultado de evaluacion
+    def evaluar(self):
+        expresionUno = None
+        operador = None
+        expresionDos = None
+
+
+        if type(expresionUno) is str:
+            expresionUno = int(self.expresion1)
+        else:
+            expresionUno = self.expresion1.evaluar()
+        
+        if type() is str:
+            expresionDos = int(self.expresion2)
+        else:
+            expresionDos = self.expresion2.evaluar()     
+        
+        
+        if (self.operador == "+"):
+            return (expresionUno + expresionDos)
+        elif (self.operador == "-"):
+            return (expresionUno - expresionDos)
+        elif (self.operador == "*"):
+            return (expresionUno * expresionDos)
+        elif  (self.operador == "/"):
+            return (expresionUno / expresionDos)
+        elif  (self.operador == "%"):
+            return (expresionUno % expresionDos)
+
+
           
 # Expresiones Booleanas
 class BooleanExpression:
@@ -145,7 +205,15 @@ class BooleanExpression:
             elif ( (self.operador == None) and (self.expresion2 == None) ):
                 retorno += espacio + espacio + espacio + espacio + " - variable: " + self.expresion1
         retorno += "\n"
-        return retorno 
+        return retorno
+    
+    # Evaluar Resultado de evaluacion
+    def evaluar(self):
+        expresionUno = None
+        operador = None
+        expresionDos = None
+        pass
+
 
 # Expresiones con Parentizacion
 class ParentizedExpression:
@@ -167,3 +235,7 @@ class ParentizedExpression:
         retorno += espacio + espacio + "--- Close ParentizedExpression ---"
         retorno += "\n"
         return retorno 
+    
+    # Evaluar Resultado de evaluacion
+    def evaluar(self):
+        return self.expresion.evaluar()

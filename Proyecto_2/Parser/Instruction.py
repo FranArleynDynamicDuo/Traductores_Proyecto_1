@@ -44,6 +44,10 @@ class Program(InstructionClass):
             retorno += str(execute)
         retorno += "\n"
         return retorno
+    
+    # Corrida de la instruccion
+    def run(self):
+        pass
         
         
 # Clase Crear el LexBot 
@@ -69,6 +73,9 @@ class CreateInstruction(InstructionClass):
         retorno += "\n"
         return retorno
 
+    # Corrida de la instruccion
+    def run(self):
+        pass
 
 # Clase Declaracion del bot
 class BotDeclaration(InstructionClass):
@@ -92,7 +99,11 @@ class BotDeclaration(InstructionClass):
                 retorno +=espacio + espacio + espacio + espacio + str(instruction)
                 retorno += "\n"
         return retorno
-        
+ 
+    # Corrida de la instruccion
+    def run(self):
+        pass 
+
 # Clase Intrucciones del boot
 class BotInstruction(InstructionClass):
 
@@ -134,6 +145,10 @@ class BotInstruction(InstructionClass):
         
         return retorno 
 
+    # Corrida de la instruccion
+    def run(self):
+        pass
+
 # Class ConditionalInstruction      
 class ConditionalInstruction(InstructionClass):
 
@@ -156,6 +171,10 @@ class ConditionalInstruction(InstructionClass):
             for instruction in self.elseInstructionSet :
                 retorno += str(instruction)
         return retorno
+
+    # Corrida de la instruccion
+    def run(self):
+        pass
         
 # Class whileInstruction
 class whileInstruction(InstructionClass):
@@ -175,7 +194,10 @@ class whileInstruction(InstructionClass):
         for instruction in self.instructionSet :
             retorno += str(instruction)
         return retorno
-        
+
+    # Corrida de la instruccion
+    def run(self):
+        pass        
         
 # Class ActivateInstruction (REVISAR COMO HACER EL FOR PENDIENTE EN DONDE)
 class ActivateInstruction:
@@ -196,6 +218,10 @@ class ActivateInstruction:
             retorno += espacio + espacio + " - var: " + str(nameBot)
             retorno += "\n"
         return retorno
+ 
+    # Corrida de la instruccion
+    def run(self):
+        pass 
         
 # Class DeactivateInstruction (REVISAR COMO HACER EL FOR PENDIENTE EN DONDE)
 class DeactivateInstruction:
@@ -216,6 +242,9 @@ class DeactivateInstruction:
             retorno += "\n"
         return retorno
 
+    # Corrida de la instruccion
+    def run(self):
+        pass
  
 # Class AdvanceInstruction
 class AdvanceInstruction:
@@ -236,4 +265,6 @@ class AdvanceInstruction:
             retorno += "\n"
         return retorno
         
-        
+    # Corrida de la instruccion
+    def run(self):
+        pass       
