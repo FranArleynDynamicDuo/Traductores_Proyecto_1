@@ -174,7 +174,12 @@ class ConditionalInstruction(InstructionClass):
 
     # Corrida de la instruccion
     def run(self):
-        pass
+        if (self.ifCondition.evaluar()):
+            for i in  range(0,self.ifInstructionSet.len):
+                self.ifInstructionSet[i].run()
+        elif (self.elseInstructionSet):
+            for i in  range(0,self.elseInstructionSet.len):
+                self.elseInstructionSet[i].run()
         
 # Class whileInstruction
 class whileInstruction(InstructionClass):
@@ -197,7 +202,9 @@ class whileInstruction(InstructionClass):
 
     # Corrida de la instruccion
     def run(self):
-        pass        
+        while (self.condition.evaluar()):
+            for i in  range(0,self.instructionSet.len):
+                self.instructionSet[i].run()
         
 # Class ActivateInstruction (REVISAR COMO HACER EL FOR PENDIENTE EN DONDE)
 class ActivateInstruction:
