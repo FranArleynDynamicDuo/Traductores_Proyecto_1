@@ -145,8 +145,68 @@ class BotInstruction(InstructionClass):
         
         return retorno 
 
-    # Corrida de la instruccion
     def run(self):
+        if self.command == 'store':
+            self.runStore()
+        elif self.command == 'collect':
+            self.runCollect()
+        elif self.command == 'recieve':
+            self.runRecieve()
+        elif self.command == 'drop':
+            self.runDrop()
+        elif self.command == 'collect':
+            self.runCollect()
+        elif self.command == 'send':
+            self.runSend()
+        elif self.command == 'read':
+            self.runRead()
+        elif self.command == 'left':
+            self.runLeft()
+        elif self.command == 'right':
+            self.runRight()
+        elif self.command == 'up':
+            self.runUp()
+        elif self.command == 'down':
+            self.runDown()
+
+    # Corrida de la instruccion
+    def runStore(self):
+        pass
+
+    # Corrida de la instruccion
+    def runCollect(self):
+        pass
+
+    # Corrida de la instruccion
+    def runRecieve(self):
+        pass
+
+    # Corrida de la instruccion
+    def runDrop(self):
+        pass
+
+    # Corrida de la instruccion
+    def runSend(self):
+        pass
+    
+    # Corrida de la instruccion
+    def runRead(self):
+        element = input()
+    
+    # Corrida de la instruccion
+    def runLeft(self):
+        pass
+    
+    # Corrida de la instruccion
+    def runRight(self):
+        pass
+    
+    # Corrida de la instruccion
+    def runUp(self):
+        pass
+    
+    # Corrida de la instruccion
+    def runDown(self):
         pass
 
 # Class ConditionalInstruction      
@@ -228,7 +288,8 @@ class ActivateInstruction:
  
     # Corrida de la instruccion
     def run(self):
-        pass 
+        for bot in self.identList:
+            pass 
         
 # Class DeactivateInstruction (REVISAR COMO HACER EL FOR PENDIENTE EN DONDE)
 class DeactivateInstruction:

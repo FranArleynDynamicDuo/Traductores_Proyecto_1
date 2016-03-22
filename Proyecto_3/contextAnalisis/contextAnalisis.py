@@ -157,6 +157,7 @@ class Symbol():
         self.identifier = identifier
         self.symbolType = symbolType
         self.value = value
+        self.behaviorTable = []
 
     def __str__(self):
         if self.value is None:
