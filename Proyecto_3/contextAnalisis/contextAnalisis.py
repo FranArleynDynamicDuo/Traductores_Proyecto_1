@@ -95,7 +95,7 @@ class SymbolTable():
     def searchForSymbol(self,identifier):
         """
         Busca un elemento en los distintos niveles de la tabla de simbolos y 
-        retorna su valor
+        retorna el simbolo
         
         Si el valor no se encuentra, retorna None
         
@@ -106,10 +106,10 @@ class SymbolTable():
         """
    
         # Buscamos el simbolo
-        elementValue = self.getElement(identifier)
+        element = self.getElement(identifier)
         # Caso 1: Se encuentra, se devuelve el valor del simbolo
-        if (elementValue is not None):
-            return elementValue
+        if (element is not None):
+            return element
         # Caso 2: No se encuentra, se busca en la tabla de nivel superior
         else:
             # Caso 2.1: Estamos en el ultima nivel, el elemento no existe en la tabla
@@ -118,7 +118,37 @@ class SymbolTable():
                 return None;
             # Caso 2.2: No estamos en el ultimo nivel, buscamos en el nivel superior
             else:
-                return self.getUpperLevel().searchForSymbol(identifier) 
+                return self.getUpperLevel().searchForSymbol(identifier)
+            
+    def updateSymbol(self,identifier,value):
+        """
+        Busca un elemento en los distintos niveles de la tabla de simbolos y 
+        retorna el simbolo
+        
+        Si el valor no se encuentra, retorna None
+        
+        @type  identifier: String
+        @param identifier: Nombre del simbolo a buscar
+        @rtype:   Object
+        @return:  El valor del simbolo encontrado
+        """
+   
+        # Buscamos el simbolo
+        element = self.getElement(identifier)
+        # Caso 1: Se encuentra, se devuelve el valor del simbolo
+        if (element is not None):
+            element.value = value
+            self.table.update({identifier: element})
+            return True
+        # Caso 2: No se encuentra, se busca en la tabla de nivel superior
+        else:
+            # Caso 2.1: Estamos en el ultima nivel, el elemento no existe en la tabla
+            # asi que retornamos None
+            if self.getUpperLevel() is None:
+                return False;
+            # Caso 2.2: No estamos en el ultimo nivel, buscamos en el nivel superior
+            else:
+                return self.getUpperLevel().updateSymbol(identifier,value)
 
 
 class Symbol():

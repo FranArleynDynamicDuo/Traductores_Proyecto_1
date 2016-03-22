@@ -5,6 +5,8 @@ Created on Feb 1, 2016
 '''
 
 from abc import ABCMeta, abstractmethod
+from re import compile
+from re import match
 
 binary_symbol = {
                     "+"      : "Suma",
@@ -103,15 +105,21 @@ class ArithmethicExpression:
     def evaluar(self):
         expresionUno = None
         expresionDos = None
+        global sintBotSymbolTable
+        symbol = sintBotSymbolTable.searchForSymbol(expresionUno)
+        numPattern = compile('([0-9]+)|(-[0-9]+)')
         
-        
-        if type(self.expresion1) is str:
+        if match(numPattern,self.expresion1):
             expresionUno = int(self.expresion1)
+        elif symbol != None:
+            expresionUno= symbol.value
         else:
             expresionUno = self.expresion1.evaluar()
         
-        if type(self.expresion2) is str:
+        if match(numPattern,self.expresion2):
             expresionDos = int(self.expresion2)
+        elif symbol != None:
+            expresionUno= symbol.value
         else:
             expresionDos = self.expresion2.evaluar()     
         
@@ -153,9 +161,72 @@ class RelationalExpresion:
     
     # Evaluar Resultado de evaluacion
     def evaluar(self):
+        
+        numPattern = compile('([0-9]+)|(-[0-9]+)')
+        
         expresionUno = None
         expresionDos = None
+        global sintBotSymbolTable
+        symbol = sintBotSymbolTable.searchForSymbol(expresionUno)
 
+
+        if self.operador == '/=' or self.operador == '=':
+            # Expresion 1
+            if self.expresion1 == "true":
+                expresionUno = True
+            elif self.expresion1 == "false":
+                expresionUno = False
+            elif match(numPattern,self.expresion1):
+                expresionUno = int(self.expresion1)
+            elif symbol != None:
+                expresionUno= symbol.value
+            else:
+                expresionUno = self.expresion1.evaluar()
+            
+            # Expresion 2    
+            if self.expresion2 == "true":
+                expresionDos = True
+            elif self.expresion2 == "false":
+                expresionDos = False
+            elif match(numPattern,self.expresion2):
+                expresionDos = int(self.expresion2)
+            elif symbol != None:
+                expresionDos= symbol.value
+            else:
+                expresionDos = self.expresion2.evaluar()                
+                
+        elif (self.operador == '>' or self.operador == '>=' or self.operador == '<' 
+              or self.operador == '<='):
+            
+            # Expresion 1
+            if match(numPattern,self.expresion1):
+                expresionUno = int(self.expresion1)
+            elif symbol != None:
+                expresionUno= symbol.value
+            else:
+                expresionUno = self.expresion1.evaluar()
+            
+            # Expresion 2    
+            if match(numPattern,self.expresion2):
+                expresionDos = int(self.expresion2)
+            elif symbol != None:
+                expresionDos= symbol.value
+            else:
+                expresionDos = self.expresion2.evaluar()  
+
+        # Efectuo la operacion
+        if (self.operador == "/="):
+            return (expresionUno != expresionDos)
+        elif (self.operador == "="):
+            return (expresionUno == expresionDos)
+        elif (self.operador == ">"):
+            return (expresionUno > expresionDos)
+        elif (self.operador == ">="):
+            return (expresionUno >= expresionDos)
+        elif (self.operador == "<"):
+            return (expresionUno < expresionDos)
+        elif (self.operador == "<="):
+            return (expresionUno <= expresionDos)
 
 
 
@@ -190,21 +261,26 @@ class BooleanExpression:
     def evaluar(self):
         expresionUno = None
         expresionDos = None
-
+        global sintBotSymbolTable
+        symbol = sintBotSymbolTable.searchForSymbol(expresionUno)
+        
         if type(self.expresion1) is str:
             if self.expresion1 == "true":
-                expresionUno == True
+                expresionUno = True
             elif self.expresion1 == "false":
-                expresionUno == False
-            expresionUno = int(self.expresion1)
+                expresionUno = False
+            elif symbol != None:
+                expresionUno= symbol.value
         else:
             expresionUno = self.expresion1.evaluar()
         
         if type(self.expresion2) is str:
             if self.expresion2 == "true":
-                expresionDos == True
+                expresionDos = True
             elif self.expresion2 == "false":
-                expresionDos == False
+                expresionDos = False
+            elif symbol != None:
+                expresionDos= symbol.value
         else:
             expresionUno = self.expresion1.evaluar()  
         
