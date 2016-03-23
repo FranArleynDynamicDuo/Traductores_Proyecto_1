@@ -79,8 +79,8 @@ t_TkDesigual = r'/='
 
 # Literales
 
-t_TkNum = '([0-9]+)|(-[0-9]+)'
-t_TkCaracter = "'(.)'|'(\n)'|'(\t)'|'(\')'"
+t_TkNum = r'([0-9]+)|(-[0-9]+)'
+t_TkCaracter = r"'(.)'|'(\\n)'|'(\\t)'|'(\')'"
 
 #t_TkIdent = '[a-zA-Z][a-zA-Z0-9_]*'
 def t_TkIdent(t):

@@ -287,7 +287,7 @@ class Symbol():
         
         valueType = type(value)
         
-        if (self.getType() == "char" and valueType is str and valueType.len() == 1):
+        if (self.getType() == "char" and valueType is str):
             self.value = value
         elif (self.getType() == "int" and valueType is int):
             self.value = value
