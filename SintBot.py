@@ -111,7 +111,7 @@ posicionMatrix = dict()
 
 runBotSymbolTable = SymbolTable(None)
 
-parseTree.run(runBotSymbolTable)
+parseTree.run()
 
 # NO estamos claros si hay que usarlo
 # print(result) 

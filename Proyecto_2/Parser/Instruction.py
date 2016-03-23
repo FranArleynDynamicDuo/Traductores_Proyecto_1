@@ -101,7 +101,7 @@ class Program(InstructionClass):
         return retorno
     
     # Corrida de la instruccion
-    def run(self,variableTable):
+    def run(self):
         global BotSymbolTable
         global posicionMatrix
         posicionMatrix = dict()
@@ -109,22 +109,21 @@ class Program(InstructionClass):
         # Revisamos si hay declaraciones de bots
         if self.createSet != None:
             # Revisamos si estamos en una tabla vacia
-            if variableTable.emptyTable():
-                BotSymbolTable = variableTable
+            if BotSymbolTable.emptyTable():
+                pass
             # Si no es asi, bajamos a un nivel de tabla inferior
             else:
-                BotSymbolTable = SymbolTable(variableTable)
-            
+                BotSymbolTable = SymbolTable(deepcopy(BotSymbolTable))
+                
             for i in  range(0,len(self.createSet)):
                 (self.createSet[i]).run()
             
-            # Si no estamos en la tabla tope subimos un nivel
-            if BotSymbolTable.getUpperLevel() != None:
-                BotSymbolTable.getUpperLevel()
-                
         for i in  range(0,len(self.executeSet)):
             (self.executeSet[i]).run()
         
+        # Si no estamos en la tabla tope subimos un nivel
+        if BotSymbolTable.getUpperLevel() != None:
+            BotSymbolTable.getUpperLevel()
         
 # Clase Crear el LexBot 
 class CreateInstruction(InstructionClass):
@@ -191,14 +190,6 @@ class BotBehavior(InstructionClass):
         global currentBotHorPosicion
         global currentBotVerPosicion
         
-        BotSymbolTable = SymbolTable(deepcopy(BotSymbolTable))
-        
-        symbol = Symbol("me",currentBotType,currentBotValue)
-        
-        symbol.horPosicion = currentBotHorPosicion
-        symbol.verPosicion = currentBotVerPosicion
-        
-        BotSymbolTable = BotSymbolTable.addToTable(symbol.getIdentifier(),symbol)
         # Corremos las instrucciones
         for i in  range(0,len(self.instructionSet)):
             self.instructionSet[i].run()        
@@ -281,7 +272,7 @@ class BotInstruction(InstructionClass):
                 symbol = upperlevel.searchForSymbol(self.argument)
                 if not (symbol):
                     symbol = BotSymbolTable.searchForSymbol(self.argument)
-                    if symbol:
+                    if symbol != None:
                         BotSymbolTable.updateSymbolValue(symbol.getIdentifier(),result)
                     # Variable no declarada, debe agregarse
                     else:
@@ -318,12 +309,14 @@ class BotInstruction(InstructionClass):
             
         elif self.command == 'read':
             
-            stringElement = input("Value To Read: ")
+            symbol = BotSymbolTable.searchForSymbol("me")
+            
+            stringElement = input("Value To Read " + "(" + symbol.getType()  + " type): ")
             
             element = obtainValueFromString(stringElement)
             
             if self.argument is None:
-                symbol = BotSymbolTable.searchForSymbol("me")
+                pass
             else:
                 symbol = BotSymbolTable.searchForSymbol(self.argument)
                 
@@ -448,10 +441,29 @@ class ActivateInstruction:
     def run(self):
         global BotSymbolTable
         global currentBotType
+        global currentBotValue
         global currentBotHorPosicion
         global currentBotVerPosicion
         # Por cada bot
         for j in range(0,len(self.identList)):
+            
+            symbol = BotSymbolTable.searchForSymbol(self.identList[j])
+            
+            currentBotType = symbol.getType()
+            currentBotValue = symbol.getValue()
+            currentBotHorPosicion = symbol.horPosicion
+            currentBotVerPosicion = symbol.verPosicion
+            
+            
+            BotSymbolTable = SymbolTable(deepcopy(BotSymbolTable))
+        
+            symbol = Symbol("me",currentBotType,currentBotValue)
+            
+            symbol.horPosicion = currentBotHorPosicion
+            symbol.verPosicion = currentBotVerPosicion
+            
+            BotSymbolTable = BotSymbolTable.addToTable(symbol.getIdentifier(),symbol)
+            
             # Buscamos el simbolo correspondiente al bot
             symbol = BotSymbolTable.searchForSymbol(self.identList[j])
             currentBotType = symbol.getType()
@@ -498,11 +510,28 @@ class DeactivateInstruction:
     def run(self):
         global BotSymbolTable
         global currentBotType
+        global currentBotValue
         global currentBotHorPosicion
         global currentBotVerPosicion
-        global currentBotValue
         # Por cada bot
         for j in range(0,len(self.identList)):
+            
+            symbol = BotSymbolTable.searchForSymbol(self.identList[j])
+            
+            currentBotType = symbol.getType()
+            currentBotValue = symbol.getValue()
+            currentBotHorPosicion = symbol.horPosicion
+            currentBotVerPosicion = symbol.verPosicion
+            
+            BotSymbolTable = SymbolTable(deepcopy(BotSymbolTable))
+        
+            symbol = Symbol("me",currentBotType,currentBotValue)
+            
+            symbol.horPosicion = currentBotHorPosicion
+            symbol.verPosicion = currentBotVerPosicion
+            
+            BotSymbolTable = BotSymbolTable.addToTable(symbol.getIdentifier(),symbol)        
+            
             # Buscamos el simbolo correspondiente al bot
             symbol = BotSymbolTable.searchForSymbol(self.identList[j])
             currentBotType = symbol.getType()
@@ -552,11 +581,27 @@ class AdvanceInstruction:
         global currentBotHorPosicion
         global currentBotVerPosicion
         
-        defaultEnabled = True
-        defaultPosicion = None
-        
         # Por cada bot
         for j in range(0,len(self.identList)):
+            
+            symbol = BotSymbolTable.searchForSymbol(self.identList[j])
+            
+            currentBotType = symbol.getType()
+            currentBotValue = symbol.getValue()
+            currentBotHorPosicion = symbol.horPosicion
+            currentBotVerPosicion = symbol.verPosicion
+            
+            BotSymbolTable = SymbolTable(deepcopy(BotSymbolTable))
+        
+            symbol = Symbol("me",currentBotType,currentBotValue)
+            
+            symbol.horPosicion = currentBotHorPosicion
+            symbol.verPosicion = currentBotVerPosicion
+            
+            BotSymbolTable = BotSymbolTable.addToTable(symbol.getIdentifier(),symbol)
+            
+            defaultEnabled = True
+            defaultPosicion = None
             # Buscamos el simbolo correspondiente al bot
             symbol = BotSymbolTable.searchForSymbol(self.identList[j])
             currentBotType = symbol.getType()
