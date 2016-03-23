@@ -130,11 +130,11 @@ def p_botDeclaracionList(p):
             
             
 def p_botDeclaracion(p):
-    '''botDeclaracion  :    TkOn TkActivation startBotDeclaration TkDosPuntos botInstruccionList TkEnd
-                    |       TkOn TkDeactivation startBotDeclaration TkDosPuntos botInstruccionList TkEnd
-                    |       TkOn expression startBotDeclaration TkDosPuntos botInstruccionList TkEnd
-                    |       TkOn TkDefault startBotDeclaration TkDosPuntos botInstruccionList TkEnd'''
-    p[0] = Instruction.BotBehavior(p[2],p[5])
+    '''botDeclaracion  :    TkOn startBotDeclaration TkActivation  TkDosPuntos botInstruccionList TkEnd
+                    |       TkOn startBotDeclaration TkDeactivation  TkDosPuntos botInstruccionList TkEnd
+                    |       TkOn startBotDeclaration expression  TkDosPuntos botInstruccionList TkEnd
+                    |       TkOn startBotDeclaration TkDefault  TkDosPuntos botInstruccionList TkEnd'''
+    p[0] = Instruction.BotBehavior(p[3],p[5])
     global sintBotSymbolTable
     sintBotSymbolTable = sintBotSymbolTable.getUpperLevel()
 
@@ -256,10 +256,6 @@ def p_activate(p):
 def p_deactivate(p):
     '''deactivate     :    TkDeactivate identList'''
     p[0] = Instruction.DeactivateInstruction(p[2])    
-    
-def p_default(p):
-    '''default     :    TkDefault identList'''
-    p[0] = Instruction.DefaultInstruction(p[2])    
     
 def p_advance(p):
     '''advance     :    TkAdvance identList'''

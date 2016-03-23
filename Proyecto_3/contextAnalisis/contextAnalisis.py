@@ -444,9 +444,13 @@ def validateRel(variableTable,expression,line,column):
     elif match(boolPattern,expression):
         valid = True
     elif expression == tokenMe:
-        print(errorMe + expression + lineInfo
+        symbol = variableTable.searchForSymbol(tokenMe)
+        if symbol:
+            valid = True
+        else:
+            print(errorMe + expression + lineInfo
               + str(line) + columnInfo + str(column) + closeInfo)
-        return False
+            return False
     # Caso 3.6: Es un identificador
     elif variableTable.searchForSymbol(expression):
         symbol = variableTable.searchForSymbol(expression)

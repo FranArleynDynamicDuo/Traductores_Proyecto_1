@@ -100,6 +100,8 @@ data = bot_Script.read()
 # 
 parseTree = BotParser.parse(data)
 
+print(parseTree)
+
 from Proyecto_2.Parser.parser import sintBotSymbolTable
 
 print(str(sintBotSymbolTable))
@@ -107,7 +109,9 @@ print(str(sintBotSymbolTable))
 global posicionMatrix
 posicionMatrix = dict()
 
-parseTree.run(sintBotSymbolTable)
+runBotSymbolTable = SymbolTable(None)
+
+parseTree.run(runBotSymbolTable)
 
 # NO estamos claros si hay que usarlo
 # print(result) 
