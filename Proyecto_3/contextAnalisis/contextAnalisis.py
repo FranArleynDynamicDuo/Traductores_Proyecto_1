@@ -309,7 +309,7 @@ class Symbol():
             symbolType = "bool"
         elif resultType is str and value.len() == 1:
             symbolType = "char"
-        symbol = Symbol(self.identifier,symbolType,value)
+        symbol = Symbol(self.identifier,resultType,value)
         
         return symbol 
 

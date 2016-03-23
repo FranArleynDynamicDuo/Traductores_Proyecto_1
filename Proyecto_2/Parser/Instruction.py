@@ -104,7 +104,6 @@ class Program(InstructionClass):
     def run(self):
         global BotSymbolTable
         global posicionMatrix
-        posicionMatrix = dict()
         
         
         # Revisamos si hay declaraciones de bots
