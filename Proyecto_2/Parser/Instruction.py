@@ -41,7 +41,7 @@ def setValueInPosicionMatrix(matrix,horPosicion,verPosicion,element):
 
 def obtainValueFromString(stringElement):
     global sintBotSymbolTable
-    charPattern = r"'(.)'|'(\\n)'|'(\\t)'|'(\')'"
+    charPattern = r"'(.)'|'(\\n)'|'(\\t)'|'\\''"
     numPattern = compile('([0-9]+)|(-[0-9]+)')
     
     if match(numPattern,stringElement):
@@ -52,8 +52,15 @@ def obtainValueFromString(stringElement):
         element = False
     elif match(charPattern,stringElement):
         element = ""
-        for i in range(1,len(stringElement) -1):
-            element += stringElement[i]
+        if stringElement == "'\\n'":
+            element = "\n"
+        elif stringElement == "'\\t'":
+            element = "\t"
+        elif stringElement == "'\\''":
+            element = "'"
+        else:
+            for i in range(1,len(stringElement) -1):
+                element += stringElement[i]
     else:
         symbol = sintBotSymbolTable.searchForSymbol(stringElement)
         if (symbol):
@@ -281,7 +288,12 @@ class BotInstruction(InstructionClass):
         elif self.command == 'send':
 
             symbol = sintBotSymbolTable.searchForSymbol("me")
-            print(str(symbol.getValue()))
+            value = symbol.getValue()
+                
+            if type(value) is str:
+                print(value)
+            else:
+                print(str(symbol.getValue()))
             
         elif self.command == 'read':
             
