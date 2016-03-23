@@ -120,7 +120,7 @@ class SymbolTable():
             else:
                 return self.getUpperLevel().searchForSymbol(identifier)
             
-    def updateSymbol(self,identifier,value):
+    def updateSymbolValue(self,identifier,value):
         """
         Busca un elemento en los distintos niveles de la tabla de simbolos y 
         actualiza su valor
@@ -137,7 +137,7 @@ class SymbolTable():
         element = self.getElement(identifier)
         # Caso 1: Se encuentra, se devuelve el valor del simbolo
         if (element is not None):
-            element.value = value
+            element = element.setValue(value)
             self.table.update({identifier: element})
             return True
         # Caso 2: No se encuentra, se busca en la tabla de nivel superior
@@ -149,6 +149,67 @@ class SymbolTable():
             # Caso 2.2: No estamos en el ultimo nivel, buscamos en el nivel superior
             else:
                 return self.getUpperLevel().updateSymbol(identifier,value)
+
+    def updateSymbolHorPosicion(self,identifier,horPosicion):
+        """
+        Busca un elemento en los distintos niveles de la tabla de simbolos y 
+        actualiza su valor
+        
+        Si el valor no se encuentra, retorna None
+        
+        @type  identifier: String
+        @param identifier: Nombre del simbolo a buscar
+        @rtype:   Object
+        @return:  El valor del simbolo encontrado
+        """
+   
+        # Buscamos el simbolo
+        element = self.getElement(identifier)
+        # Caso 1: Se encuentra, se devuelve el valor del simbolo
+        if (element is not None):
+            element.horPosicion = horPosicion
+            self.table.update({identifier: element})
+            return True
+        # Caso 2: No se encuentra, se busca en la tabla de nivel superior
+        else:
+            # Caso 2.1: Estamos en el ultima nivel, el elemento no existe en la tabla
+            # asi que retornamos None
+            if self.getUpperLevel() is None:
+                return False;
+            # Caso 2.2: No estamos en el ultimo nivel, buscamos en el nivel superior
+            else:
+                return self.getUpperLevel().updateSymbolHorPosicion(identifier,horPosicion)
+
+
+    def updateSymbolVerPosicion(self,identifier,verPosicion):
+        """
+        Busca un elemento en los distintos niveles de la tabla de simbolos y 
+        actualiza su valor
+        
+        Si el valor no se encuentra, retorna None
+        
+        @type  identifier: String
+        @param identifier: Nombre del simbolo a buscar
+        @rtype:   Object
+        @return:  El valor del simbolo encontrado
+        """
+   
+        # Buscamos el simbolo
+        element = self.getElement(identifier)
+        # Caso 1: Se encuentra, se devuelve el valor del simbolo
+        if (element is not None):
+            element.verPosicion = verPosicion
+            self.table.update({identifier: element})
+            return True
+        # Caso 2: No se encuentra, se busca en la tabla de nivel superior
+        else:
+            # Caso 2.1: Estamos en el ultima nivel, el elemento no existe en la tabla
+            # asi que retornamos None
+            if self.getUpperLevel() is None:
+                return False;
+            # Caso 2.2: No estamos en el ultimo nivel, buscamos en el nivel superior
+            else:
+                return self.getUpperLevel().updateSymbolVerPosicion(identifier,verPosicion)
 
 
 class Symbol():
@@ -192,14 +253,36 @@ class Symbol():
         return self
     
     def setValue(self,value):
-        self.value = value
+        global sintBotSymbolTable
+        
+        valueType = type(value)
+        
+        if (self.getType() == "char" and valueType is str and valueType.len() == 1):
+            self.value = value
+        elif (self.getType() == "int" and valueType is int):
+            self.value = value
+        elif (self.getType() == "bool" and valueType is bool):
+            self.value = value
+        # ERROR Conflicto de tipos
+        else:
+            print("ERROR: Variable Declarada anteriormente en un alcance anterior\n")
+            exit()
+
         return self
+    
+    def createSymbolFromValue(self,value):
+        
+        resultType = type(value)
+        if resultType is bool:
+            symbolType = "bool"
+        elif resultType is int:
+            symbolType = "bool"
+        elif resultType is str and value.len() == 1:
+            symbolType = "char"
+        symbol = Symbol(self.identifier,symbolType,value)
+        
+        return symbol 
 
-
-# Metodo que lee el arbol de parseo y obtiene las variables declaradas y las coloca en un diccionario
-def executeAnalisis(parseTree):
-
-    pass
 
 # Metodo que lee el arbol de parseo y obtiene las variables declaradas y las coloca en un diccionario
 def validateArit(variableTable,expression,line,column):
@@ -228,9 +311,13 @@ def validateArit(variableTable,expression,line,column):
     elif match(numPattern,expression):
         valid = True
     elif expression == tokenMe:
-        print(errorMe + expression + lineInfo
+        symbol = variableTable.searchForSymbol(tokenMe)
+        if symbol:
+            valid = True
+        else:
+            print(errorMe + expression + lineInfo
               + str(line) + columnInfo + str(column) + closeInfo)
-        return False
+            return False
     elif variableTable.searchForSymbol(expression):
         symbol = variableTable.searchForSymbol(expression)
         if symbol.symbolType == intTipo:
@@ -275,9 +362,13 @@ def validateBool(variableTable,expression,line,column):
     elif match(boolPattern,expression):
         valid = True
     elif expression == tokenMe:
-        print(errorMe + expression + lineInfo
+        symbol = variableTable.searchForSymbol(tokenMe)
+        if symbol:
+            valid = True
+        else:
+            print(errorMe + expression + lineInfo
               + str(line) + columnInfo + str(column) + closeInfo)
-        return False
+            return False
     # Caso 3.4: Es un identificador
     elif variableTable.searchForSymbol(expression):
         symbol = variableTable.searchForSymbol(expression)
@@ -316,7 +407,30 @@ def validateRel(variableTable,expression,line,column):
         
         return expressionAnalisis(variableTable,expression.expresion,line,column)
     
-    if expression.operador == "=" or expression.operador == "/=":
+    # Caso 3.4: Es una literal aritmetico (numeros)
+    if match(numPattern,expression):
+        valid = True
+    # Caso 3.5: Es una literal booleano (true o false)
+    elif match(boolPattern,expression):
+        valid = True
+    elif expression == tokenMe:
+        print(errorMe + expression + lineInfo
+              + str(line) + columnInfo + str(column) + closeInfo)
+        return False
+    # Caso 3.6: Es un identificador
+    elif variableTable.searchForSymbol(expression):
+        symbol = variableTable.searchForSymbol(expression)
+        if symbol.symbolType == boolTipo or symbol.symbolType == intTipo:
+            valid = True
+        elif symbol.symbolType == charTipo:
+            print(errorConflictoTipos + expression + notIntBool + lineInfo
+              + str(line) + columnInfo + str(column) + closeInfo)
+            return False
+    elif not variableTable.searchForSymbol(expression):
+        print(errorSimNoDeclarado + expression + lineInfo
+              + str(line) + columnInfo + str(column) + closeInfo)
+    
+    elif expression.operador == "=" or expression.operador == "/=":
         # Caso 3.1: Es una expresion Aritmetica
         if (type(expression) is ArithmethicExpression):
             valid = True        
@@ -326,28 +440,7 @@ def validateRel(variableTable,expression,line,column):
         # Caso 3.3: Es una expresion Relacional
         elif (type(expression) is RelationalExpresion):
             valid = True
-        # Caso 3.4: Es una literal aritmetico (numeros)
-        elif match(numPattern,expression):
-            valid = True
-        # Caso 3.5: Es una literal booleano (true o false)
-        elif match(boolPattern,expression):
-            valid = True
-        elif expression == tokenMe:
-            print(errorMe + expression + lineInfo
-                  + str(line) + columnInfo + str(column) + closeInfo)
-            return False
-        # Caso 3.6: Es un identificador
-        elif variableTable.searchForSymbol(expression):
-            symbol = variableTable.searchForSymbol(expression)
-            if symbol.symbolType == boolTipo or symbol.symbolType == intTipo:
-                valid = True
-            elif symbol.symbolType == charTipo:
-                print(errorConflictoTipos + expression + notIntBool + lineInfo
-                  + str(line) + columnInfo + str(column) + closeInfo)
-                return False
-        elif not variableTable.searchForSymbol(expression):
-            print(errorSimNoDeclarado + expression + lineInfo
-                  + str(line) + columnInfo + str(column) + closeInfo)
+
         else:
             print(errorDesconocido)
             return False
@@ -362,10 +455,13 @@ def validateRel(variableTable,expression,line,column):
         elif match(numPattern,expression):
             valid = True
         elif expression == tokenMe:
-            print(errorMe 
-                  + expression + lineInfo
+            symbol = variableTable.searchForSymbol(tokenMe)
+            if symbol:
+                valid = True
+            else:
+                print(errorMe + expression + lineInfo
                   + str(line) + columnInfo + str(column) + closeInfo)
-            return False
+                return False
         # Caso 3.6: Es un identificador
         elif variableTable.searchForSymbol(expression):
             symbol = variableTable.searchForSymbol(expression)

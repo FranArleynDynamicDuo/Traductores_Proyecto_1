@@ -21,6 +21,19 @@ def spacing(espacio):
             espacio += " " 
             i += 1
         return espacio
+
+def createPositionString(horPosicion,verPosicion):
+    return "(" + str(horPosicion) + "," + str(verPosicion) + ")"
+  
+def getValueInPosicionMatrix(matrix,horPosicion,verPosicion):
+        stringPosicion = createPositionString(horPosicion,verPosicion)
+        return matrix.get(stringPosicion)
+    
+def setValueInPosicionMatrix(matrix,horPosicion,verPosicion,element):
+    stringPosicion = createPositionString(horPosicion,verPosicion)
+    matrix.update({stringPosicion: element})
+    return matrix
+
         
 class InstructionClass(metaclass=ABCMeta):
     @abstractmethod
@@ -54,7 +67,7 @@ class Program(InstructionClass):
     
     # Corrida de la instruccion
     def run(self):
-        for i in  range(0,self.executeSet.len):
+        for i in  range(0,len(self.executeSet)):
             self.executeSet[i].run()
         
         
@@ -110,10 +123,19 @@ class BotBehavior(InstructionClass):
  
     # Corrida de la instruccion
     def run(self):
+        
         global sintBotSymbolTable
-        sintBotSymbolTable = SymbolTable(deepcopy(sintBotSymbolTable))
         global currentBotType
+        global currentBotHorPosicion
+        global currentBotVerPosicion
+        
+        sintBotSymbolTable = SymbolTable(deepcopy(sintBotSymbolTable))
+        
         symbol = Symbol("me",currentBotType,None)
+        
+        symbol.horPosicion = currentBotHorPosicion
+        symbol.verPosicion = currentBotVerPosicion
+        
         sintBotSymbolTable = sintBotSymbolTable.addToTable(symbol.getIdentifier(),symbol)
         # Corremos las instrucciones
         for i in  range(0,self.instructionSet.len):
@@ -167,83 +189,109 @@ class BotInstruction(InstructionClass):
 
     def run(self):
         global sintBotSymbolTable
+        global posicionMatrix
+        
+        ''' Patrones de comparacion '''
+
+        boolPattern = compile('true|false')
+        numPattern = compile('([0-9]+)|(-[0-9]+)')
+        idenPattern = compile(r'[a-zA-Z][a-zA-Z0-9_]*')
         
         if self.command == 'store':
-            self.runStore()
+            
+            symbol = sintBotSymbolTable.searchForSymbol("me")
+
+            result = self.argument.evaluar()
+            
+            sintBotSymbolTable.updateSymbolValue("me",result)
+                
+
         elif self.command == 'collect':
-            self.runCollect()
-        elif self.command == 'recieve':
-            self.runRecieve()
+            
+            symbol = sintBotSymbolTable.searchForSymbol("me")
+            result = getValueInPosicionMatrix(posicionMatrix,symbol.horPosicion,symbol.verPosicion)
+            
+            if self.argument is None:
+                
+                sintBotSymbolTable.updateSymbolValue("me",result)
+
+            else:
+                upperlevel = sintBotSymbolTable.getUpperLevel()
+                symbol = upperlevel.searchForSymbol(self.argument)
+                if not (symbol):
+                    symbol = sintBotSymbolTable.searchForSymbol(self.argument)
+                    if symbol:
+                        sintBotSymbolTable.updateSymbolValue(symbol.getIdentifier(),result)
+                    # Variable no declarada, debe agregarse
+                    else:
+                        symbol = Symbol(self.argument,None,None)
+                        symbol.createSymbolFromValue(result)
+                        sintBotSymbolTable.addToTable(symbol)
+                # Variable declarada en otro nivel, ERROR
+                else:
+                    print("ERROR: Variable Declarada anteriormente en un alcance anterior\n")
+                    exit()
+
         elif self.command == 'drop':
-            self.runDrop()
-        elif self.command == 'collect':
-            self.runCollect()
+            symbol = sintBotSymbolTable.searchForSymbol("me")
+            
+            resultado = self.argument.evaluar()
+            
+            setValueInPosicionMatrix(posicionMatrix,symbol.horPosicion,symbol.verPosicion,resultado)
+            
         elif self.command == 'send':
-            self.runSend()
+
+            symbol = sintBotSymbolTable.searchForSymbol("me")
+            print("Bot Value ==> " + str(symbol.getValue()))
+            
         elif self.command == 'read':
-            element = input()
+            
+            element = input("Value To Read: ")
             
             if self.argument is None:
                 symbol = sintBotSymbolTable.searchForSymbol("me")
             else:
                 symbol = sintBotSymbolTable.searchForSymbol(self.argument)
+                
             sintBotSymbolTable.updateSymbol(symbol.getIdentifier(),element)
             
         elif self.command == 'left':
-            self.runLeft()
-        elif self.command == 'right':
-            self.runRight()
-        elif self.command == 'up':
-            self.runUp()
-        elif self.command == 'down':
-            self.runDown()
-
-    # Corrida de la instruccion
-    def runStore(self):
-        pass
-
-    # Corrida de la instruccion
-    def runCollect(self):
-        pass
-
-    # Corrida de la instruccion
-    def runRecieve(self):
-        pass
-
-    # Corrida de la instruccion
-    def runDrop(self):
-        pass
-
-    # Corrida de la instruccion
-    def runSend(self):
-        pass
-    
-    # Corrida de la instruccion
-    def runRead(self):
-        global sintBotSymbolTable
-        element = input()
-        
-        if self.argument is None:
+            
             symbol = sintBotSymbolTable.searchForSymbol("me")
-        else:
-            symbol = sintBotSymbolTable.searchForSymbol(self.argument)
-        sintBotSymbolTable.updateSymbol(symbol.getIdentifier(),element)
-    
-    # Corrida de la instruccion
-    def runLeft(self):
-        pass
-    
-    # Corrida de la instruccion
-    def runRight(self):
-        pass
-    
-    # Corrida de la instruccion
-    def runUp(self):
-        pass
-    
-    # Corrida de la instruccion
-    def runDown(self):
-        pass
+            
+            if self.argument is None:
+                sintBotSymbolTable.updateSymbolHorPosicion("me",symbol.horPosicion - 1)
+            else:
+                sintBotSymbolTable.updateSymbolHorPosicion("me",symbol.horPosicion - self.argument.evaluar())
+            
+        elif self.command == 'right':
+
+            symbol = sintBotSymbolTable.searchForSymbol("me")
+            
+            if self.argument is None:
+                sintBotSymbolTable.updateSymbolHorPosicion("me",symbol.horPosicion + 1)
+            else:
+                sintBotSymbolTable.updateSymbolHorPosicion("me",symbol.horPosicion + self.argument.evaluar())
+            
+
+        elif self.command == 'up':
+
+            symbol = sintBotSymbolTable.searchForSymbol("me")
+            
+            if self.argument is None:
+                sintBotSymbolTable.updateSymbolVerPosicion("me",symbol.verPosicion + 1)
+            else:
+                sintBotSymbolTable.updateSymbolVerPosicion("me",symbol.verPosicion + self.argument.evaluar())
+            
+
+        elif self.command == 'down':
+            
+            symbol = sintBotSymbolTable.searchForSymbol("me")
+            
+            if self.argument is None:
+                sintBotSymbolTable.updateSymbolVerPosicion("me",symbol.verPosicion + 1)
+            else:
+                sintBotSymbolTable.updateSymbolVerPosicion("me",symbol.verPosicion + self.argument.evaluar())
 
 # Class ConditionalInstruction      
 class ConditionalInstruction(InstructionClass):
@@ -326,11 +374,15 @@ class ActivateInstruction:
     def run(self):
         global sintBotSymbolTable
         global currentBotType
+        global currentBotHorPosicion
+        global currentBotVerPosicion
         # Por cada bot
         for bot in self.identList:
             # Buscamos el simbolo correspondiente al bot
             symbol = sintBotSymbolTable.searchForSymbol(bot)
             currentBotType = symbol.getType()
+            currentBotHorPosicion = symbol.horPosicion
+            currentBotVerPosicion = symbol.verPosicion
             # Si el bot esta desactivado procedemos
             if symbol.activated == False:
                 # Buscamos el comportamiento correspondiente
@@ -370,11 +422,15 @@ class DeactivateInstruction:
     def run(self):
         global sintBotSymbolTable
         global currentBotType
+        global currentBotHorPosicion
+        global currentBotVerPosicion
         # Por cada bot
         for bot in self.identList:
             # Buscamos el simbolo correspondiente al bot
             symbol = sintBotSymbolTable.searchForSymbol(bot)
             currentBotType = symbol.getType()
+            currentBotHorPosicion = symbol.horPosicion
+            currentBotVerPosicion = symbol.verPosicion
             # Si el bot esta desactivado procedemos
             if symbol.activated == True:
                 # Buscamos el comportamiento correspondiente
@@ -413,11 +469,15 @@ class DefaultInstruction:
     def run(self):
         global sintBotSymbolTable
         global currentBotType
+        global currentBotHorPosicion
+        global currentBotVerPosicion
         # Por cada bot
         for bot in self.identList:
             # Buscamos el simbolo correspondiente al bot
             symbol = sintBotSymbolTable.searchForSymbol(bot)
             currentBotType = symbol.getType()
+            currentBotHorPosicion = symbol.horPosicion
+            currentBotVerPosicion = symbol.verPosicion
             # Si el bot esta activado procedemos
             if symbol.activated == True:
                 # Buscamos el comportamiento correspondiente
@@ -455,11 +515,15 @@ class AdvanceInstruction:
     def run(self):
         global sintBotSymbolTable
         global currentBotType
+        global currentBotHorPosicion
+        global currentBotVerPosicion
         # Por cada bot
         for bot in self.identList:
             # Buscamos el simbolo correspondiente al bot
             symbol = sintBotSymbolTable.searchForSymbol(bot)
             currentBotType = symbol.getType()
+            currentBotHorPosicion = symbol.horPosicion
+            currentBotVerPosicion = symbol.verPosicion
             # Si el bot esta activado procedemos
             if symbol.activated == True:
                 # Buscamos el comportamiento correspondiente

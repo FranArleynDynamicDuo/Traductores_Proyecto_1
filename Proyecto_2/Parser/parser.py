@@ -25,7 +25,7 @@ def p_program(p):
     '''program : TkCreate botCreateList finishBotList TkExecute executeList TkEnd
                | TkExecute executeList TkEnd'''
     if len(p) == 7:
-        p[0] = Instruction.Program(createSet = p[2],executeSet = p[4])
+        p[0] = Instruction.Program(createSet = p[2],executeSet = p[5])
         global sintBotSymbolTable
         if sintBotSymbolTable.emptyTable():
             sintBotSymbolTable = sintBotSymbolTable.getUpperLevel()

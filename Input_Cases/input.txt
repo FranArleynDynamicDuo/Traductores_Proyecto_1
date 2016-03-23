@@ -1,41 +1,35 @@
+$- factorial.bot:
+ - ==============
+ - Recibe un entero 'n' e imprime el factorial de 'n'.
+ - Autor: Ricardo Monascal, 2016
+ -$
 create
-	int bot bar
-		on activation:
-			store 3.
-		end
-	end
-	int bot contador
-		on default:
-			collect as z.
-			store z + 1.
-		end
-	end
-execute
-	deactivate contador,bar.
-	$- Asignar al contador
-	el valor 35, si bar > ~ 2 -$
-	create
-		int bot bar
-			on activation:
-				store 3.
-			end
-		end
-		int bot contador
-			on default:
-				collect as z.
-				store z + 1.
-			end
-		end
-	execute
-		deactivate contador,bar.
-		$- Asignar al contador
-		el valor 35, si bar > ~ 2 -$
-		while (2 + 2) /= (2 - 1):
-			deactivate contador,bar.
-		end
-	end
+  int bot n
+    on activation:
+      read.
+    end
+    on default:
+      drop me.
+      store me - 1.
+    end
+  end
+  int bot f
+    on activation:
+      store 1.
+    end
+    on default:
+      collect as x.
+      store me * x.
+    end
+    on deactivation:
+      send.
+    end
+  end
 
-	while (3 + 2) /= (2 - 1):
-		deactivate contador,bar.
-	end
+execute
+  activate n, f.
+  while n > 1:
+    advance n, f.
+  end
+  deactivate f.
 end
