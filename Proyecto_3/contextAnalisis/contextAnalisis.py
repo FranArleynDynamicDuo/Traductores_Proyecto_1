@@ -123,7 +123,7 @@ class SymbolTable():
     def updateSymbol(self,identifier,value):
         """
         Busca un elemento en los distintos niveles de la tabla de simbolos y 
-        retorna el simbolo
+        actualiza su valor
         
         Si el valor no se encuentra, retorna None
         
@@ -158,11 +158,19 @@ class Symbol():
         self.symbolType = symbolType
         self.value = value
         self.behaviorTable = []
+        self.activated = False
+        self.horPosicion = 0
+        self.verPosicion = 0
 
     def __str__(self):
+        retorno = self.symbolType + " " + self.identifier + " : "
         if self.value is None:
-            self.value = "None"
-        retorno = self.symbolType + " " + self.identifier + " : " + self.value
+            retorno += "None"
+        else:
+            retorno += str(self.value) + " "
+        retorno += " | "
+        retorno += ("Active: " + str(self.activated) +
+                   " | (" + str(self.horPosicion) + " : " + str(self.verPosicion) + ")")
         retorno += "\n"
         return retorno 
     
