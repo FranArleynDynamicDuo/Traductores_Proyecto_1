@@ -265,7 +265,7 @@ class Symbol():
             self.value = value
         # ERROR Conflicto de tipos
         else:
-            print("ERROR: Variable Declarada anteriormente en un alcance anterior\n")
+            print("ERROR: Conflicto De Tipos\n")
             exit()
 
         return self

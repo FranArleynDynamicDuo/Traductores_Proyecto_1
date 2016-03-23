@@ -107,7 +107,7 @@ print(str(sintBotSymbolTable))
 global posicionMatrix
 posicionMatrix = dict()
 
-parseTree.run()
+parseTree.run(sintBotSymbolTable)
 
 # NO estamos claros si hay que usarlo
 # print(result) 

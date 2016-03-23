@@ -9,31 +9,51 @@ from abc import ABCMeta, abstractmethod
 from Proyecto_3.contextAnalisis.contextAnalisis import SymbolTable
 from Proyecto_3.contextAnalisis.contextAnalisis import Symbol
 from copy import deepcopy
+from re import compile
+from re import match
 
 from Proyecto_2.Parser.Expression import ArithmethicExpression
 from Proyecto_2.Parser.Expression import RelationalExpresion
 from Proyecto_2.Parser.Expression import BooleanExpression
 from Proyecto_2.Parser.Expression import ParentizedExpression
-    
-def spacing(espacio):
-        i = 0
-        while (i < 4):
-            espacio += " " 
-            i += 1
-        return espacio
 
-def createPositionString(horPosicion,verPosicion):
-    return "(" + str(horPosicion) + "," + str(verPosicion) + ")"
-  
+sintBotSymbolTable = SymbolTable(None);
+posicionMatrix = None
+currentBotHorPosicion = None
+currentBotVerPosicion = None
+
+def spacing(espacio):
+    i = 0
+    while (i < 4):
+        espacio += " " 
+        i += 1
+    return espacio
+
 def getValueInPosicionMatrix(matrix,horPosicion,verPosicion):
-        stringPosicion = createPositionString(horPosicion,verPosicion)
-        return matrix.get(stringPosicion)
+    stringPosicion = "(" + str(horPosicion) + "," + str(verPosicion) + ")"
+    return matrix.get(stringPosicion)
     
 def setValueInPosicionMatrix(matrix,horPosicion,verPosicion,element):
-    stringPosicion = createPositionString(horPosicion,verPosicion)
-    matrix.update({stringPosicion: element})
+    stringPosicion = "(" + str(horPosicion) + "," + str(verPosicion) + ")"
+    matrix.update({stringPosicion : element})
     return matrix
 
+def obtainValueFromString(stringElement):
+    charPattern = "'(.)'|'(\n)'|'(\t)'|'(\')'"
+    numPattern = compile('([0-9]+)|(-[0-9]+)')
+    
+    if match(numPattern,stringElement):
+        element = int(stringElement)
+    elif stringElement == 'true':
+        element = True
+    elif stringElement == 'false':
+        element = False
+    elif match(charPattern,stringElement):
+        element = element[1]
+    else:
+        print('Lectura Invalida')
+        exit()
+    return element
         
 class InstructionClass(metaclass=ABCMeta):
     @abstractmethod
@@ -42,7 +62,7 @@ class InstructionClass(metaclass=ABCMeta):
     
 class Program(InstructionClass):
     
-    def __init__(self, executeSet,createSet=None ):
+    def __init__(self, executeSet, createSet=None):
         self.createSet = createSet
         self.executeSet = executeSet
         
@@ -66,9 +86,13 @@ class Program(InstructionClass):
         return retorno
     
     # Corrida de la instruccion
-    def run(self):
+    def run(self,variableTable):
+        global sintBotSymbolTable
+        global posicionMatrix
+        posicionMatrix = dict()
+        sintBotSymbolTable = variableTable
         for i in  range(0,len(self.executeSet)):
-            self.executeSet[i].run()
+            (self.executeSet[i]).run()
         
         
 # Clase Crear el LexBot 
@@ -117,7 +141,7 @@ class BotBehavior(InstructionClass):
         retorno += "\n"
         for instruction in self.instructionSet:
             if instruction != None:
-                retorno +=espacio + espacio + espacio + espacio + str(instruction)
+                retorno += espacio + espacio + espacio + espacio + str(instruction)
                 retorno += "\n"
         return retorno
  
@@ -138,7 +162,7 @@ class BotBehavior(InstructionClass):
         
         sintBotSymbolTable = sintBotSymbolTable.addToTable(symbol.getIdentifier(),symbol)
         # Corremos las instrucciones
-        for i in  range(0,self.instructionSet.len):
+        for i in  range(0,len(self.instructionSet)):
             self.instructionSet[i].run()        
         # obtenemos el nuevo valor del bot
         botResult = sintBotSymbolTable.searchForSymbol("me")
@@ -190,18 +214,18 @@ class BotInstruction(InstructionClass):
     def run(self):
         global sintBotSymbolTable
         global posicionMatrix
-        
-        ''' Patrones de comparacion '''
-
-        boolPattern = compile('true|false')
-        numPattern = compile('([0-9]+)|(-[0-9]+)')
-        idenPattern = compile(r'[a-zA-Z][a-zA-Z0-9_]*')
+        charPattern = "'(.)'|'(\n)'|'(\t)'|'(\')'"
         
         if self.command == 'store':
             
-            symbol = sintBotSymbolTable.searchForSymbol("me")
-
-            result = self.argument.evaluar()
+            # Caso 1: El argumento es una expresion
+            if (type(self.argument) is ArithmethicExpression or 
+                  type(self.argument) is BooleanExpression or
+                  type(self.argument) is RelationalExpresion or
+                  type(self.argument) is ParentizedExpression):
+                result = self.argument.evaluar(sintBotSymbolTable)
+            else:
+                result = obtainValueFromString(self.argument)
             
             sintBotSymbolTable.updateSymbolValue("me",result)
                 
@@ -235,7 +259,7 @@ class BotInstruction(InstructionClass):
         elif self.command == 'drop':
             symbol = sintBotSymbolTable.searchForSymbol("me")
             
-            resultado = self.argument.evaluar()
+            resultado = self.argument.evaluar(sintBotSymbolTable)
             
             setValueInPosicionMatrix(posicionMatrix,symbol.horPosicion,symbol.verPosicion,resultado)
             
@@ -246,14 +270,16 @@ class BotInstruction(InstructionClass):
             
         elif self.command == 'read':
             
-            element = input("Value To Read: ")
+            stringElement = input("Value To Read: ")
+            
+            element = obtainValueFromString(stringElement)
             
             if self.argument is None:
                 symbol = sintBotSymbolTable.searchForSymbol("me")
             else:
                 symbol = sintBotSymbolTable.searchForSymbol(self.argument)
                 
-            sintBotSymbolTable.updateSymbol(symbol.getIdentifier(),element)
+            sintBotSymbolTable.updateSymbolValue(symbol.getIdentifier(),element)
             
         elif self.command == 'left':
             
@@ -262,7 +288,7 @@ class BotInstruction(InstructionClass):
             if self.argument is None:
                 sintBotSymbolTable.updateSymbolHorPosicion("me",symbol.horPosicion - 1)
             else:
-                sintBotSymbolTable.updateSymbolHorPosicion("me",symbol.horPosicion - self.argument.evaluar())
+                sintBotSymbolTable.updateSymbolHorPosicion("me",symbol.horPosicion - self.argument.evaluar(sintBotSymbolTable))
             
         elif self.command == 'right':
 
@@ -271,7 +297,7 @@ class BotInstruction(InstructionClass):
             if self.argument is None:
                 sintBotSymbolTable.updateSymbolHorPosicion("me",symbol.horPosicion + 1)
             else:
-                sintBotSymbolTable.updateSymbolHorPosicion("me",symbol.horPosicion + self.argument.evaluar())
+                sintBotSymbolTable.updateSymbolHorPosicion("me",symbol.horPosicion + self.argument.evaluar(sintBotSymbolTable))
             
 
         elif self.command == 'up':
@@ -281,7 +307,7 @@ class BotInstruction(InstructionClass):
             if self.argument is None:
                 sintBotSymbolTable.updateSymbolVerPosicion("me",symbol.verPosicion + 1)
             else:
-                sintBotSymbolTable.updateSymbolVerPosicion("me",symbol.verPosicion + self.argument.evaluar())
+                sintBotSymbolTable.updateSymbolVerPosicion("me",symbol.verPosicion + self.argument.evaluar(sintBotSymbolTable))
             
 
         elif self.command == 'down':
@@ -291,7 +317,7 @@ class BotInstruction(InstructionClass):
             if self.argument is None:
                 sintBotSymbolTable.updateSymbolVerPosicion("me",symbol.verPosicion + 1)
             else:
-                sintBotSymbolTable.updateSymbolVerPosicion("me",symbol.verPosicion + self.argument.evaluar())
+                sintBotSymbolTable.updateSymbolVerPosicion("me",symbol.verPosicion + self.argument.evaluar(sintBotSymbolTable))
 
 # Class ConditionalInstruction      
 class ConditionalInstruction(InstructionClass):
@@ -318,7 +344,7 @@ class ConditionalInstruction(InstructionClass):
 
     # Corrida de la instruccion
     def run(self):
-        if (self.ifCondition.evaluar()):
+        if (self.ifCondition.evaluar(sintBotSymbolTable)):
             for i in  range(0,self.ifInstructionSet.len):
                 self.ifInstructionSet[i].run()
         elif (self.elseInstructionSet):
@@ -346,8 +372,8 @@ class whileInstruction(InstructionClass):
 
     # Corrida de la instruccion
     def run(self):
-        while (self.condition.evaluar()):
-            for i in  range(0,self.instructionSet.len):
+        while (self.condition.evaluar(sintBotSymbolTable)):
+            for i in  range(0,len(self.instructionSet)):
                 self.instructionSet[i].run()
         
 # Class ActivateInstruction (REVISAR COMO HACER EL FOR PENDIENTE EN DONDE)
@@ -391,7 +417,7 @@ class ActivateInstruction:
                         result = behavior.run()
                         # Si la operacion devuelve un resultado actualizamos el valor del bot
                         if result:
-                            symbol.setValue(result)
+                            sintBotSymbolTable.updateSymbolValue(bot,result)
                         break
                         symbol.activated = True
             # El Bot ya estaba activo, ERROR
@@ -533,7 +559,7 @@ class AdvanceInstruction:
                         type(behavior.condition) is BooleanExpression or
                         type(behavior.condition) is RelationalExpresion):
                         # Buscamos el primero que se cumpla
-                        if behavior.condition.evaluar() == True:
+                        if behavior.condition.evaluar(sintBotSymbolTable) == True:
                             result = behavior.run()
                             # Si la operacion devuelve un resultado actualizamos el valor del bot
                             if result:

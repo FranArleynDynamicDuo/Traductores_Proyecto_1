@@ -13,6 +13,7 @@ from Proyecto_3.contextAnalisis.contextAnalisis import Symbol
 from Proyecto_3.contextAnalisis.contextAnalisis import expressionAnalisis
 
 tokens = botTokens;
+global sintBotSymbolTable
 sintBotSymbolTable = SymbolTable(None);
 currentBotType = None
 currentBotValue = None

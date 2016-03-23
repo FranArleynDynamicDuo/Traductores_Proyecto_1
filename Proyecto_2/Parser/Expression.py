@@ -102,11 +102,11 @@ class ArithmethicExpression:
         return retorno    
 
     # Evaluar Resultado de evaluacion
-    def evaluar(self):
+    def evaluar(self,symbolTable):
         expresionUno = None
         expresionDos = None
-        global sintBotSymbolTable
-        symbol = sintBotSymbolTable.searchForSymbol(expresionUno)
+        
+        symbol = symbolTable.searchForSymbol(expresionUno)
         numPattern = compile('([0-9]+)|(-[0-9]+)')
         
         if match(numPattern,self.expresion1):
@@ -114,14 +114,14 @@ class ArithmethicExpression:
         elif symbol != None:
             expresionUno= symbol.value
         else:
-            expresionUno = self.expresion1.evaluar()
+            expresionUno = self.expresion1.evaluar(symbolTable)
         
         if match(numPattern,self.expresion2):
             expresionDos = int(self.expresion2)
         elif symbol != None:
             expresionUno= symbol.value
         else:
-            expresionDos = self.expresion2.evaluar()     
+            expresionDos = self.expresion2.evaluar(symbolTable)     
         
         
         if (self.operador == "+"):
@@ -160,15 +160,15 @@ class RelationalExpresion:
         return retorno   
     
     # Evaluar Resultado de evaluacion
-    def evaluar(self):
+    def evaluar(self,symbolTable):
         
         numPattern = compile('([0-9]+)|(-[0-9]+)')
         
         expresionUno = None
         expresionDos = None
-        global sintBotSymbolTable
-        symbol = sintBotSymbolTable.searchForSymbol(expresionUno)
-
+        
+        symbol1 = symbolTable.searchForSymbol(self.expresion1)
+        symbol2 = symbolTable.searchForSymbol(self.expresion2)
 
         if self.operador == '/=' or self.operador == '=':
             # Expresion 1
@@ -178,10 +178,10 @@ class RelationalExpresion:
                 expresionUno = False
             elif match(numPattern,self.expresion1):
                 expresionUno = int(self.expresion1)
-            elif symbol != None:
-                expresionUno= symbol.value
+            elif symbol1 != None:
+                expresionUno= symbol1.value
             else:
-                expresionUno = self.expresion1.evaluar()
+                expresionUno = self.expresion1.evaluar(symbolTable)
             
             # Expresion 2    
             if self.expresion2 == "true":
@@ -190,10 +190,10 @@ class RelationalExpresion:
                 expresionDos = False
             elif match(numPattern,self.expresion2):
                 expresionDos = int(self.expresion2)
-            elif symbol != None:
-                expresionDos= symbol.value
+            elif symbol2 != None:
+                expresionDos= symbol2.value
             else:
-                expresionDos = self.expresion2.evaluar()                
+                expresionDos = self.expresion2.evaluar(symbolTable)                
                 
         elif (self.operador == '>' or self.operador == '>=' or self.operador == '<' 
               or self.operador == '<='):
@@ -201,18 +201,18 @@ class RelationalExpresion:
             # Expresion 1
             if match(numPattern,self.expresion1):
                 expresionUno = int(self.expresion1)
-            elif symbol != None:
-                expresionUno= symbol.value
+            elif symbol1 != None:
+                expresionUno= symbol1.value
             else:
-                expresionUno = self.expresion1.evaluar()
+                expresionUno = self.expresion1.evaluar(symbolTable)
             
             # Expresion 2    
             if match(numPattern,self.expresion2):
                 expresionDos = int(self.expresion2)
-            elif symbol != None:
-                expresionDos= symbol.value
+            elif symbol2 != None:
+                expresionDos= symbol2.value
             else:
-                expresionDos = self.expresion2.evaluar()  
+                expresionDos = self.expresion2.evaluar(symbolTable)  
 
         # Efectuo la operacion
         if (self.operador == "/="):
@@ -258,11 +258,11 @@ class BooleanExpression:
         return retorno
     
     # Evaluar Resultado de evaluacion
-    def evaluar(self):
+    def evaluar(self,symbolTable):
         expresionUno = None
         expresionDos = None
-        global sintBotSymbolTable
-        symbol = sintBotSymbolTable.searchForSymbol(expresionUno)
+        
+        symbol = symbolTable.searchForSymbol(expresionUno)
         
         if type(self.expresion1) is str:
             if self.expresion1 == "true":
@@ -272,7 +272,7 @@ class BooleanExpression:
             elif symbol != None:
                 expresionUno= symbol.value
         else:
-            expresionUno = self.expresion1.evaluar()
+            expresionUno = self.expresion1.evaluar(symbolTable)
         
         if type(self.expresion2) is str:
             if self.expresion2 == "true":
@@ -282,7 +282,7 @@ class BooleanExpression:
             elif symbol != None:
                 expresionDos= symbol.value
         else:
-            expresionUno = self.expresion1.evaluar()  
+            expresionUno = self.expresion1.evaluar(symbolTable)  
         
         if (self.operador == "/\\"):
             return (expresionUno and expresionDos)
@@ -311,5 +311,5 @@ class ParentizedExpression:
         return retorno 
     
     # Evaluar Resultado de evaluacion
-    def evaluar(self):
-        return self.expresion.evaluar()
+    def evaluar(self,symbolTable):
+        return self.expresion.evaluar(symbolTable)
