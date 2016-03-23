@@ -106,20 +106,21 @@ class ArithmethicExpression:
         expresionUno = None
         expresionDos = None
         
-        symbol = symbolTable.searchForSymbol(expresionUno)
+        symbol1 = symbolTable.searchForSymbol(self.expresion1)
+        symbol2 = symbolTable.searchForSymbol(self.expresion2)
         numPattern = compile('([0-9]+)|(-[0-9]+)')
         
         if match(numPattern,self.expresion1):
             expresionUno = int(self.expresion1)
-        elif symbol != None:
-            expresionUno= symbol.value
+        elif symbol1 != None:
+            expresionUno= symbol1.value
         else:
             expresionUno = self.expresion1.evaluar(symbolTable)
         
         if match(numPattern,self.expresion2):
             expresionDos = int(self.expresion2)
-        elif symbol != None:
-            expresionUno= symbol.value
+        elif symbol2 != None:
+            expresionDos= symbol2.value
         else:
             expresionDos = self.expresion2.evaluar(symbolTable)     
         

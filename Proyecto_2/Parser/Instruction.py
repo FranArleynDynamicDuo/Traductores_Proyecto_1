@@ -21,6 +21,7 @@ sintBotSymbolTable = SymbolTable(None);
 posicionMatrix = None
 currentBotHorPosicion = None
 currentBotVerPosicion = None
+currentBotValue = None
 
 def spacing(espacio):
     i = 0
@@ -39,6 +40,7 @@ def setValueInPosicionMatrix(matrix,horPosicion,verPosicion,element):
     return matrix
 
 def obtainValueFromString(stringElement):
+    global sintBotSymbolTable
     charPattern = "'(.)'|'(\n)'|'(\t)'|'(\')'"
     numPattern = compile('([0-9]+)|(-[0-9]+)')
     
@@ -51,8 +53,12 @@ def obtainValueFromString(stringElement):
     elif match(charPattern,stringElement):
         element = element[1]
     else:
-        print('Lectura Invalida')
-        exit()
+        symbol = sintBotSymbolTable.searchForSymbol(stringElement)
+        if (symbol):
+            element = symbol.getValue()
+        else:
+            print('Lectura Invalida')
+            exit()
     return element
         
 class InstructionClass(metaclass=ABCMeta):
@@ -150,12 +156,13 @@ class BotBehavior(InstructionClass):
         
         global sintBotSymbolTable
         global currentBotType
+        global currentBotValue
         global currentBotHorPosicion
         global currentBotVerPosicion
         
         sintBotSymbolTable = SymbolTable(deepcopy(sintBotSymbolTable))
         
-        symbol = Symbol("me",currentBotType,None)
+        symbol = Symbol("me",currentBotType,currentBotValue)
         
         symbol.horPosicion = currentBotHorPosicion
         symbol.verPosicion = currentBotVerPosicion
@@ -214,7 +221,6 @@ class BotInstruction(InstructionClass):
     def run(self):
         global sintBotSymbolTable
         global posicionMatrix
-        charPattern = "'(.)'|'(\n)'|'(\t)'|'(\')'"
         
         if self.command == 'store':
             
@@ -249,8 +255,8 @@ class BotInstruction(InstructionClass):
                     # Variable no declarada, debe agregarse
                     else:
                         symbol = Symbol(self.argument,None,None)
-                        symbol.createSymbolFromValue(result)
-                        sintBotSymbolTable.addToTable(symbol)
+                        symbol = symbol.createSymbolFromValue(result)
+                        sintBotSymbolTable.addToTable(symbol.getIdentifier(),symbol)
                 # Variable declarada en otro nivel, ERROR
                 else:
                     print("ERROR: Variable Declarada anteriormente en un alcance anterior\n")
@@ -259,14 +265,21 @@ class BotInstruction(InstructionClass):
         elif self.command == 'drop':
             symbol = sintBotSymbolTable.searchForSymbol("me")
             
-            resultado = self.argument.evaluar(sintBotSymbolTable)
+                        # Caso 1: El argumento es una expresion
+            if (type(self.argument) is ArithmethicExpression or 
+                  type(self.argument) is BooleanExpression or
+                  type(self.argument) is RelationalExpresion or
+                  type(self.argument) is ParentizedExpression):
+                resultado = self.argument.evaluar(sintBotSymbolTable)
+            else:
+                resultado = obtainValueFromString(self.argument)
             
             setValueInPosicionMatrix(posicionMatrix,symbol.horPosicion,symbol.verPosicion,resultado)
             
         elif self.command == 'send':
 
             symbol = sintBotSymbolTable.searchForSymbol("me")
-            print("Bot Value ==> " + str(symbol.getValue()))
+            print(str(symbol.getValue()))
             
         elif self.command == 'read':
             
@@ -409,6 +422,7 @@ class ActivateInstruction:
             currentBotType = symbol.getType()
             currentBotHorPosicion = symbol.horPosicion
             currentBotVerPosicion = symbol.verPosicion
+            currentBotValue = symbol.getValue()
             # Si el bot esta desactivado procedemos
             if symbol.activated == False:
                 # Buscamos el comportamiento correspondiente
@@ -418,11 +432,12 @@ class ActivateInstruction:
                         # Si la operacion devuelve un resultado actualizamos el valor del bot
                         if result:
                             sintBotSymbolTable.updateSymbolValue(bot,result)
+                        sintBotSymbolTable.updateSymbolStatus(bot,True)
                         break
-                        symbol.activated = True
             # El Bot ya estaba activo, ERROR
             else:
-                pass
+                print("ERROR: " +bot+ " ya se encontraba activo")
+                exit()
 
         
 # Class DeactivateInstruction (REVISAR COMO HACER EL FOR PENDIENTE EN DONDE)
@@ -450,6 +465,7 @@ class DeactivateInstruction:
         global currentBotType
         global currentBotHorPosicion
         global currentBotVerPosicion
+        global currentBotValue
         # Por cada bot
         for bot in self.identList:
             # Buscamos el simbolo correspondiente al bot
@@ -457,6 +473,7 @@ class DeactivateInstruction:
             currentBotType = symbol.getType()
             currentBotHorPosicion = symbol.horPosicion
             currentBotVerPosicion = symbol.verPosicion
+            currentBotValue = symbol.getValue()
             # Si el bot esta desactivado procedemos
             if symbol.activated == True:
                 # Buscamos el comportamiento correspondiente
@@ -465,58 +482,13 @@ class DeactivateInstruction:
                         result = behavior.run()
                         # Si la operacion devuelve un resultado actualizamos el valor del bot
                         if result:
-                            symbol.setValue(result)
+                            sintBotSymbolTable.updateSymbolValue(bot,result)
+                        sintBotSymbolTable.updateSymbolStatus(bot,False)
                         break
-                        symbol.activated = False
             # El Bot ya estaba activo, ERROR
             else:
-                pass
-
-# Class AdvanceInstruction
-class DefaultInstruction:
-
-    def __init__(self,identList):
-        self.identList = identList
-    
-    def __str__(self):
-        espacio = "    "
-        retorno = ""
-        retorno += "\n"
-        retorno += "--------(DefaultInstruction)-------"
-        retorno += "\n"
-        retorno += "    DEFAULT"
-        retorno += "\n"
-        for nameBot in self.identList :
-            retorno += espacio + espacio + " - var: " + str(nameBot)
-            retorno += "\n"
-        return retorno
-        
-    # Corrida de la instruccion
-    def run(self):
-        global sintBotSymbolTable
-        global currentBotType
-        global currentBotHorPosicion
-        global currentBotVerPosicion
-        # Por cada bot
-        for bot in self.identList:
-            # Buscamos el simbolo correspondiente al bot
-            symbol = sintBotSymbolTable.searchForSymbol(bot)
-            currentBotType = symbol.getType()
-            currentBotHorPosicion = symbol.horPosicion
-            currentBotVerPosicion = symbol.verPosicion
-            # Si el bot esta activado procedemos
-            if symbol.activated == True:
-                # Buscamos el comportamiento correspondiente
-                for behavior in symbol.behaviorTable:
-                    if behavior.condition == 'default':
-                        result = behavior.run()
-                        # Si la operacion devuelve un resultado actualizamos el valor del bot
-                        if result:
-                            symbol.setValue(result)
-                        break
-            # El Bot no estaba activo, ERROR
-            else:
-                pass  
+                print("ERROR: " +bot+ " no se encontraba activo")
+                exit()
 
 # Class AdvanceInstruction
 class AdvanceInstruction:
@@ -541,8 +513,13 @@ class AdvanceInstruction:
     def run(self):
         global sintBotSymbolTable
         global currentBotType
+        global currentBotValue
         global currentBotHorPosicion
         global currentBotVerPosicion
+        
+        defaultEnabled = True
+        defaultPosicion = None
+        
         # Por cada bot
         for bot in self.identList:
             # Buscamos el simbolo correspondiente al bot
@@ -550,21 +527,40 @@ class AdvanceInstruction:
             currentBotType = symbol.getType()
             currentBotHorPosicion = symbol.horPosicion
             currentBotVerPosicion = symbol.verPosicion
+            currentBotValue = symbol.getValue()
             # Si el bot esta activado procedemos
             if symbol.activated == True:
-                # Buscamos el comportamiento correspondiente
-                for behavior in symbol.behaviorTable:
+                # Buscamos comportamientos personalizados
+                for i in range(0,len(symbol.behaviorTable)):
                     # Buscamos los comportamientos con expresiones
-                    if (type(behavior.condition) is ParentizedExpression or
-                        type(behavior.condition) is BooleanExpression or
-                        type(behavior.condition) is RelationalExpresion):
+                    if (type(symbol.behaviorTable[i].condition) is ParentizedExpression or
+                        type(symbol.behaviorTable[i].condition) is BooleanExpression or
+                        type(symbol.behaviorTable[i].condition) is RelationalExpresion):
+                        # Si ya se ha encontrado default entonces hay un ERROR
+                        if defaultPosicion != None:
+                            print("ERROR: Default definido antes que comportamiento con expresion")
+                            exit()
                         # Buscamos el primero que se cumpla
-                        if behavior.condition.evaluar(sintBotSymbolTable) == True:
+                        if symbol.behaviorTable[i].condition.evaluar(sintBotSymbolTable) == True:
+                            result = symbol.behaviorTable[i].run()
+                            # Si la operacion devuelve un resultado actualizamos el valor del bot
+                            if result:
+                                sintBotSymbolTable.updateSymbolValue(bot,result)
+                            defaultEnabled = False
+                            break
+                    elif symbol.behaviorTable[i].condition == 'default':
+                        defaultPosicion = i
+                    
+                if defaultEnabled: 
+                    # Buscamos el comportamiento default
+                    for behavior in symbol.behaviorTable:
+                        if behavior.condition == 'default':
                             result = behavior.run()
                             # Si la operacion devuelve un resultado actualizamos el valor del bot
                             if result:
-                                symbol.setValue(result)
+                                sintBotSymbolTable.updateSymbolValue(bot,result)
                             break
             # El Bot no estaba activo, ERROR
             else:
-                pass  
+                print("ERROR: " +bot+ " no se encontraba activo")
+                exit()  
