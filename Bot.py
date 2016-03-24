@@ -15,9 +15,9 @@ from AnalisisLexicografico.Lexer.Lexer import botLexer
 from AnalisisLexicografico.Lexer.Lexer import column_token
 from AnalisisLexicografico.Lexer.Token import Token
 from AnalisisSintactico.Parser.parser import BotParser
-from AnalisisSintactico.Parser.parser import sintBotSymbolTable
 from AnalisisContexto.SymbolTable import SymbolTable
-
+from re import compile
+from re import match
 
 ##################### Funciones ################################################
 # Calculo de columna en la que se encuentra el numero de columna
@@ -29,6 +29,12 @@ def find_column(data,token):
     return column
 
 ##################### Codigo Principal #########################################
+
+# Verificamos que nuestro archivo es de extension .bot
+botPattern = compile(r'([a-zA-Z][a-zA-Z0-9_]*)\.bot')
+if not (match(botPattern, sys.argv[1])):
+    print("Este no es un archivo .bot")
+    exit()
 
 # Abrimos el archivo y lo leemos
 bot_Script = open(sys.argv[1],'r')
