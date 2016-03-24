@@ -646,6 +646,8 @@ class AdvanceInstruction:
                             # Si la operacion devuelve un resultado actualizamos el valor del bot
                             if result != None:
                                 BotSymbolTable.updateSymbolValue(self.identList[j],result.value)
+                                BotSymbolTable.updateSymbolHorPosicion(self.identList[j],result.horPosicion)
+                                BotSymbolTable.updateSymbolVerPosicion(self.identList[j],result.verPosicion)
                             break
             # El Bot no estaba activo, ERROR
             else:

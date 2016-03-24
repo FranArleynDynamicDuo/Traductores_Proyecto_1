@@ -293,9 +293,11 @@ class Symbol():
             self.value = value
         elif (self.getType() == "bool" and valueType is bool):
             self.value = value
+        elif (self.value is None and value is None):
+            pass
         # ERROR Conflicto de tipos
         else:
-            print("ERROR: Conflicto De Tipos\n")
+            print("ERROR: Conflicto De Tipos al tratar de asignarle '" + str(value) + "' a '" + self.getIdentifier() + "' \n")
             exit()
 
         return self
@@ -306,7 +308,7 @@ class Symbol():
         if resultType is bool:
             symbolType = "bool"
         elif resultType is int:
-            symbolType = "bool"
+            symbolType = "int"
         elif resultType is str and value.len() == 1:
             symbolType = "char"
         symbol = Symbol(self.identifier,symbolType,value)
