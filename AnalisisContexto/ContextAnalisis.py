@@ -167,14 +167,15 @@ def validateRel(variableTable,expression,line,column):
     @return:  Indicacion si hubo error o no
     """
     
+    # Caso 3.1: Es una expresion parentizada
     if type(expression) is ParentizedExpression:
         
         return expressionAnalisis(variableTable,expression.expresion,line,column)
     
-    # Caso 3.4: Es una literal aritmetico (numeros)
+    # Caso 3.2: Es un literal aritmetico (numeros)
     if match(numPattern,expression):
         valid = True
-    # Caso 3.5: Es una literal booleano (true o false)
+    # Caso 3.3: Es un literal booleano (true o false)
     elif match(boolPattern,expression):
         valid = True
     elif expression == tokenMe:
@@ -185,7 +186,7 @@ def validateRel(variableTable,expression,line,column):
             print(errorMe + expression + lineInfo
               + str(line) + columnInfo + str(column) + closeInfo)
             return False
-    # Caso 3.6: Es un identificador
+    # Caso 3.4: Es un identificador
     elif variableTable.searchForSymbol(expression):
         symbol = variableTable.searchForSymbol(expression)
         if symbol.symbolType == boolTipo or symbol.symbolType == intTipo:
