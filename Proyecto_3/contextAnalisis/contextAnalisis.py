@@ -148,7 +148,7 @@ class SymbolTable():
                 return False;
             # Caso 2.2: No estamos en el ultimo nivel, buscamos en el nivel superior
             else:
-                return self.getUpperLevel().updateSymbol(identifier,value)
+                return self.getUpperLevel().updateSymbolValue(identifier,value)
 
     def updateSymbolHorPosicion(self,identifier,horPosicion):
         """
@@ -239,7 +239,7 @@ class SymbolTable():
                 return False;
             # Caso 2.2: No estamos en el ultimo nivel, buscamos en el nivel superior
             else:
-                return self.getUpperLevel().updateSymbolVerPosicion(identifier,status)
+                return self.getUpperLevel().updateSymbolStatus(identifier,status)
 
 
 class Symbol():
@@ -309,7 +309,7 @@ class Symbol():
             symbolType = "bool"
         elif resultType is str and value.len() == 1:
             symbolType = "char"
-        symbol = Symbol(self.identifier,resultType,value)
+        symbol = Symbol(self.identifier,symbolType,value)
         
         return symbol 
 

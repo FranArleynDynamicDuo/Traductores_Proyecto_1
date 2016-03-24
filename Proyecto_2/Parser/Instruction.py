@@ -201,8 +201,8 @@ class BotBehavior(InstructionClass):
         botResult = BotSymbolTable.searchForSymbol("me")
         # Volvemos a la tabla de simbolos original
         BotSymbolTable = BotSymbolTable.getUpperLevel()
-        return botResult.getValue()
-
+        return botResult
+    
 # Clase Intrucciones del boot
 class BotInstruction(InstructionClass):
 
@@ -478,7 +478,9 @@ class ActivateInstruction:
                         result = behavior.run()
                         # Si la operacion devuelve un resultado actualizamos el valor del bot
                         if result != None:
-                            BotSymbolTable.updateSymbolValue(self.identList[j],result)
+                            BotSymbolTable.updateSymbolValue(self.identList[j],result.value)
+                            BotSymbolTable.updateSymbolHorPosicion(self.identList[j],result.horPosicion)
+                            BotSymbolTable.updateSymbolVerPosicion(self.identList[j],result.verPosicion)
                         break
                 BotSymbolTable.updateSymbolStatus(self.identList[j],True)        
             # El Bot ya estaba activo, ERROR
@@ -547,7 +549,9 @@ class DeactivateInstruction:
                         result = behavior.run()
                         # Si la operacion devuelve un resultado actualizamos el valor del bot
                         if result != None:
-                            BotSymbolTable.updateSymbolValue(self.identList[j],result)
+                            BotSymbolTable.updateSymbolValue(self.identList[j],result.value)
+                            BotSymbolTable.updateSymbolHorPosicion(self.identList[j],result.horPosicion)
+                            BotSymbolTable.updateSymbolVerPosicion(self.identList[j],result.verPosicion)
                         break
                 BotSymbolTable.updateSymbolStatus(self.identList[j],False)
             # El Bot ya estaba activo, ERROR
@@ -626,7 +630,9 @@ class AdvanceInstruction:
                             result = symbol.behaviorTable[i].run()
                             # Si la operacion devuelve un resultado actualizamos el valor del bot
                             if result != None:
-                                BotSymbolTable.updateSymbolValue(self.identList[j],result)
+                                BotSymbolTable.updateSymbolValue(self.identList[j],result.value)
+                                BotSymbolTable.updateSymbolHorPosicion(self.identList[j],result.horPosicion)
+                                BotSymbolTable.updateSymbolVerPosicion(self.identList[j],result.verPosicion)
                             defaultEnabled = False
                             break
                     elif symbol.behaviorTable[i].condition == 'default':
@@ -639,7 +645,7 @@ class AdvanceInstruction:
                             result = behavior.run()
                             # Si la operacion devuelve un resultado actualizamos el valor del bot
                             if result != None:
-                                BotSymbolTable.updateSymbolValue(self.identList[j],result)
+                                BotSymbolTable.updateSymbolValue(self.identList[j],result.value)
                             break
             # El Bot no estaba activo, ERROR
             else:
