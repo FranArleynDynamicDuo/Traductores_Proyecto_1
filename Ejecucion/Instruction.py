@@ -12,10 +12,10 @@ from copy import deepcopy
 from re import compile
 from re import match
 
-from AnalisisSintactico.Parser.Expression import ArithmethicExpression
-from AnalisisSintactico.Parser.Expression import RelationalExpresion
-from AnalisisSintactico.Parser.Expression import BooleanExpression
-from AnalisisSintactico.Parser.Expression import ParentizedExpression
+from Ejecucion.Expression import ArithmethicExpression
+from Ejecucion.Expression import RelationalExpresion
+from Ejecucion.Expression import BooleanExpression
+from Ejecucion.Expression import ParentizedExpression
 
 BotSymbolTable = SymbolTable(None);
 posicionMatrix = dict()

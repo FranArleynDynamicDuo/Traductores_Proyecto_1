@@ -3,17 +3,18 @@ Created on Feb 1, 2016
 
 @author: francisco
 '''
-'''--------------------------------- CONSTANTES --------------------------------'''
-''' Patrones de comparacion '''
 
 from re import compile
 from re import match
 
-from AnalisisSintactico.Parser.Expression import ArithmethicExpression
-from AnalisisSintactico.Parser.Expression import BooleanExpression
-from AnalisisSintactico.Parser.Expression import ParentizedExpression
-from AnalisisSintactico.Parser.Expression import RelationalExpresion
+from Ejecucion.Expression import ArithmethicExpression
+from Ejecucion.Expression import BooleanExpression
+from Ejecucion.Expression import ParentizedExpression
+from Ejecucion.Expression import RelationalExpresion
 
+'''--------------------------------- CONSTANTES --------------------------------'''
+
+''' Patrones de comparacion '''
 
 boolPattern = compile('true|false')
 numPattern = compile('([0-9]+)|(-[0-9]+)')

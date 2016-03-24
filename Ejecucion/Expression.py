@@ -4,7 +4,6 @@ Created on Feb 1, 2016
 @author: francisco
 '''
 
-from abc import ABCMeta, abstractmethod
 from re import compile
 from re import match
 
@@ -133,6 +132,8 @@ class ArithmethicExpression:
         elif (self.operador == "*"):
             return (expresionUno * expresionDos)
         elif  (self.operador == "/"):
+            if expresionDos == 0:
+                print("ERROR: Division entre 0, comportamiento indefinido")
             return (expresionUno / expresionDos)
         elif  (self.operador == "%"):
             return (expresionUno % expresionDos)

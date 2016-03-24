@@ -5,8 +5,8 @@ import ply.yacc as yacc;
 from copy import deepcopy
 
 from AnalisisLexicografico.Lexer.Lexer import tokens as botTokens
-from AnalisisSintactico.Parser import Expression
-from AnalisisSintactico.Parser import Instruction
+from Ejecucion import Expression
+from Ejecucion import Instruction
 from AnalisisContexto.SymbolTable import SymbolTable
 from AnalisisContexto.Symbol import Symbol
 from AnalisisContexto.ContextAnalisis import expressionAnalisis
