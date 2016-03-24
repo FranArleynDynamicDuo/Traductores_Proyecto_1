@@ -234,8 +234,10 @@ def validateRel(variableTable,expression,line,column):
         # Caso 3.6: Es un identificador
         elif variableTable.searchForSymbol(expression):
             symbol = variableTable.searchForSymbol(expression)
+            # Caso 3.6.1: Es un identificador tipo int
             if symbol.symbolType == intTipo:
                 valid = True
+            # Caso 3.6.2: Es un identificador tipo bool o char ERROR
             elif symbol.symbolType == charTipo or symbol.symbolType == boolTipo:
                 print(errorConflictoTipos + expression + notInt + lineInfo
                   + str(line) + columnInfo + str(column) + closeInfo)
@@ -267,50 +269,37 @@ def AnalisisDeExpresion(variableTable,expression,line,column):
     """
     # Creamos la tabla vacia
     expressionType = type(expression)
-
     # Caso 1: Expresion Aritmetica
     if expressionType is ExpresionAritmetica:
-        
         # Verificamos la primera expresion
         valid1 = validateArit(variableTable,expression.expresion1,line,column)
-        
         if (valid1):
-        
             # Verificamos la Segunda expresion
             valid2 = validateArit(variableTable,expression.expresion2,line,column)
-        
         else:
             return False    
-    
     # Caso 2: Expresion Relacional    
     elif expressionType is ExpresionRelacional:
-        
         # Verificamos la primera expresion
         valid1 = validateRel(variableTable,expression.expresion1,line,column)
-        
         # Si la primera expresion es valida podemos continuar
         if (valid1):            
-            
             # Verificamos la Segunda expresion
             valid2 = validateRel(variableTable,expression.expresion2,line,column)  
-            
             expreType1 = type(expression.expresion1)
             expreType2 = type(expression.expresion2)
             symbol1 = variableTable.searchForSymbol(expression.expresion1)
             symbol2 = variableTable.searchForSymbol(expression.expresion2)
-            
             # La expresion relacional cuando usa los operadores de igualdad y desigualdad,
             # tiene muchas combinaciones de tipos, asi que descartamos la expresion si
             # es una expresion invalida
             if valid2 and (expression.operador == "=" or expression.operador == "/="):
-                
                 # Una expresion aritmetica no puede ser igualada a otro tipo de expresion
                 if ((expreType1 is ExpresionAritmetica or expreType2 is ExpresionAritmetica)
                       and (expreType1 is not ExpresionAritmetica or 
                       expreType2 is not ExpresionAritmetica)):
                     print()
                     return False
-                
                 # Una expresion aritmetica solo puede ser igualada a una variable si esta es
                 # de tipo entero
                 elif ((expreType1 is ExpresionAritmetica and symbol2.getType() != intTipo)
@@ -320,7 +309,6 @@ def AnalisisDeExpresion(variableTable,expression,line,column):
                     (expreType1 is ExpresionRelacional and symbol2.getType() == intTipo)):
                     print()
                     return False
-                
                 # Una expresion aritmetica solo puede ser igualada a una variable si esta es
                 # de tipo entero 
                 elif ((expreType2 is ExpresionAritmetica and symbol1.getType() != intTipo)
@@ -330,29 +318,20 @@ def AnalisisDeExpresion(variableTable,expression,line,column):
                     (expreType2 is ExpresionRelacional and symbol1.getType() == intTipo)):
                     print()
                     return False
-            
         # Si la primera expresion es invalida, ya la expresion entera es invalida     
         else:
             return False   
-
     # Caso 3: Expresion Booleana
     elif expressionType is ExpresionBooleana:
-        
         # Verificamos la primera expresion
         valid1 = validateBool(variableTable,expression.expresion1,line,column)
-
         if (valid1):
-       
             # Verificamos la Segunda expresion
             valid2 = validateBool(variableTable,expression.expresion2,line,column)  
-
         else:
             return False   
-
     elif expressionType is ParentizedExpresion:
-        
         return AnalisisDeExpresion(variableTable,expression.expresion,line,column)
-   
     return valid1 and valid2 
 
         
