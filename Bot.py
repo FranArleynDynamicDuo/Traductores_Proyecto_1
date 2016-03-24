@@ -42,12 +42,6 @@ botLexer.input(data)
 # Creamos una lista para almacenar los tokens
 token_List = []
 
-# Inicializamos nuestro iterador
-i = 0
-
-# Print por detalles esteticos
-print(" ")
-
 # Creamos los objetos token necesarios
 while True:
     
@@ -62,35 +56,14 @@ while True:
     token_List.append(Token(tok.type,tok.value,
                             tok.lineno,column_token(data,tok)))
 
-# Reiniciamos el iterador
-i = 0
 
-if botLexer.error_Found == False:
-
-    # 2DO CICLO: Si no se encuentran errores, se imprimen las tokens correctas
-    while i < len(token_List):
-        
-        # Si el token requiere mostrar un dato adicional utilizamos un formato
-        if token_List[i].type == 'TkNum' or token_List[i].type == 'TkIdent':
-            
-            print ('%s("%s") %s %s' % (token_List[i].type,token_List[i].value,
-                                       token_List[i].line_Number,token_List[i].column_Number),end=" ")
-            
-        # En caso de no necesitarlo, usamos un formato con 3 parametros
-        else:
-        
-            print ('%s %s %s' % (token_List[i].type,token_List[i].line_Number,
-                   token_List[i].column_Number),end=" ")
-        
-        # Aumentamos el iterador
-        i += 1
-
-
-print("\n")
 # Pasamos nuestra informacion al lexer
 botLexer.input(data)
 bot_Script.close()
 
+if botLexer.error_Found == True:
+    print("Errores en el lexer")
+    exit()
 
 # Abrimos el archivo y lo leemos
 bot_Script = open(sys.argv[1],'r')
@@ -101,14 +74,6 @@ data = bot_Script.read()
 # result = BotParser.parse(data,debug=1)
 # 
 parseTree = BotParser.parse(data)
-
-print(parseTree)
-
-
-print(str(sintBotSymbolTable))
-
-global posicionMatrix
-posicionMatrix = dict()
 
 runBotSymbolTable = SymbolTable(None)
 
