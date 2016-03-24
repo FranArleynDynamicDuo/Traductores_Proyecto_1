@@ -11,11 +11,13 @@ if __name__ == '__main__':
 
 import sys
 
-from Proyecto_1.Lexer.Lexer import botLexer
-from Proyecto_1.Lexer.Lexer import column_token
-from Proyecto_1.Lexer.Token import Token
-from Proyecto_2.Parser.parser import BotParser
-from Proyecto_3.contextAnalisis.contextAnalisis import SymbolTable
+from AnalisisLexicografico.Lexer.Lexer import botLexer
+from AnalisisLexicografico.Lexer.Lexer import column_token
+from AnalisisLexicografico.Lexer.Token import Token
+from AnalisisSintactico.Parser.parser import BotParser
+from AnalisisSintactico.Parser.parser import sintBotSymbolTable
+from AnalisisContexto.SymbolTable import SymbolTable
+
 
 ##################### Funciones ################################################
 # Calculo de columna en la que se encuentra el numero de columna
@@ -102,7 +104,6 @@ parseTree = BotParser.parse(data)
 
 print(parseTree)
 
-from Proyecto_2.Parser.parser import sintBotSymbolTable
 
 print(str(sintBotSymbolTable))
 
