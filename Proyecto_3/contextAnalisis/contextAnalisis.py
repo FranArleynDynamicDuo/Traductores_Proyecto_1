@@ -309,7 +309,7 @@ class Symbol():
             symbolType = "bool"
         elif resultType is int:
             symbolType = "int"
-        elif resultType is str and value.len() == 1:
+        elif resultType is str :
             symbolType = "char"
         symbol = Symbol(self.identifier,symbolType,value)
         

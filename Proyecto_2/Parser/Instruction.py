@@ -360,9 +360,9 @@ class BotInstruction(InstructionClass):
             symbol = BotSymbolTable.searchForSymbol("me")
             
             if self.argument is None:
-                BotSymbolTable.updateSymbolVerPosicion("me",symbol.verPosicion + 1)
+                BotSymbolTable.updateSymbolVerPosicion("me",symbol.verPosicion - 1)
             else:
-                BotSymbolTable.updateSymbolVerPosicion("me",symbol.verPosicion + self.argument.evaluar(BotSymbolTable))
+                BotSymbolTable.updateSymbolVerPosicion("me",symbol.verPosicion - self.argument.evaluar(BotSymbolTable))
 
 # Class ConditionalInstruction      
 class ConditionalInstruction(InstructionClass):
