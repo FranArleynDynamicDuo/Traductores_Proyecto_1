@@ -7,10 +7,10 @@ Created on Feb 1, 2016
 from re import compile
 from re import match
 
-from Ejecucion.Expression import ArithmethicExpression
-from Ejecucion.Expression import BooleanExpression
-from Ejecucion.Expression import ParentizedExpression
-from Ejecucion.Expression import RelationalExpresion
+from Ejecucion.Expresion import ExpresionAritmetica
+from Ejecucion.Expresion import ExpresionBooleana
+from Ejecucion.Expresion import ParentizedExpresion
+from Ejecucion.Expresion import ExpresionRelacional
 
 '''--------------------------------- CONSTANTES --------------------------------'''
 
@@ -55,7 +55,7 @@ def validateArit(variableTable,expression,line,column):
     
     @type  variableTable: SymbolTable
     @param variableTable: Tabla de simbolos actual
-    @type  expression: ArithmethicExpression
+    @type  expression: ExpresionAritmetica
     @param expression: expresion a analizar
     @type  line: int
     @param line: numero de linea de la expresion
@@ -65,12 +65,12 @@ def validateArit(variableTable,expression,line,column):
     @return:  Indicacion si hubo error o no
     """
     
-    if type(expression) is ParentizedExpression:
+    if type(expression) is ParentizedExpresion:
         
-        return expressionAnalisis(variableTable,expression.expresion)    
+        return AnalisisDeExpresion(variableTable,expression.expresion)    
     
     # Verificamos la primera expresion
-    if (type(expression) is ArithmethicExpression):
+    if (type(expression) is ExpresionAritmetica):
         valid = True
     elif match(numPattern,expression):
         valid = True
@@ -106,7 +106,7 @@ def validateBool(variableTable,expression,line,column):
     
     @type  variableTable: SymbolTable
     @param variableTable: Tabla de simbolos actual
-    @type  expression: BooleanExpression
+    @type  expression: ExpresionBooleana
     @param expression: expresion a analizar
     @type  line: int
     @param line: numero de linea de la expresion
@@ -117,10 +117,10 @@ def validateBool(variableTable,expression,line,column):
     """
     
     # Caso 3.1: Es una expresion Booleana
-    if (type(expression) is BooleanExpression):
+    if (type(expression) is ExpresionBooleana):
         valid = True
     # Caso 3.2: Es una expresion Booleana
-    elif (type(expression) is RelationalExpresion):
+    elif (type(expression) is ExpresionRelacional):
         valid = True
     # Caso 3.3: Es una literal booleano (true o false)
     elif match(boolPattern,expression):
@@ -157,7 +157,7 @@ def validateRel(variableTable,expression,line,column):
     
     @type  variableTable: SymbolTable
     @param variableTable: Tabla de simbolos actual
-    @type  expression: RelationalExpresion
+    @type  expression: ExpresionRelacional
     @param expression: expresion a analizar
     @type  line: int
     @param line: numero de linea de la expresion
@@ -168,9 +168,9 @@ def validateRel(variableTable,expression,line,column):
     """
     
     # Caso 3.1: Es una expresion parentizada
-    if type(expression) is ParentizedExpression:
+    if type(expression) is ParentizedExpresion:
         
-        return expressionAnalisis(variableTable,expression.expresion,line,column)
+        return AnalisisDeExpresion(variableTable,expression.expresion,line,column)
     
     # Caso 3.2: Es un literal aritmetico (numeros)
     if match(numPattern,expression):
@@ -201,13 +201,13 @@ def validateRel(variableTable,expression,line,column):
     
     elif expression.operador == "=" or expression.operador == "/=":
         # Caso 3.1: Es una expresion Aritmetica
-        if (type(expression) is ArithmethicExpression):
+        if (type(expression) is ExpresionAritmetica):
             valid = True        
         # Caso 3.2: Es una expresion Booleana
-        elif (type(expression) is BooleanExpression):
+        elif (type(expression) is ExpresionBooleana):
             valid = True
         # Caso 3.3: Es una expresion Relacional
-        elif (type(expression) is RelationalExpresion):
+        elif (type(expression) is ExpresionRelacional):
             valid = True
 
         else:
@@ -218,7 +218,7 @@ def validateRel(variableTable,expression,line,column):
         expression.operador == ">" or expression.operador == ">="):
         
         # Caso 3.1: Es una expresion Aritmetica
-        if (type(expression.expresion1) is ArithmethicExpression):
+        if (type(expression.expresion1) is ExpresionAritmetica):
             valid = True
         # Caso 3.4: Es una literal aritmetico (numeros)
         elif match(numPattern,expression):
@@ -250,13 +250,13 @@ def validateRel(variableTable,expression,line,column):
     return valid
 
 # Metodo que lee el arbol de parseo y obtiene las variables declaradas y las coloca en un diccionario
-def expressionAnalisis(variableTable,expression,line,column):
+def AnalisisDeExpresion(variableTable,expression,line,column):
     """
     Orquesta la busqueda de errores en una expresion
     
     @type  variableTable: SymbolTable
     @param variableTable: Tabla de simbolos actual
-    @type  expression: Expression
+    @type  expression: Expresion
     @param expression: expresion a analizar
     @type  line: int
     @param line: numero de linea de la expresion
@@ -269,7 +269,7 @@ def expressionAnalisis(variableTable,expression,line,column):
     expressionType = type(expression)
 
     # Caso 1: Expresion Aritmetica
-    if expressionType is ArithmethicExpression:
+    if expressionType is ExpresionAritmetica:
         
         # Verificamos la primera expresion
         valid1 = validateArit(variableTable,expression.expresion1,line,column)
@@ -283,7 +283,7 @@ def expressionAnalisis(variableTable,expression,line,column):
             return False    
     
     # Caso 2: Expresion Relacional    
-    elif expressionType is RelationalExpresion:
+    elif expressionType is ExpresionRelacional:
         
         # Verificamos la primera expresion
         valid1 = validateRel(variableTable,expression.expresion1,line,column)
@@ -305,29 +305,29 @@ def expressionAnalisis(variableTable,expression,line,column):
             if valid2 and (expression.operador == "=" or expression.operador == "/="):
                 
                 # Una expresion aritmetica no puede ser igualada a otro tipo de expresion
-                if ((expreType1 is ArithmethicExpression or expreType2 is ArithmethicExpression)
-                      and (expreType1 is not ArithmethicExpression or 
-                      expreType2 is not ArithmethicExpression)):
+                if ((expreType1 is ExpresionAritmetica or expreType2 is ExpresionAritmetica)
+                      and (expreType1 is not ExpresionAritmetica or 
+                      expreType2 is not ExpresionAritmetica)):
                     print()
                     return False
                 
                 # Una expresion aritmetica solo puede ser igualada a una variable si esta es
                 # de tipo entero
-                elif ((expreType1 is ArithmethicExpression and symbol2.getType() != intTipo)
+                elif ((expreType1 is ExpresionAritmetica and symbol2.getType() != intTipo)
                     or
-                    (expreType1 is BooleanExpression and symbol2.getType() == intTipo)
+                    (expreType1 is ExpresionBooleana and symbol2.getType() == intTipo)
                     or
-                    (expreType1 is RelationalExpresion and symbol2.getType() == intTipo)):
+                    (expreType1 is ExpresionRelacional and symbol2.getType() == intTipo)):
                     print()
                     return False
                 
                 # Una expresion aritmetica solo puede ser igualada a una variable si esta es
                 # de tipo entero 
-                elif ((expreType2 is ArithmethicExpression and symbol1.getType() != intTipo)
+                elif ((expreType2 is ExpresionAritmetica and symbol1.getType() != intTipo)
                     or
-                    (expreType2 is BooleanExpression and symbol1.getType() == intTipo)
+                    (expreType2 is ExpresionBooleana and symbol1.getType() == intTipo)
                     or
-                    (expreType2 is RelationalExpresion and symbol1.getType() == intTipo)):
+                    (expreType2 is ExpresionRelacional and symbol1.getType() == intTipo)):
                     print()
                     return False
             
@@ -336,7 +336,7 @@ def expressionAnalisis(variableTable,expression,line,column):
             return False   
 
     # Caso 3: Expresion Booleana
-    elif expressionType is BooleanExpression:
+    elif expressionType is ExpresionBooleana:
         
         # Verificamos la primera expresion
         valid1 = validateBool(variableTable,expression.expresion1,line,column)
@@ -349,9 +349,9 @@ def expressionAnalisis(variableTable,expression,line,column):
         else:
             return False   
 
-    elif expressionType is ParentizedExpression:
+    elif expressionType is ParentizedExpresion:
         
-        return expressionAnalisis(variableTable,expression.expresion,line,column)
+        return AnalisisDeExpresion(variableTable,expression.expresion,line,column)
    
     return valid1 and valid2 
 

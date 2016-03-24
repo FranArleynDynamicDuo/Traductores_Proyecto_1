@@ -5,11 +5,11 @@ import ply.yacc as yacc;
 from copy import deepcopy
 
 from AnalisisLexicografico.Lexer.Lexer import tokens as botTokens
-from Ejecucion import Expression
-from Ejecucion import Instruction
+from Ejecucion import Expresion
+from Ejecucion import Instruccion
 from AnalisisContexto.SymbolTable import SymbolTable
 from AnalisisContexto.Symbol import Symbol
-from AnalisisContexto.ContextAnalisis import expressionAnalisis
+from AnalisisContexto.ContextAnalisis import AnalisisDeExpresion
 
 
 # Get the token map from the lexer.  This is required.
@@ -27,12 +27,12 @@ def p_program(p):
     '''program : TkCreate botCreateList finishBotList TkExecute executeList TkEnd
                | TkExecute executeList TkEnd'''
     if len(p) == 7:
-        p[0] = Instruction.Program(createSet = p[2],executeSet = p[5])
+        p[0] = Instruccion.Program(createSet = p[2],executeSet = p[5])
         global sintBotSymbolTable
         if sintBotSymbolTable.emptyTable():
             sintBotSymbolTable = sintBotSymbolTable.getUpperLevel()
     if len(p) == 4:
-        p[0] = Instruction.Program(createSet = None,executeSet = p[2])
+        p[0] = Instruccion.Program(createSet = None,executeSet = p[2])
 
 def p_finishBotList(p):
     # Regla vacia que permite ejecutar una instruccion apenas se terminen 
@@ -66,24 +66,24 @@ def p_expression(p):
                   | TkIdent'''
     if len(p) == 4:
         if ((p[2] == "+") or (p[2] == "-") or (p[2] == "*") or (p[2] == "/") or (p[2] == "%")):
-            p[0] = Expression.ArithmethicExpression(p[1],p[2],p[3])
+            p[0] = Expresion.ExpresionAritmetica(p[1],p[2],p[3])
         elif ((p[2] == "/\\") or (p[2] == "\/")):
-            p[0] = Expression.BooleanExpression(p[1],p[2],p[3])
+            p[0] = Expresion.ExpresionBooleana(p[1],p[2],p[3])
         elif ((p[2] == "<") or (p[2] == "<=") or (p[2] == ">") or (p[2] == ">=") or (p[2] == "=") or
               (p[2] == "/=")):
-            p[0] = Expression.RelationalExpresion(p[1],p[2],p[3])    
+            p[0] = Expresion.ExpresionRelacional(p[1],p[2],p[3])    
         elif ((p[1] == "(") and (p[3] == ")")):
-            p[0] = Expression.ParentizedExpression(p[1],p[2],p[3])   
+            p[0] = Expresion.ParentizedExpresion(p[1],p[2],p[3])   
         
         global sintBotSymbolTable
-        if (expressionAnalisis(sintBotSymbolTable,p[0],p.lexer.lineno -18,p.lexer.lexpos - p.lexer.current)):
+        if (AnalisisDeExpresion(sintBotSymbolTable,p[0],p.lexer.lineno -18,p.lexer.lexpos - p.lexer.current)):
             pass
         else:
             exit()                  
     elif len(p) == 3:             
-        p[0] = Expression.BooleanExpression(expresion1= p[2], operador = p[1])
+        p[0] = Expresion.ExpresionBooleana(expresion1= p[2], operador = p[1])
         global sintBotSymbolTable
-        if (expressionAnalisis(sintBotSymbolTable,p[0],p.lexer.lineno -18,p.lexer.lexpos - p.lexer.current)):
+        if (AnalisisDeExpresion(sintBotSymbolTable,p[0],p.lexer.lineno -18,p.lexer.lexpos - p.lexer.current)):
             pass
         else:
             exit()        
@@ -107,7 +107,7 @@ def p_botCreate(p):
     '''botCreate :       TkInt  TkBot TkIdent botDeclaracionList TkEnd
                  |       TkBool TkBot TkIdent botDeclaracionList TkEnd
                  |       TkChar TkBot TkIdent botDeclaracionList TkEnd'''
-    p[0] = Instruction.CreateInstruction(p[1],p[3],p[4])
+    p[0] = Instruccion.CreateInstruccion(p[1],p[3],p[4])
     symbol = Symbol(p[3],p[1],None)
     symbol.behaviorTable = p[4]
     global sintBotSymbolTable
@@ -135,7 +135,7 @@ def p_botDeclaracion(p):
                     |       TkOn startBotDeclaration TkDeactivation  TkDosPuntos botInstruccionList TkEnd
                     |       TkOn startBotDeclaration expression  TkDosPuntos botInstruccionList TkEnd
                     |       TkOn startBotDeclaration TkDefault  TkDosPuntos botInstruccionList TkEnd'''
-    p[0] = Instruction.BotBehavior(p[3],p[5])
+    p[0] = Instruccion.BotBehavior(p[3],p[5])
     global sintBotSymbolTable
     sintBotSymbolTable = sintBotSymbolTable.getUpperLevel()
 
@@ -180,15 +180,15 @@ def p_botInstruccion(p):
                    |       TkUp TkPunto
                    |       TkDown TkPunto'''  # Asi cortamos la lista
     if len(p) == 5:
-        p[0] = Instruction.BotInstruction(p[1],p[3])
+        p[0] = Instruccion.BotInstruccion(p[1],p[3])
         if p[3] != "me":
             symbol = Symbol(p[3],"int",None)
             global sintBotSymbolTable
             sintBotSymbolTable = sintBotSymbolTable.addToTable(p[3],symbol)
     elif len(p) == 4:
-        p[0] = Instruction.BotInstruction(p[1],p[2])
+        p[0] = Instruccion.BotInstruccion(p[1],p[2])
     elif len(p) == 3:
-        p[0] = Instruction.BotInstruction(p[1])
+        p[0] = Instruccion.BotInstruccion(p[1])
 
 
 # -----------------------> INSTRUCCIONES <--------------------------
@@ -239,28 +239,28 @@ def p_conditional(p):
     '''conditional  :    TkIf expression TkDosPuntos executeList TkElse executeList TkEnd
                     |    TkIf expression TkDosPuntos executeList TkEnd'''
     if len(p) == 8:
-        p[0] = Instruction.ConditionalInstruction(p[2],p[4],p[6])
+        p[0] = Instruccion.ConditionalInstruccion(p[2],p[4],p[6])
     elif len(p) == 6:
-        p[0] = Instruction.ConditionalInstruction(p[2],p[4])
+        p[0] = Instruccion.ConditionalInstruccion(p[2],p[4])
 
 
 def p_while(p):
     '''while        :    TkWhile expression TkDosPuntos executeList TkEnd'''
-    p[0] = Instruction.whileInstruction(p[2],p[4])
+    p[0] = Instruccion.whileInstruccion(p[2],p[4])
 
 
 def p_activate(p):
     '''activate     :    TkActivate identList'''
-    p[0] = Instruction.ActivateInstruction(p[2])
+    p[0] = Instruccion.ActivateInstruccion(p[2])
      
     
 def p_deactivate(p):
     '''deactivate     :    TkDeactivate identList'''
-    p[0] = Instruction.DeactivateInstruction(p[2])    
+    p[0] = Instruccion.DeactivateInstruccion(p[2])    
     
 def p_advance(p):
     '''advance     :    TkAdvance identList'''
-    p[0] = Instruction.AdvanceInstruction(p[2])      
+    p[0] = Instruccion.AdvanceInstruccion(p[2])      
     
 # Error rule for syntax errors
 def p_error(p):
