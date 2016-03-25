@@ -6,8 +6,8 @@ Created on Feb 1, 2016
 
 
 from abc import ABCMeta, abstractmethod
-from AnalisisContexto.SymbolTable import SymbolTable
-from AnalisisContexto.Symbol import Symbol
+from AnalisisContexto.TablaDeSimbolos import TablaDeSimbolos
+from AnalisisContexto.Simbolo import Simbolo
 from copy import deepcopy
 from re import compile
 from re import match
@@ -15,9 +15,9 @@ from re import match
 from Ejecucion.Expresion import ExpresionAritmetica
 from Ejecucion.Expresion import ExpresionRelacional
 from Ejecucion.Expresion import ExpresionBooleana
-from Ejecucion.Expresion import ParentizedExpresion
+from Ejecucion.Expresion import ExpresionParentizada
 
-BotSymbolTable = SymbolTable(None);
+BotSymbolTable = TablaDeSimbolos(None);
 posicionmatriz = dict()
 currentBotHorPosicion = None
 currentBotVerPosicion = None
@@ -103,10 +103,10 @@ def obtainValueFromString(stringElement):
                 element += stringElement[i]
     # Caso 5: Es un identificador o una lectura invalida
     else:
-        symbol = BotSymbolTable.searchForSymbol(stringElement)
+        simbolo = BotSymbolTable.buscarSimbolo(stringElement)
         # Caso 5.1: Es un identificador
-        if (symbol):
-            element = symbol.getValue()
+        if (simbolo):
+            element = simbolo.obtenerValor()
         # Caso 5.2: Es una lectura invalida
         else:
             print('Lectura Invalida')
@@ -153,7 +153,7 @@ class Program(InstruccionClass):
                 pass
             # Si no es asi, bajamos a un nivel de tabla inferior
             else:
-                BotSymbolTable = SymbolTable(deepcopy(BotSymbolTable))
+                BotSymbolTable = TablaDeSimbolos(deepcopy(BotSymbolTable))
             # Reiniciamos el iterador
             i = 0
             # Recorremos las declaraciones de los bots
@@ -165,8 +165,8 @@ class Program(InstruccionClass):
         for i in  range(0,len(self.executeSet)):
             (self.executeSet[i]).run()
         # Si no estamos en la tabla tope subimos un nivel
-        if BotSymbolTable.getUpperLevel() != None:
-            BotSymbolTable.getUpperLevel()
+        if BotSymbolTable.obtenerNivelSuperior() != None:
+            BotSymbolTable.obtenerNivelSuperior()
         
 # Clase Crear el LexBot 
 class CreateInstruccion(InstruccionClass):
@@ -195,10 +195,10 @@ class CreateInstruccion(InstruccionClass):
         global BotSymbolTable
         global posicionmatriz
         # Creamos el simbolo
-        symbol = Symbol(self.identifier,self.botType,None)
-        symbol.behaviorTable = self.declarationSet
+        simbolo = Simbolo(self.identifier,self.botType,None)
+        simbolo.behaviorTable = self.declarationSet
         # Agregamos el simbolo a la tabla
-        BotSymbolTable.addToTable(self.identifier, symbol)
+        BotSymbolTable.agregarATabla(self.identifier, simbolo)
 
 # Clase Declaracion del bot
 class BotBehavior(InstruccionClass):
@@ -233,9 +233,9 @@ class BotBehavior(InstruccionClass):
         for i in  range(0,len(self.instructionSet)):
             self.instructionSet[i].run()        
         # obtenemos el nuevo valor del bot
-        botResult = BotSymbolTable.searchForSymbol("me")
+        botResult = BotSymbolTable.buscarSimbolo("me")
         # Volvemos a la tabla de simbolos original
-        BotSymbolTable = BotSymbolTable.getUpperLevel()
+        BotSymbolTable = BotSymbolTable.obtenerNivelSuperior()
         return botResult
     
 class BotInstruccion(InstruccionClass):
@@ -283,36 +283,36 @@ class BotInstruccion(InstruccionClass):
             if (type(self.argument) is ExpresionAritmetica or 
                   type(self.argument) is ExpresionBooleana or
                   type(self.argument) is ExpresionRelacional or
-                  type(self.argument) is ParentizedExpresion):
+                  type(self.argument) is ExpresionParentizada):
                 result = self.argument.evaluar(BotSymbolTable)
             # Caso 2: El argumento es un string de un tipo primitivo
             else:
                 result = obtainValueFromString(self.argument)
             # Actualizamos el valor del bot
-            BotSymbolTable.updateSymbolValue("me",result)
+            BotSymbolTable.actualizarValorDeSimbolo("me",result)
         # COLLECT
         elif self.command == 'collect':
             # Buscamos los datos actuales del bot
-            symbol = BotSymbolTable.searchForSymbol("me")
+            simbolo = BotSymbolTable.buscarSimbolo("me")
             # Obtenemos el valor de la posicion actual de la matriz
-            result = getValueInPosicionmatriz(posicionmatriz,symbol.horPosicion,symbol.verPosicion)
+            result = getValueInPosicionmatriz(posicionmatriz,simbolo.horPosicion,simbolo.verPosicion)
             # Si no recibimos argumento lo guardamos en el bot
             if self.argument is None:
-                BotSymbolTable.updateSymbolValue("me",result)
+                BotSymbolTable.actualizarValorDeSimbolo("me",result)
             else:
                 # Buscamos a ver si la variable ya fue declarada anteriormente
-                upperlevel = BotSymbolTable.getUpperLevel()
-                symbol = upperlevel.searchForSymbol(self.argument)
+                upperlevel = BotSymbolTable.obtenerNivelSuperior()
+                simbolo = upperlevel.buscarSimbolo(self.argument)
                 # Si no encontramos la variable seguimos
-                if not (symbol):
-                    symbol = BotSymbolTable.searchForSymbol(self.argument)
-                    if symbol != None:
-                        BotSymbolTable.updateSymbolValue(symbol.getIdentifier(),result)
+                if not (simbolo):
+                    simbolo = BotSymbolTable.buscarSimbolo(self.argument)
+                    if simbolo != None:
+                        BotSymbolTable.actualizarValorDeSimbolo(simbolo.obtenerIdentificador(),result)
                     # Variable no declarada, debe agregarse
                     else:
-                        symbol = Symbol(self.argument,None,None)
-                        symbol = symbol.createSymbolFromValue(result)
-                        BotSymbolTable.addToTable(symbol.getIdentifier(),symbol)
+                        simbolo = Simbolo(self.argument,None,None)
+                        simbolo = simbolo.crearSimboloDeValor(result)
+                        BotSymbolTable.agregarATabla(simbolo.obtenerIdentificador(),simbolo)
                 # Variable declarada en otro nivel, ERROR
                 else:
                     print("ERROR: Variable Declarada anteriormente en un alcance anterior\n")
@@ -320,36 +320,36 @@ class BotInstruccion(InstruccionClass):
         # DROP
         elif self.command == 'drop':
             # Buscamos los datos actuales del bot
-            symbol = BotSymbolTable.searchForSymbol("me")
+            simbolo = BotSymbolTable.buscarSimbolo("me")
             # Caso 1: El argumento es una expresion
             if (type(self.argument) is ExpresionAritmetica or 
                   type(self.argument) is ExpresionBooleana or
                   type(self.argument) is ExpresionRelacional or
-                  type(self.argument) is ParentizedExpresion):
+                  type(self.argument) is ExpresionParentizada):
                 resultado = self.argument.evaluar(BotSymbolTable)
             # Caso 2: El argumento es un string de un tipo primitivo
             else:
                 resultado = obtainValueFromString(self.argument)
             # Guardamos el valor en la matriz
-            posicionmatriz = setValueInPosicionmatriz(posicionmatriz,symbol.horPosicion,symbol.verPosicion,resultado)
+            posicionmatriz = setValueInPosicionmatriz(posicionmatriz,simbolo.horPosicion,simbolo.verPosicion,resultado)
         # SEND            
         elif self.command == 'send':
             # Buscamos los datos actuales del bot
-            symbol = BotSymbolTable.searchForSymbol("me")
+            simbolo = BotSymbolTable.buscarSimbolo("me")
             # Obtenemos el valor del bot
-            value = symbol.getValue()
+            value = simbolo.obtenerValor()
             # Si es un string lo imprimimos
             if type(value) is str:
                 print(value,end="")
             # Si no es un string lo transformamos en string antes de imprimirlo
             else:
-                print(str(symbol.getValue()),end="")
+                print(str(simbolo.obtenerValor()),end="")
         # READ            
         elif self.command == 'read':
             # Buscamos los datos actuales del bot
-            symbol = BotSymbolTable.searchForSymbol("me")
+            simbolo = BotSymbolTable.buscarSimbolo("me")
             # Obtenemos la entrada del usuario
-            stringElement = input("Value To Read " + "(" + symbol.getType()  + " type): ")
+            stringElement = input("Value To Read " + "(" + simbolo.obtenerTipo()  + " type): ")
             # Convertimos esa entrada en un tipo primitivo
             element = obtainValueFromString(stringElement)
             # Caso 1: Se guardara en el bot
@@ -357,49 +357,49 @@ class BotInstruccion(InstruccionClass):
                 pass
             # Caso 2: Se guardara en una variable
             else:
-                symbol = BotSymbolTable.searchForSymbol(self.argument)
+                simbolo = BotSymbolTable.buscarSimbolo(self.argument)
             # Actualizamos el valor del bot     
-            BotSymbolTable.updateSymbolValue(symbol.getIdentifier(),element)
+            BotSymbolTable.actualizarValorDeSimbolo(simbolo.obtenerIdentificador(),element)
         # LEFT            
         elif self.command == 'left':
             # Buscamos los datos actuales del bot
-            symbol = BotSymbolTable.searchForSymbol("me")
+            simbolo = BotSymbolTable.buscarSimbolo("me")
             # Caso 1: Se movera 1 paso
             if self.argument is None:
-                BotSymbolTable.updateSymbolHorPosicion("me",symbol.horPosicion - 1)
+                BotSymbolTable.actualizarPosicionHorSimbolo("me",simbolo.horPosicion - 1)
             # Caso 2: Se moveran varios pasos
             else:
-                BotSymbolTable.updateSymbolHorPosicion("me",symbol.horPosicion - self.argument.evaluar(BotSymbolTable))
+                BotSymbolTable.actualizarPosicionHorSimbolo("me",simbolo.horPosicion - self.argument.evaluar(BotSymbolTable))
         # RIGHT            
         elif self.command == 'right':
             # Buscamos los datos actuales del bot
-            symbol = BotSymbolTable.searchForSymbol("me")
+            simbolo = BotSymbolTable.buscarSimbolo("me")
             # Caso 1: Se movera 1 paso
             if self.argument is None:
-                BotSymbolTable.updateSymbolHorPosicion("me",symbol.horPosicion + 1)
+                BotSymbolTable.actualizarPosicionHorSimbolo("me",simbolo.horPosicion + 1)
             # Caso 2: Se moveran varios pasos
             else:
-                BotSymbolTable.updateSymbolHorPosicion("me",symbol.horPosicion + self.argument.evaluar(BotSymbolTable))
+                BotSymbolTable.actualizarPosicionHorSimbolo("me",simbolo.horPosicion + self.argument.evaluar(BotSymbolTable))
         # UP
         elif self.command == 'up':
             # Buscamos los datos actuales del bot
-            symbol = BotSymbolTable.searchForSymbol("me")
+            simbolo = BotSymbolTable.buscarSimbolo("me")
             # Caso 1: Se movera 1 paso
             if self.argument is None:
-                BotSymbolTable.updateSymbolVerPosicion("me",symbol.verPosicion + 1)
+                BotSymbolTable.actualizarPosicionVerSimbolo("me",simbolo.verPosicion + 1)
             # Caso 2: Se moveran varios pasos
             else:
-                BotSymbolTable.updateSymbolVerPosicion("me",symbol.verPosicion + self.argument.evaluar(BotSymbolTable))
+                BotSymbolTable.actualizarPosicionVerSimbolo("me",simbolo.verPosicion + self.argument.evaluar(BotSymbolTable))
         # DOWN
         elif self.command == 'down':
             # Buscamos los datos actuales del bot
-            symbol = BotSymbolTable.searchForSymbol("me")
+            simbolo = BotSymbolTable.buscarSimbolo("me")
             # Caso 1: Se movera 1 paso
             if self.argument is None:
-                BotSymbolTable.updateSymbolVerPosicion("me",symbol.verPosicion - 1)
+                BotSymbolTable.actualizarPosicionVerSimbolo("me",simbolo.verPosicion - 1)
             # Caso 2: Se moveran varios pasos
             else:
-                BotSymbolTable.updateSymbolVerPosicion("me",symbol.verPosicion - self.argument.evaluar(BotSymbolTable))
+                BotSymbolTable.actualizarPosicionVerSimbolo("me",simbolo.verPosicion - self.argument.evaluar(BotSymbolTable))
 
 # Class ConditionalInstruccion      
 class ConditionalInstruccion(InstruccionClass):
@@ -493,32 +493,32 @@ class ActivateInstruccion:
         # Por cada bot
         for j in range(0,len(self.identList)):
             # Buscamos los datos actuales del bot
-            symbol = BotSymbolTable.searchForSymbol(self.identList[j])
+            simbolo = BotSymbolTable.buscarSimbolo(self.identList[j])
             # Guardamos sus datos en variables globales
-            currentBotType = symbol.getType()
-            currentBotValue = symbol.getValue()
-            currentBotHorPosicion = symbol.horPosicion
-            currentBotVerPosicion = symbol.verPosicion
+            currentBotType = simbolo.obtenerTipo()
+            currentBotValue = simbolo.obtenerValor()
+            currentBotHorPosicion = simbolo.horPosicion
+            currentBotVerPosicion = simbolo.verPosicion
             # Creamos un nuevo nivel de tabla de simbolos
-            BotSymbolTable = SymbolTable(deepcopy(BotSymbolTable))
+            BotSymbolTable = TablaDeSimbolos(deepcopy(BotSymbolTable))
             # Creamos un simbolo Me con los datos del bot actual
-            symbolMe = Symbol("me",currentBotType,currentBotValue)
+            symbolMe = Simbolo("me",currentBotType,currentBotValue)
             symbolMe.horPosicion = currentBotHorPosicion
             symbolMe.verPosicion = currentBotVerPosicion
             # Agregamos el simbolo a la tabla
-            BotSymbolTable = BotSymbolTable.addToTable(symbolMe.getIdentifier(),symbolMe)
+            BotSymbolTable = BotSymbolTable.agregarATabla(symbolMe.obtenerIdentificador(),symbolMe)
             # Si el bot esta desactivado procedemos
-            if symbol.activated == False:
+            if simbolo.activado == False:
                 # Buscamos el comportamiento correspondiente
-                for behavior in symbol.behaviorTable:
+                for behavior in simbolo.behaviorTable:
                     if behavior.condition == 'activation':
                         # Corremos las instrucciones del comportamiento
                         result = behavior.run()
                         # Si la operacion devuelve un resultado actualizamos el valor del bot
                         if result != None:
-                            BotSymbolTable.updateSymbolValue(self.identList[j],result.value)
-                            BotSymbolTable.updateSymbolHorPosicion(self.identList[j],result.horPosicion)
-                            BotSymbolTable.updateSymbolVerPosicion(self.identList[j],result.verPosicion)
+                            BotSymbolTable.actualizarValorDeSimbolo(self.identList[j],result.obtenerValor())
+                            BotSymbolTable.actualizarPosicionHorSimbolo(self.identList[j],result.horPosicion)
+                            BotSymbolTable.actualizarPosicionVerSimbolo(self.identList[j],result.verPosicion)
                         break
                 # Marcamos el bot como activado
                 BotSymbolTable.updateSymbolStatus(self.identList[j],True)        
@@ -555,31 +555,31 @@ class DeactivateInstruccion:
         # Por cada bot
         for j in range(0,len(self.identList)):
             # Buscamos los datos actuales del bot
-            symbol = BotSymbolTable.searchForSymbol(self.identList[j])
+            simbolo = BotSymbolTable.buscarSimbolo(self.identList[j])
             # Guardamos sus datos en variables globales
-            currentBotType = symbol.getType()
-            currentBotValue = symbol.getValue()
-            currentBotHorPosicion = symbol.horPosicion
-            currentBotVerPosicion = symbol.verPosicion
+            currentBotType = simbolo.obtenerTipo()
+            currentBotValue = simbolo.obtenerValor()
+            currentBotHorPosicion = simbolo.horPosicion
+            currentBotVerPosicion = simbolo.verPosicion
             # Creamos un nuevo nivel de tabla de simbolos
-            BotSymbolTable = SymbolTable(deepcopy(BotSymbolTable))
+            BotSymbolTable = TablaDeSimbolos(deepcopy(BotSymbolTable))
             # Creamos un simbolo Me con los datos del bot actual
-            symbolMe = Symbol("me",currentBotType,currentBotValue)
+            symbolMe = Simbolo("me",currentBotType,currentBotValue)
             symbolMe.horPosicion = currentBotHorPosicion
             symbolMe.verPosicion = currentBotVerPosicion
             # Agregamos el simbolo a la tabla
-            BotSymbolTable = BotSymbolTable.addToTable(symbolMe.getIdentifier(),symbolMe)
+            BotSymbolTable = BotSymbolTable.agregarATabla(symbolMe.obtenerIdentificador(),symbolMe)
             # Si el bot esta desactivado procedemos
-            if symbol.activated == True:
+            if simbolo.activado == True:
                 # Buscamos el comportamiento correspondiente
-                for behavior in symbol.behaviorTable:
+                for behavior in simbolo.behaviorTable:
                     if behavior.condition == 'deactivation':
                         result = behavior.run()
                         # Si la operacion devuelve un resultado actualizamos el valor del bot
                         if result != None:
-                            BotSymbolTable.updateSymbolValue(self.identList[j],result.value)
-                            BotSymbolTable.updateSymbolHorPosicion(self.identList[j],result.horPosicion)
-                            BotSymbolTable.updateSymbolVerPosicion(self.identList[j],result.verPosicion)
+                            BotSymbolTable.actualizarValorDeSimbolo(self.identList[j],result.obtenerValor())
+                            BotSymbolTable.actualizarPosicionHorSimbolo(self.identList[j],result.horPosicion)
+                            BotSymbolTable.actualizarPosicionVerSimbolo(self.identList[j],result.verPosicion)
                         break
                 BotSymbolTable.updateSymbolStatus(self.identList[j],False)
             # El Bot ya estaba activo, ERROR
@@ -615,60 +615,60 @@ class AdvanceInstruccion:
         # Por cada bot
         for j in range(0,len(self.identList)):
             # Buscamos los datos actuales del bot
-            symbol = BotSymbolTable.searchForSymbol(self.identList[j])
+            simbolo = BotSymbolTable.buscarSimbolo(self.identList[j])
             # Guardamos sus datos en variables globales
-            currentBotType = symbol.getType()
-            currentBotValue = symbol.getValue()
-            currentBotHorPosicion = symbol.horPosicion
-            currentBotVerPosicion = symbol.verPosicion
+            currentBotType = simbolo.obtenerTipo()
+            currentBotValue = simbolo.obtenerValor()
+            currentBotHorPosicion = simbolo.horPosicion
+            currentBotVerPosicion = simbolo.verPosicion
             # Creamos un nuevo nivel de tabla de simbolos
-            BotSymbolTable = SymbolTable(deepcopy(BotSymbolTable))
+            BotSymbolTable = TablaDeSimbolos(deepcopy(BotSymbolTable))
             # Creamos un simbolo Me con los datos del bot actual
-            symbolMe = Symbol("me",currentBotType,currentBotValue)
+            symbolMe = Simbolo("me",currentBotType,currentBotValue)
             symbolMe.horPosicion = currentBotHorPosicion
             symbolMe.verPosicion = currentBotVerPosicion
             # Agregamos el simbolo a la tabla
-            BotSymbolTable = BotSymbolTable.addToTable(symbolMe.getIdentifier(),symbolMe)
+            BotSymbolTable = BotSymbolTable.agregarATabla(symbolMe.obtenerIdentificador(),symbolMe)
             # Inicializamos las variables referentes al comportamiento default
             defaultEnabled = True
             defaultPosicion = None
             # Si el bot esta activado procedemos
-            if symbol.activated == True:
+            if simbolo.activado == True:
                 # Buscamos comportamientos personalizados
-                for i in range(0,len(symbol.behaviorTable)):
+                for i in range(0,len(simbolo.behaviorTable)):
                     # Buscamos los comportamientos con expresiones
-                    if (type(symbol.behaviorTable[i].condition) is ParentizedExpresion or
-                        type(symbol.behaviorTable[i].condition) is ExpresionBooleana or
-                        type(symbol.behaviorTable[i].condition) is ExpresionRelacional):
+                    if (type(simbolo.behaviorTable[i].condition) is ExpresionParentizada or
+                        type(simbolo.behaviorTable[i].condition) is ExpresionBooleana or
+                        type(simbolo.behaviorTable[i].condition) is ExpresionRelacional):
                         # Si ya se ha encontrado default entonces hay un ERROR
                         if defaultPosicion != None:
                             print("ERROR: Default definido antes que comportamiento con expresion")
                             exit()
                         # Buscamos el primero que se cumpla
-                        if symbol.behaviorTable[i].condition.evaluar(BotSymbolTable) == True:
-                            result = symbol.behaviorTable[i].run()
+                        if simbolo.behaviorTable[i].condition.evaluar(BotSymbolTable) == True:
+                            result = simbolo.behaviorTable[i].run()
                             # Si la operacion devuelve un resultado actualizamos el valor del bot
                             if result != None:
-                                BotSymbolTable.updateSymbolValue(self.identList[j],result.value)
-                                BotSymbolTable.updateSymbolHorPosicion(self.identList[j],result.horPosicion)
-                                BotSymbolTable.updateSymbolVerPosicion(self.identList[j],result.verPosicion)
+                                BotSymbolTable.actualizarValorDeSimbolo(self.identList[j],result.obtenerValor())
+                                BotSymbolTable.actualizarPosicionHorSimbolo(self.identList[j],result.horPosicion)
+                                BotSymbolTable.actualizarPosicionVerSimbolo(self.identList[j],result.verPosicion)
                             defaultEnabled = False
                             break
                     # Si encontramos el comportamiento default anotamos su posicion para compararla con la
                     # de los demas comportamientos
-                    elif symbol.behaviorTable[i].condition == 'default':
+                    elif simbolo.behaviorTable[i].condition == 'default':
                         defaultPosicion = i
                 # Si no se encontro ninguna condicion que se cumpla, utilizamos el comportamiento default
                 if defaultEnabled: 
                     # Buscamos el comportamiento default
-                    for behavior in symbol.behaviorTable:
+                    for behavior in simbolo.behaviorTable:
                         if behavior.condition == 'default':
                             result = behavior.run()
                             # Si la operacion devuelve un resultado actualizamos el valor del bot
                             if result != None:
-                                BotSymbolTable.updateSymbolValue(self.identList[j],result.value)
-                                BotSymbolTable.updateSymbolHorPosicion(self.identList[j],result.horPosicion)
-                                BotSymbolTable.updateSymbolVerPosicion(self.identList[j],result.verPosicion)
+                                BotSymbolTable.actualizarValorDeSimbolo(self.identList[j],result.obtenerValor())
+                                BotSymbolTable.actualizarPosicionHorSimbolo(self.identList[j],result.horPosicion)
+                                BotSymbolTable.actualizarPosicionVerSimbolo(self.identList[j],result.verPosicion)
                             break
             # El Bot no estaba activo, ERROR
             else:

@@ -7,15 +7,15 @@ from copy import deepcopy
 from AnalisisLexicografico.Lexer.Lexer import tokens as botTokens
 from Ejecucion import Expresion
 from Ejecucion import Instruccion
-from AnalisisContexto.SymbolTable import SymbolTable
-from AnalisisContexto.Symbol import Symbol
-from AnalisisContexto.ContextAnalisis import AnalisisDeExpresion
+from AnalisisContexto.TablaDeSimbolos import TablaDeSimbolos
+from AnalisisContexto.Simbolo import Simbolo
+from AnalisisContexto.AnalisisContexto import AnalisisDeExpresion
 
 
 # Get the token map from the lexer.  This is required.
 tokens = botTokens;
 global sintBotSymbolTable
-sintBotSymbolTable = SymbolTable(None);
+sintBotSymbolTable = TablaDeSimbolos(None);
 currentBotType = None
 currentBotValue = None
 
@@ -30,7 +30,7 @@ def p_program(p):
         p[0] = Instruccion.Program(createSet = p[2],executeSet = p[5])
         global sintBotSymbolTable
         if sintBotSymbolTable.emptyTable():
-            sintBotSymbolTable = sintBotSymbolTable.getUpperLevel()
+            sintBotSymbolTable = sintBotSymbolTable.obtenerNivelSuperior()
     if len(p) == 4:
         p[0] = Instruccion.Program(createSet = None,executeSet = p[2])
 
@@ -39,7 +39,7 @@ def p_finishBotList(p):
     # las declaraciones de bots
     "finishBotList :"
     global sintBotSymbolTable
-    sintBotSymbolTable = SymbolTable(deepcopy(sintBotSymbolTable))
+    sintBotSymbolTable = TablaDeSimbolos(deepcopy(sintBotSymbolTable))
 
 #----------------------->   EXPRESIONES  <------------------------'''
 
@@ -73,7 +73,7 @@ def p_expression(p):
               (p[2] == "/=")):
             p[0] = Expresion.ExpresionRelacional(p[1],p[2],p[3])    
         elif ((p[1] == "(") and (p[3] == ")")):
-            p[0] = Expresion.ParentizedExpresion(p[1],p[2],p[3])   
+            p[0] = Expresion.ExpresionParentizada(p[1],p[2],p[3])   
         
         global sintBotSymbolTable
         if (AnalisisDeExpresion(sintBotSymbolTable,p[0],p.lexer.lineno -18,p.lexer.lexpos - p.lexer.current)):
@@ -108,10 +108,10 @@ def p_botCreate(p):
                  |       TkBool TkBot TkIdent botDeclaracionList TkEnd
                  |       TkChar TkBot TkIdent botDeclaracionList TkEnd'''
     p[0] = Instruccion.CreateInstruccion(p[1],p[3],p[4])
-    symbol = Symbol(p[3],p[1],None)
-    symbol.behaviorTable = p[4]
+    simbolo = Simbolo(p[3],p[1],None)
+    simbolo.behaviorTable = p[4]
     global sintBotSymbolTable
-    sintBotSymbolTable = sintBotSymbolTable.addToTable(p[3],symbol)
+    sintBotSymbolTable = sintBotSymbolTable.agregarATabla(p[3],simbolo)
     global currentBotType
     currentBotType = p[1]
     
@@ -137,15 +137,15 @@ def p_botDeclaracion(p):
                     |       TkOn startBotDeclaration TkDefault  TkDosPuntos botInstruccionList TkEnd'''
     p[0] = Instruccion.BotBehavior(p[3],p[5])
     global sintBotSymbolTable
-    sintBotSymbolTable = sintBotSymbolTable.getUpperLevel()
+    sintBotSymbolTable = sintBotSymbolTable.obtenerNivelSuperior()
 
 def p_startBotDeclaration(p):
     '''startBotDeclaration  :   '''
     global sintBotSymbolTable
-    sintBotSymbolTable = SymbolTable(deepcopy(sintBotSymbolTable))
+    sintBotSymbolTable = TablaDeSimbolos(deepcopy(sintBotSymbolTable))
     global currentBotType
-    symbol = Symbol("me",currentBotType,None)
-    sintBotSymbolTable = sintBotSymbolTable.addToTable(symbol.getIdentifier(),symbol)
+    simbolo = Simbolo("me",currentBotType,None)
+    sintBotSymbolTable = sintBotSymbolTable.agregarATabla(simbolo.obtenerIdentificador(),simbolo)
          
 
 def p_botInstruccionList(p):
@@ -182,9 +182,9 @@ def p_botInstruccion(p):
     if len(p) == 5:
         p[0] = Instruccion.BotInstruccion(p[1],p[3])
         if p[3] != "me":
-            symbol = Symbol(p[3],"int",None)
+            simbolo = Simbolo(p[3],"int",None)
             global sintBotSymbolTable
-            sintBotSymbolTable = sintBotSymbolTable.addToTable(p[3],symbol)
+            sintBotSymbolTable = sintBotSymbolTable.agregarATabla(p[3],simbolo)
     elif len(p) == 4:
         p[0] = Instruccion.BotInstruccion(p[1],p[2])
     elif len(p) == 3:
@@ -213,7 +213,7 @@ def p_identList(p):
         p[0] = p[1]
         p[0].append(p[3])
         global sintBotSymbolTable
-        if not sintBotSymbolTable.searchForSymbol(p[3]):
+        if not sintBotSymbolTable.buscarSimbolo(p[3]):
             print("Simbolo No Declarado --> " + p[3] + " ("
                   + str(p.lexer.lineno -18) + "," + str(p.lexer.lexpos - p.lexer.current) + ")")
     elif len(p) == 3:
@@ -222,7 +222,7 @@ def p_identList(p):
         p[0] = []
         p[0].append(p[1])    
         global sintBotSymbolTable
-        if not sintBotSymbolTable.searchForSymbol(p[1]):
+        if not sintBotSymbolTable.buscarSimbolo(p[1]):
             print("Simbolo No Declarado --> " + p[1] + " ("
                   + str(p.lexer.lineno -18) + "," + str(p.lexer.lexpos - p.lexer.current) + ")")
 

@@ -15,7 +15,7 @@ from AnalisisLexicografico.Lexer.Lexer import botLexer
 from AnalisisLexicografico.Lexer.Lexer import column_token
 from AnalisisLexicografico.Lexer.Token import Token
 from AnalisisSintactico.Parser.parser import BotParser
-from AnalisisContexto.SymbolTable import SymbolTable
+from AnalisisContexto.TablaDeSimbolos import TablaDeSimbolos
 from re import compile
 from re import match
 
@@ -81,7 +81,7 @@ data = bot_Script.read()
 # 
 parseTree = BotParser.parse(data)
 
-runBotSymbolTable = SymbolTable(None)
+runBotSymbolTable = TablaDeSimbolos(None)
 
 parseTree.run()
 

@@ -116,7 +116,7 @@ class ExpresionAritmetica:
         """
         Evalua la expresion y retorna el resultado
         
-        @type  symbolTable: SymbolTable
+        @type  symbolTable: TablaDeSimbolos
         @param symbolTable: Tabla de simbolos actual
         @rtype:   int
         @return:  Resultado de la expresion
@@ -125,8 +125,8 @@ class ExpresionAritmetica:
         expresionUno = None
         expresionDos = None
         # Verificamos si las expresiones son simbolos
-        symbol1 = symbolTable.searchForSymbol(self.expresion1)
-        symbol2 = symbolTable.searchForSymbol(self.expresion2)
+        simbolo1 = symbolTable.buscarSimbolo(self.expresion1)
+        simbolo2 = symbolTable.buscarSimbolo(self.expresion2)
         # Patron para la comparacion de numeros
         numPattern = compile('([0-9]+)|(-[0-9]+)')
         # Primera expresion
@@ -134,8 +134,8 @@ class ExpresionAritmetica:
         if match(numPattern,self.expresion1):
             expresionUno = int(self.expresion1)
         # Caso 2: es un simbolo
-        elif symbol1 != None:
-            expresionUno= symbol1.value
+        elif simbolo1 != None:
+            expresionUno= simbolo1.obtenerValor()
         # Caso 3: es una expresion
         else:
             expresionUno = self.expresion1.evaluar(symbolTable)
@@ -144,8 +144,8 @@ class ExpresionAritmetica:
         if match(numPattern,self.expresion2):
             expresionDos = int(self.expresion2)
         # Caso 2: es un simbolo
-        elif symbol2 != None:
-            expresionDos= symbol2.value
+        elif simbolo2 != None:
+            expresionDos= simbolo2.obtenerValor()
         # Caso 3: es una expresion
         else:
             expresionDos = self.expresion2.evaluar(symbolTable)     
@@ -194,7 +194,7 @@ class ExpresionRelacional:
         """
         Evalua la expresion y retorna el resultado
         
-        @type  symbolTable: SymbolTable
+        @type  symbolTable: TablaDeSimbolos
         @param symbolTable: Tabla de simbolos actual
         @rtype:   bool
         @return:  Resultado de la expresion
@@ -205,8 +205,8 @@ class ExpresionRelacional:
         # Patron para la comparacion de numeros
         numPattern = compile('([0-9]+)|(-[0-9]+)')
         # Verificamos si las expresiones son simbolos
-        symbol1 = symbolTable.searchForSymbol(self.expresion1)
-        symbol2 = symbolTable.searchForSymbol(self.expresion2)
+        simbolo1 = symbolTable.buscarSimbolo(self.expresion1)
+        simbolo2 = symbolTable.buscarSimbolo(self.expresion2)
         # Dependiendo del operador entradas validas distintas
         # Caso 1: Igualdad y Desigualdad
         if self.operador == '/=' or self.operador == '=':
@@ -221,8 +221,8 @@ class ExpresionRelacional:
             elif match(numPattern,self.expresion1):
                 expresionUno = int(self.expresion1)
             # Caso 4: es un simbolo
-            elif symbol1 != None:
-                expresionUno= symbol1.value
+            elif simbolo1 != None:
+                expresionUno= simbolo1.obtenerValor()
             # Caso 5: es una expresion
             else:
                 expresionUno = self.expresion1.evaluar(symbolTable)
@@ -237,8 +237,8 @@ class ExpresionRelacional:
             elif match(numPattern,self.expresion2):
                 expresionDos = int(self.expresion2)
             # Caso 4: es un simbolo
-            elif symbol2 != None:
-                expresionDos= symbol2.value
+            elif simbolo2 != None:
+                expresionDos= simbolo2.obtenerValor()
             # Caso 5: es una expresion
             else:
                 expresionDos = self.expresion2.evaluar(symbolTable)                
@@ -250,8 +250,8 @@ class ExpresionRelacional:
             if match(numPattern,self.expresion1):
                 expresionUno = int(self.expresion1)
             # Caso 2: es un simbolo
-            elif symbol1 != None:
-                expresionUno= symbol1.value
+            elif simbolo1 != None:
+                expresionUno= simbolo1.obtenerValor()
             # Caso 3: es una expresion
             else:
                 expresionUno = self.expresion1.evaluar(symbolTable)
@@ -260,8 +260,8 @@ class ExpresionRelacional:
             if match(numPattern,self.expresion2):
                 expresionDos = int(self.expresion2)
             # Caso 2: es un simbolo
-            elif symbol2 != None:
-                expresionDos= symbol2.value
+            elif simbolo2 != None:
+                expresionDos= simbolo2.obtenerValor()
             # Caso 3: es una expresion
             else:
                 expresionDos = self.expresion2.evaluar(symbolTable)  
@@ -311,7 +311,7 @@ class ExpresionBooleana:
         """
         Evalua la expresion y retorna el resultado
         
-        @type  symbolTable: SymbolTable
+        @type  symbolTable: TablaDeSimbolos
         @param symbolTable: Tabla de simbolos actual
         @rtype:   bool
         @return:  Resultado de la expresion
@@ -320,8 +320,8 @@ class ExpresionBooleana:
         expresionUno = None
         expresionDos = None
         # Verificamos si las expresiones son simbolos
-        symbol1 = symbolTable.searchForSymbol(self.expresion1)
-        symbol2 = symbolTable.searchForSymbol(self.expresion2)
+        simbolo1 = symbolTable.buscarSimbolo(self.expresion1)
+        simbolo2 = symbolTable.buscarSimbolo(self.expresion2)
         # Caso 1: es un tipo string
         if type(self.expresion1) is str:
             # Caso 1.1: Es true
@@ -331,8 +331,8 @@ class ExpresionBooleana:
             elif self.expresion1 == "false":
                 expresionUno = False
             # Caso 1.3: Es un simbolo
-            elif symbol1 != None:
-                expresionUno= symbol1.value
+            elif simbolo1 != None:
+                expresionUno= simbolo1.obtenerValor()
         # Caso 2: Es una expresion
         else:
             expresionUno = self.expresion1.evaluar(symbolTable)
@@ -345,8 +345,8 @@ class ExpresionBooleana:
             elif self.expresion2 == "false":
                 expresionDos = False
             # Caso 1.3: Es un simbolo
-            elif symbol2 != None:
-                expresionDos= symbol2.value
+            elif simbolo2 != None:
+                expresionDos= simbolo2.obtenerValor()
         # Caso 2: Es una expresion
         else:
             expresionUno = self.expresion1.evaluar(symbolTable)  
@@ -358,7 +358,7 @@ class ExpresionBooleana:
             return (expresionUno or expresionDos)
 
 # Expresiones con Parentizacion
-class ParentizedExpresion:
+class ExpresionParentizada:
     def __init__(self,abre,expresion,cierra):
         self.cierra = cierra
         self.expresion = expresion
@@ -368,18 +368,18 @@ class ParentizedExpresion:
         retorno = ""
         retorno += "\n"
         retorno += "\n"
-        retorno += espacio + espacio + "--- Open ParentizedExpresion ---"
+        retorno += espacio + espacio + "--- Open ExpresionParentizada ---"
         retorno += "\n"
         retorno += expresionParentesisString(self.expresion)
         retorno += "\n"
-        retorno += espacio + espacio + "--- Close ParentizedExpresion ---"
+        retorno += espacio + espacio + "--- Close ExpresionParentizada ---"
         retorno += "\n"
         return retorno 
     def evaluar(self,symbolTable):
         """
         Evalua la expresion y retorna el resultado
         
-        @type  symbolTable: SymbolTable
+        @type  symbolTable: TablaDeSimbolos
         @param symbolTable: Tabla de simbolos actual
         @rtype:   bool o int
         @return:  Resultado de la expresion
