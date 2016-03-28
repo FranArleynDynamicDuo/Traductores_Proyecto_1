@@ -23,6 +23,23 @@ currentBotHorPosicion = None
 currentBotVerPosicion = None
 currentBotValue = None
 
+def declararVariableTemporal(identificador,valor):
+    """
+    Crea una variable temporal para usos internos de un comportamiento
+    
+    @type  identificador: str
+    @param identificador: identificador de variable
+    @type  valor: Object
+    @param valor: valor de la variable
+    @rtype: Simbolo
+    @return: simbolo temporal nuevo
+    """
+    simbolo = Simbolo(identificador,None,None)
+    simbolo = simbolo.crearSimboloDeValor(valor)
+    simbolo.setValue(valor)
+    simbolo.activado = True
+    return simbolo
+
 def getValueInPosicionmatriz(matriz,horPosicion,verPosicion):
     """
     Toma una matriz y unas coordenadas y obtiene el valor almacenado
@@ -316,9 +333,7 @@ class BotInstruccion(InstruccionClass):
                         BotSymbolTable.actualizarValorDeSimbolo(simbolo.obtenerIdentificador(),result)
                     # Variable no declarada, debe agregarse
                     else:
-                        simbolo = Simbolo(self.argument,None,None)
-                        simbolo = simbolo.crearSimboloDeValor(result)
-                        simbolo.activado = True
+                        simbolo = declararVariableTemporal(self.argument,result)
                         BotSymbolTable.agregarATabla(simbolo.obtenerIdentificador(),simbolo)
                 # Variable declarada en otro nivel, ERROR
                 else:
@@ -358,7 +373,7 @@ class BotInstruccion(InstruccionClass):
             # Obtenemos la entrada del usuario
             stringElement = input("Value To Read " + "(" + simbolo.obtenerTipo()  + " type): ")
             # Convertimos esa entrada en un tipo primitivo
-            element = obtainValueFromString(stringElement)
+            elemento = obtainValueFromString(stringElement)
             # Caso 1: Se guardara en el bot
             if self.argument is None:
                 pass
@@ -371,13 +386,11 @@ class BotInstruccion(InstruccionClass):
                     pass
                 # Variable no declarada, debe agregarse
                 else:
-                    simbolo = Simbolo(self.argument,None,None)
-                    simbolo = simbolo.crearSimboloDeValor(element)
-                    simbolo.activado = True
+                    simbolo = declararVariableTemporal(self.argument,elemento)
                     BotSymbolTable.agregarATabla(simbolo.obtenerIdentificador(),simbolo)
                 
             # Actualizamos el valor del bot     
-            BotSymbolTable.actualizarValorDeSimbolo(simbolo.obtenerIdentificador(),element)
+            BotSymbolTable.actualizarValorDeSimbolo(simbolo.obtenerIdentificador(),elemento)
         # LEFT            
         elif self.command == 'left':
             # Buscamos los datos actuales del bot
