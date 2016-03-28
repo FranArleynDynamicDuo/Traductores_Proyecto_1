@@ -106,7 +106,13 @@ def obtainValueFromString(stringElement):
         simbolo = BotSymbolTable.buscarSimbolo(stringElement)
         # Caso 5.1: Es un identificador
         if (simbolo):
+            if simbolo.activado == False:
+                print('Bot no activado!')
+                exit()
             element = simbolo.obtenerValor()
+            if not element:
+                print('Bot no inicializado!')
+                exit()
         # Caso 5.2: Es una lectura invalida
         else:
             print('Lectura Invalida')
@@ -312,6 +318,7 @@ class BotInstruccion(InstruccionClass):
                     else:
                         simbolo = Simbolo(self.argument,None,None)
                         simbolo = simbolo.crearSimboloDeValor(result)
+                        simbolo.activado = True
                         BotSymbolTable.agregarATabla(simbolo.obtenerIdentificador(),simbolo)
                 # Variable declarada en otro nivel, ERROR
                 else:
@@ -357,7 +364,18 @@ class BotInstruccion(InstruccionClass):
                 pass
             # Caso 2: Se guardara en una variable
             else:
+                # Buscamos si la variable existe
                 simbolo = BotSymbolTable.buscarSimbolo(self.argument)
+                # Se encontro la variable
+                if simbolo != None:
+                    pass
+                # Variable no declarada, debe agregarse
+                else:
+                    simbolo = Simbolo(self.argument,None,None)
+                    simbolo = simbolo.crearSimboloDeValor(element)
+                    simbolo.activado = True
+                    BotSymbolTable.agregarATabla(simbolo.obtenerIdentificador(),simbolo)
+                
             # Actualizamos el valor del bot     
             BotSymbolTable.actualizarValorDeSimbolo(simbolo.obtenerIdentificador(),element)
         # LEFT            
@@ -505,10 +523,13 @@ class ActivateInstruccion:
             symbolMe = Simbolo("me",currentBotType,currentBotValue)
             symbolMe.horPosicion = currentBotHorPosicion
             symbolMe.verPosicion = currentBotVerPosicion
+            symbolMe.activado = True
             # Agregamos el simbolo a la tabla
             BotSymbolTable = BotSymbolTable.agregarATabla(symbolMe.obtenerIdentificador(),symbolMe)
             # Si el bot esta desactivado procedemos
             if simbolo.activado == False:
+                # Marcamos el bot como activado
+                BotSymbolTable.updateSymbolStatus(self.identList[j],True)
                 # Buscamos el comportamiento correspondiente
                 for behavior in simbolo.behaviorTable:
                     if behavior.condition == 'activation':
@@ -520,8 +541,6 @@ class ActivateInstruccion:
                             BotSymbolTable.actualizarPosicionHorSimbolo(self.identList[j],result.horPosicion)
                             BotSymbolTable.actualizarPosicionVerSimbolo(self.identList[j],result.verPosicion)
                         break
-                # Marcamos el bot como activado
-                BotSymbolTable.updateSymbolStatus(self.identList[j],True)        
             # El Bot ya estaba activo, ERROR
             else:
                 print("ERROR: " +self.identList[j]+ " ya se encontraba activo")
@@ -567,10 +586,13 @@ class DeactivateInstruccion:
             symbolMe = Simbolo("me",currentBotType,currentBotValue)
             symbolMe.horPosicion = currentBotHorPosicion
             symbolMe.verPosicion = currentBotVerPosicion
+            symbolMe.activado = False
             # Agregamos el simbolo a la tabla
             BotSymbolTable = BotSymbolTable.agregarATabla(symbolMe.obtenerIdentificador(),symbolMe)
             # Si el bot esta desactivado procedemos
             if simbolo.activado == True:
+                # El Bot ya estaba activo, ERROR    
+                BotSymbolTable.updateSymbolStatus(self.identList[j],False)
                 # Buscamos el comportamiento correspondiente
                 for behavior in simbolo.behaviorTable:
                     if behavior.condition == 'deactivation':
@@ -581,8 +603,7 @@ class DeactivateInstruccion:
                             BotSymbolTable.actualizarPosicionHorSimbolo(self.identList[j],result.horPosicion)
                             BotSymbolTable.actualizarPosicionVerSimbolo(self.identList[j],result.verPosicion)
                         break
-                BotSymbolTable.updateSymbolStatus(self.identList[j],False)
-            # El Bot ya estaba activo, ERROR
+
             else:
                 print("ERROR: " +self.identList[j]+ " no se encontraba activo")
                 exit()
@@ -627,6 +648,7 @@ class AdvanceInstruccion:
             symbolMe = Simbolo("me",currentBotType,currentBotValue)
             symbolMe.horPosicion = currentBotHorPosicion
             symbolMe.verPosicion = currentBotVerPosicion
+            symbolMe.activado = simbolo.activado
             # Agregamos el simbolo a la tabla
             BotSymbolTable = BotSymbolTable.agregarATabla(symbolMe.obtenerIdentificador(),symbolMe)
             # Inicializamos las variables referentes al comportamiento default
