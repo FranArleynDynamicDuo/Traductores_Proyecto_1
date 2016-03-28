@@ -4,5 +4,6 @@
 .settings
 __pycache__
 parser.out
-parsetab.py
+AnalisisSintactico/Parser/parsetab.py
+AnalisisSintactico/Parser/debug.txt
 *.txt
