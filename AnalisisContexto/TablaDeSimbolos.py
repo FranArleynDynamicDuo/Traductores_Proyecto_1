@@ -70,7 +70,7 @@ class TablaDeSimbolos():
             else:
                 return self.obtenerNivelSuperior().buscarSimbolo(identifier)
             
-    def actualizarValorDeSimbolo(self,identifier,value):
+    def actualizarValorDeSimbolo(self,identifier,valor):
         """
         Busca un elemento en los distintos niveles de la tabla de simbolos y 
         actualiza su valor
@@ -79,14 +79,16 @@ class TablaDeSimbolos():
         
         @type  identifier: String
         @param identifier: Nombre del simbolo a buscar
-        @rtype:   Object
-        @return:  El valor del simbolo encontrado
+        @type  valor: Object
+        @param valor: nuevo valor
+        @rtype:   TablaDeSimbolos
+        @return:  La tabla actualizada
         """
         # Buscamos el simbolo
         element = self.getElement(identifier)
         # Caso 1: Se encuentra, se devuelve el valor del simbolo
         if (element is not None):
-            element = element.setValue(value)
+            element = element.setValue(valor)
             self.table.update({identifier: element})
             return True
         # Caso 2: No se encuentra, se busca en la tabla de nivel superior
@@ -97,19 +99,21 @@ class TablaDeSimbolos():
                 return False;
             # Caso 2.2: No estamos en el ultimo nivel, buscamos en el nivel superior
             else:
-                return self.obtenerNivelSuperior().actualizarValorDeSimbolo(identifier,value)
+                return self.obtenerNivelSuperior().actualizarValorDeSimbolo(identifier,valor)
 
     def actualizarPosicionHorSimbolo(self,identifier,horPosicion):
         """
         Busca un elemento en los distintos niveles de la tabla de simbolos y 
-        actualiza su valor
+        actualiza su posicion horizontal
         
         Si el valor no se encuentra, retorna None
         
         @type  identifier: String
         @param identifier: Nombre del simbolo a buscar
-        @rtype:   Object
-        @return:  El valor del simbolo encontrado
+        @type  horPosicion: int
+        @param horPosicion: nueva posicion horizontal
+        @rtype:   TablaDeSimbolos
+        @return:  La tabla actualizada
         """
    
         # Buscamos el simbolo
@@ -133,14 +137,16 @@ class TablaDeSimbolos():
     def actualizarPosicionVerSimbolo(self,identifier,verPosicion):
         """
         Busca un elemento en los distintos niveles de la tabla de simbolos y 
-        actualiza su valor
+        actualiza su posicion vertical
         
         Si el valor no se encuentra, retorna None
         
         @type  identifier: String
         @param identifier: Nombre del simbolo a buscar
-        @rtype:   Object
-        @return:  El valor del simbolo encontrado
+        @type  verPosicion: int
+        @param verPosicion: nueva posicion vertical
+        @rtype:   TablaDeSimbolos
+        @return:  La tabla actualizada
         """
    
         # Buscamos el simbolo

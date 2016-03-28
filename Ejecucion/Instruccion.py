@@ -124,11 +124,11 @@ def obtainValueFromString(stringElement):
         # Caso 5.1: Es un identificador
         if (simbolo):
             if simbolo.activado == False:
-                print('Bot no activado!')
+                print('Bot ' + simbolo.obtenerIdentificador() + 'no activado!')
                 exit()
             element = simbolo.obtenerValor()
             if not element:
-                print('Bot no inicializado!')
+                print('Bot ' + element.obtenerIdentificador() + 'no activado!')
                 exit()
         # Caso 5.2: Es una lectura invalida
         else:
@@ -219,7 +219,7 @@ class CreateInstruccion(InstruccionClass):
         global posicionmatriz
         # Creamos el simbolo
         simbolo = Simbolo(self.identifier,self.botType,None)
-        simbolo.behaviorTable = self.declarationSet
+        simbolo.tablaDeComportamientos = self.declarationSet
         # Agregamos el simbolo a la tabla
         BotSymbolTable.agregarATabla(self.identifier, simbolo)
 
@@ -542,9 +542,9 @@ class ActivateInstruccion:
             # Si el bot esta desactivado procedemos
             if simbolo.activado == False:
                 # Marcamos el bot como activado
-                BotSymbolTable.updateSymbolStatus(self.identList[j],True)
+                BotSymbolTable.actualizarEstadoSimbolo(self.identList[j],True)
                 # Buscamos el comportamiento correspondiente
-                for behavior in simbolo.behaviorTable:
+                for behavior in simbolo.tablaDeComportamientos:
                     if behavior.condition == 'activation':
                         # Corremos las instrucciones del comportamiento
                         result = behavior.run()
@@ -605,9 +605,9 @@ class DeactivateInstruccion:
             # Si el bot esta desactivado procedemos
             if simbolo.activado == True:
                 # El Bot ya estaba activo, ERROR    
-                BotSymbolTable.updateSymbolStatus(self.identList[j],False)
+                BotSymbolTable.actualizarEstadoSimbolo(self.identList[j],False)
                 # Buscamos el comportamiento correspondiente
-                for behavior in simbolo.behaviorTable:
+                for behavior in simbolo.tablaDeComportamientos:
                     if behavior.condition == 'deactivation':
                         result = behavior.run()
                         # Si la operacion devuelve un resultado actualizamos el valor del bot
@@ -670,18 +670,18 @@ class AdvanceInstruccion:
             # Si el bot esta activado procedemos
             if simbolo.activado == True:
                 # Buscamos comportamientos personalizados
-                for i in range(0,len(simbolo.behaviorTable)):
+                for i in range(0,len(simbolo.tablaDeComportamientos)):
                     # Buscamos los comportamientos con expresiones
-                    if (type(simbolo.behaviorTable[i].condition) is ExpresionParentizada or
-                        type(simbolo.behaviorTable[i].condition) is ExpresionBooleana or
-                        type(simbolo.behaviorTable[i].condition) is ExpresionRelacional):
+                    if (type(simbolo.tablaDeComportamientos[i].condition) is ExpresionParentizada or
+                        type(simbolo.tablaDeComportamientos[i].condition) is ExpresionBooleana or
+                        type(simbolo.tablaDeComportamientos[i].condition) is ExpresionRelacional):
                         # Si ya se ha encontrado default entonces hay un ERROR
                         if defaultPosicion != None:
                             print("ERROR: Default definido antes que comportamiento con expresion")
                             exit()
                         # Buscamos el primero que se cumpla
-                        if simbolo.behaviorTable[i].condition.evaluar(BotSymbolTable) == True:
-                            result = simbolo.behaviorTable[i].run()
+                        if simbolo.tablaDeComportamientos[i].condition.evaluar(BotSymbolTable) == True:
+                            result = simbolo.tablaDeComportamientos[i].run()
                             # Si la operacion devuelve un resultado actualizamos el valor del bot
                             if result != None:
                                 BotSymbolTable.actualizarValorDeSimbolo(self.identList[j],result.obtenerValor())
@@ -691,12 +691,12 @@ class AdvanceInstruccion:
                             break
                     # Si encontramos el comportamiento default anotamos su posicion para compararla con la
                     # de los demas comportamientos
-                    elif simbolo.behaviorTable[i].condition == 'default':
+                    elif simbolo.tablaDeComportamientos[i].condition == 'default':
                         defaultPosicion = i
                 # Si no se encontro ninguna condicion que se cumpla, utilizamos el comportamiento default
                 if defaultEnabled: 
                     # Buscamos el comportamiento default
-                    for behavior in simbolo.behaviorTable:
+                    for behavior in simbolo.tablaDeComportamientos:
                         if behavior.condition == 'default':
                             result = behavior.run()
                             # Si la operacion devuelve un resultado actualizamos el valor del bot

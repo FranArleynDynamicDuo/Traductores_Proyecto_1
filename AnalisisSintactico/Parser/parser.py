@@ -109,7 +109,7 @@ def p_botCreate(p):
                  |       TkChar TkBot TkIdent botDeclaracionList TkEnd'''
     p[0] = Instruccion.CreateInstruccion(p[1],p[3],p[4])
     simbolo = Simbolo(p[3],p[1],None)
-    simbolo.behaviorTable = p[4]
+    simbolo.tablaDeComportamientos = p[4]
     global sintBotSymbolTable
     sintBotSymbolTable = sintBotSymbolTable.agregarATabla(p[3],simbolo)
     global currentBotType

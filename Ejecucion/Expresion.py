@@ -135,6 +135,12 @@ class ExpresionAritmetica:
             expresionUno = int(self.expresion1)
         # Caso 2: es un simbolo
         elif simbolo1 != None:
+            if simbolo1.activado == False:
+                print('Bot ' + simbolo1.obtenerIdentificador() + 'no activado!')
+                exit()
+            if simbolo1.obtenerValor() == None:
+                print('Bot ' + simbolo1.obtenerIdentificador() + ' no inicializado!')
+                exit()
             expresionUno= simbolo1.obtenerValor()
         # Caso 3: es una expresion
         else:
@@ -145,7 +151,13 @@ class ExpresionAritmetica:
             expresionDos = int(self.expresion2)
         # Caso 2: es un simbolo
         elif simbolo2 != None:
-            expresionDos= simbolo2.obtenerValor()
+                if simbolo2.activado == False:
+                    print('Bot ' + simbolo2.obtenerIdentificador() + 'no activado!')
+                    exit()
+                if simbolo2.obtenerValor() == None:
+                    print('Bot ' + simbolo2.obtenerIdentificador() + ' no inicializado!')
+                    exit()
+                expresionDos= simbolo2.obtenerValor()
         # Caso 3: es una expresion
         else:
             expresionDos = self.expresion2.evaluar(symbolTable)     
@@ -222,6 +234,12 @@ class ExpresionRelacional:
                 expresionUno = int(self.expresion1)
             # Caso 4: es un simbolo
             elif simbolo1 != None:
+                if simbolo1.activado == False:
+                    print('Bot ' + simbolo1.obtenerIdentificador() + 'no activado!')
+                    exit()
+                if simbolo1.obtenerValor() == None:
+                    print('Bot ' + simbolo1.obtenerIdentificador() + ' no inicializado!')
+                    exit()
                 expresionUno= simbolo1.obtenerValor()
             # Caso 5: es una expresion
             else:
@@ -238,6 +256,12 @@ class ExpresionRelacional:
                 expresionDos = int(self.expresion2)
             # Caso 4: es un simbolo
             elif simbolo2 != None:
+                if simbolo2.activado == False:
+                    print('Bot ' + simbolo2.obtenerIdentificador() + 'no activado!')
+                    exit()
+                if simbolo2.obtenerValor() == None:
+                    print('Bot ' + simbolo2.obtenerIdentificador() + ' no inicializado!')
+                    exit()
                 expresionDos= simbolo2.obtenerValor()
             # Caso 5: es una expresion
             else:
@@ -251,6 +275,12 @@ class ExpresionRelacional:
                 expresionUno = int(self.expresion1)
             # Caso 2: es un simbolo
             elif simbolo1 != None:
+                if simbolo1.activado == False:
+                    print('Bot ' + simbolo1.obtenerIdentificador() + 'no activado!')
+                    exit()
+                if simbolo1.obtenerValor() == None:
+                    print('Bot ' + simbolo1.obtenerIdentificador() + ' no inicializado!')
+                    exit()
                 expresionUno= simbolo1.obtenerValor()
             # Caso 3: es una expresion
             else:
@@ -261,6 +291,12 @@ class ExpresionRelacional:
                 expresionDos = int(self.expresion2)
             # Caso 2: es un simbolo
             elif simbolo2 != None:
+                if simbolo2.activado == False:
+                    print('Bot ' + simbolo2.obtenerIdentificador() + 'no activado!')
+                    exit()
+                if simbolo2.obtenerValor() == None:
+                    print('Bot ' + simbolo2.obtenerIdentificador() + ' no inicializado!')
+                    exit()
                 expresionDos= simbolo2.obtenerValor()
             # Caso 3: es una expresion
             else:
@@ -332,10 +368,17 @@ class ExpresionBooleana:
                 expresionUno = False
             # Caso 1.3: Es un simbolo
             elif simbolo1 != None:
+                if simbolo1.activado == False:
+                    print('Bot ' + simbolo1.obtenerIdentificador() + 'no activado!')
+                    exit()
+                if simbolo1.obtenerValor() == None:
+                    print('Bot ' + simbolo1.obtenerIdentificador() + ' no inicializado!')
+                    exit()
                 expresionUno= simbolo1.obtenerValor()
         # Caso 2: Es una expresion
         else:
             expresionUno = self.expresion1.evaluar(symbolTable)
+        # Expresion derecha
         # Caso 1: es un tipo string
         if type(self.expresion2) is str:
             # Caso 1.1: Es true
@@ -346,10 +389,16 @@ class ExpresionBooleana:
                 expresionDos = False
             # Caso 1.3: Es un simbolo
             elif simbolo2 != None:
+                if simbolo2.activado == False:
+                    print('Bot ' + simbolo2.obtenerIdentificador() + 'no activado!')
+                    exit()
+                if simbolo2.obtenerValor() == None:
+                    print('Bot ' + simbolo2.obtenerIdentificador() + ' no inicializado!')
+                    exit()
                 expresionDos= simbolo2.obtenerValor()
         # Caso 2: Es una expresion
         else:
-            expresionUno = self.expresion1.evaluar(symbolTable)  
+            expresionDos = self.expresion1.evaluar(symbolTable)  
         # Es una conjuncion
         if (self.operador == "/\\"):
             return (expresionUno and expresionDos)
