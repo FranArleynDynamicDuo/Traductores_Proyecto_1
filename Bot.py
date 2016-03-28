@@ -85,5 +85,7 @@ runBotSymbolTable = TablaDeSimbolos(None)
 
 parseTree.run()
 
+print("")
+
 # NO estamos claros si hay que usarlo
 # print(result) 
